@@ -1,0 +1,13 @@
+services:
+  teampage:
+    container_name: teampage
+    build:
+      context: ../..
+      dockerfile: apps/teampage/DockerFile
+    environment:
+      - NODE_ENV=production
+      - PORT=80
+      - HOSTNAME=0.0.0.0
+    ports:
+      - "3000:80"
+    restart: unless-stopped
