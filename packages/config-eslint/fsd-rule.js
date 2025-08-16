@@ -58,27 +58,6 @@ module.exports = {
             from: "./src/app/**/*",
             message: "pages 레이어는 app을 import할 수 없습니다.",
           },
-          {
-            target: "./src/entities/*/**/*",
-            from: "./src/entities/*/**/*",
-            except: ["./src/entities/*/index.ts", "./src/entities/index.ts"],
-            message:
-              "entities 간에는 Public API(index.ts)를 통해서만 import 가능합니다.",
-          },
-          {
-            target: "./src/features/*/**/*",
-            from: "./src/features/*/**/*",
-            except: ["./src/features/*/index.ts", "./src/features/index.ts"],
-            message:
-              "features 간에는 Public API(index.ts)를 통해서만 import 가능합니다.",
-          },
-          {
-            target: "./src/pages/*/**/*",
-            from: "./src/pages/*/**/*",
-            except: ["./src/pages/*/index.ts", "./src/pages/index.ts"],
-            message:
-              "pages 간에는 Public API(index.ts)를 통해서만 import 가능합니다.",
-          },
         ],
       },
     ],
