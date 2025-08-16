@@ -1,5 +1,6 @@
+import "../shared/styles/globals.css";
 import type { Metadata } from "next";
-import "./globals.css";
+import { AppProvider } from "./provider/app-provider";
 
 export const metadata: Metadata = {
   title: "UOSLIFE",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <AppProvider>{children}</AppProvider>
+      </body>
     </html>
   );
 }
