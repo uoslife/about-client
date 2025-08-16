@@ -1,5 +1,5 @@
-import EditorPage from "../../pages/editor-page/EditorPage";
+import _EditorPage from "@pages/editor-page";
 
-export default function Home() {
-  return <EditorPage />;
+export default function EditorPage() {
+  return <_EditorPage />;
 }
