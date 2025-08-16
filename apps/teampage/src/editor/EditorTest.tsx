@@ -30,7 +30,7 @@ export const EditorTest = ({
   onChange,
 }: Partial<TuiEditorProps> = {}) => {
   const editorRef = useRef<Editor>(null);
-  const [markdown, setMarkdown] = useState("");
+  const [markdown, setMarkdown] = useState(initialValue);
 
   const handleChange = useCallback(() => {
     if (!editorRef.current) return;
