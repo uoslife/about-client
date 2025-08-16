@@ -72,6 +72,12 @@ module.exports = {
           "**/src/app/**/*",
           "~/**/*",
           "@/**/*",
+          "next/**/*",
+          "react/**/*",
+          "@toast-ui/**/*",
+          "jotai/**/*",
+          "motion/**/*",
+          "@tanstack/**/*",
         ],
       },
     ],
@@ -84,9 +90,14 @@ module.exports = {
       },
     },
     {
+      files: ["src/shared/**/*"],
+      rules: {
+        "import/no-internal-modules": "off",
+      },
+    },
+    {
       files: ["*.config.*", "**/*.config.*"],
       rules: {
-        "import/no-restricted-paths": "off",
         "import/no-internal-modules": "off",
       },
     },

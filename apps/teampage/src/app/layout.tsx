@@ -1,4 +1,3 @@
-import "@shared/styles/globals.css";
 import type { Metadata } from "next";
 import { AppProvider } from "./provider/app-provider";
 

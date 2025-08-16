@@ -1,4 +1,4 @@
-import { EditorTest } from "@features/editor";
+import { EditorTest } from "@shared/editor";
 
 export default function EditorPage() {
   return (
