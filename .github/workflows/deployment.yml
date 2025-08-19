@@ -19,7 +19,7 @@ jobs:
     env:
       # Dockerfile
       DOCKER_FILE: ./apps/teampage/DockerFile
-      DOCKER_STAGE: production
+      DOCKER_STAGE: runner
       DOCKER_PLATFORM: amd64
 
       # AWS
