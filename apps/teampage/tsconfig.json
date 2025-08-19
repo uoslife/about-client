@@ -10,6 +10,8 @@
     "noImplicitAny": false,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "inlineSourceMap": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
