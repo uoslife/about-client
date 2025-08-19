@@ -3,5 +3,8 @@
     "next/core-web-vitals",
     "next/typescript",
     "@uoslife/eslint-config/fsd-rule"
-  ]
+  ],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  }
 }

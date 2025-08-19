@@ -61,45 +61,5 @@ module.exports = {
         ],
       },
     ],
-    "import/no-internal-modules": [
-      "error",
-      {
-        allow: [
-          "**/src/shared/**/*",
-          "**/src/entities/*/index.ts",
-          "**/src/features/*/index.ts",
-          "**/src/pages/*/index.ts",
-          "**/src/app/**/*",
-          "~/**/*",
-          "@/**/*",
-          "next/**/*",
-          "react/**/*",
-          "@toast-ui/**/*",
-          "jotai/**/*",
-          "motion/**/*",
-          "@tanstack/**/*",
-        ],
-      },
-    ],
   },
-  overrides: [
-    {
-      files: ["src/app/**/*"],
-      rules: {
-        "import/no-internal-modules": "off",
-      },
-    },
-    {
-      files: ["src/shared/**/*"],
-      rules: {
-        "import/no-internal-modules": "off",
-      },
-    },
-    {
-      files: ["*.config.*", "**/*.config.*"],
-      rules: {
-        "import/no-internal-modules": "off",
-      },
-    },
-  ],
 };
