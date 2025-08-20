@@ -1,7 +1,7 @@
 import { Client } from "@notionhq/client";
 import { SingletonRegister } from "@shared/utils/SingletonRegistry";
 
-const TOKEN = "NOTION_CLIENT";
+const TOKEN = "NOTION_CLIENT" as const;
 @SingletonRegister(TOKEN)
 export class NotionClient {
   public static TOKEN = TOKEN;
