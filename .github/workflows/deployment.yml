@@ -53,10 +53,12 @@ jobs:
         
       - name: Create environment file
         run: |
-          # .env 파일 생성 (빌드 시점에 필요)
-          echo "NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}" >> .env
-          echo "NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}" >> .env
-
+          echo "NOTION_API_KEY=$NOTION_API_KEY" >> apps/teampage/.env
+          echo "NOTION_PEOPLE_DATABASE_ID=$NOTION_PEOPLE_DATABASE_ID" >> apps/teampage/.env
+        env:
+          NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+          NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
+          
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -106,7 +108,7 @@ jobs:
       - name: Clean up environment file
         if: always()
         run: |
-          rm -f .env
+          rm -f apps/teampage/.env
         shell: bash
 
       - name: Deploy to ECS
