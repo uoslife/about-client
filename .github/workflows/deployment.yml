@@ -1,8 +1,9 @@
 name: Deployment
 
 on:
+  workflow_dispatch: # 수동 트리거 
   push:
-    branches: [ 'main' ]
+    branches: [ 'main' ] # 기존 PR merge 이벤트트
 
 permissions:
   id-token: write
