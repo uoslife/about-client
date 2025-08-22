@@ -50,6 +50,12 @@ jobs:
         run: |
           echo "version=$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
           echo "VERSION=$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_ENV"
+        
+      - name: Create environment file
+        run: |
+          # .env 파일 생성 (빌드 시점에 필요)
+          echo "NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}" >> .env
+          echo "NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}" >> .env
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -77,8 +83,6 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             NODE_ENV=production
-            NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
-            NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
@@ -98,6 +102,12 @@ jobs:
           task-definition: task-definition.json
           container-name: ${{ env.ECS_CONTAINER }}
           image: "${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}"
+
+      - name: Clean up environment file
+        if: always()
+        run: |
+          rm -f .env
+        shell: bash
 
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
