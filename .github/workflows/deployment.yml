@@ -3,7 +3,7 @@ name: Deployment
 on:
   workflow_dispatch: # 수동 트리거
   push:
-    branches: ["main"] # 기존 PR merge 이벤트트
+    branches: ['main'] # 기존 PR merge 이벤트트
 
 permissions:
   id-token: write
@@ -91,6 +91,11 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             NODE_ENV=production
+            NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+            NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
+            KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}
+            KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+            KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
@@ -109,7 +114,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.ECS_CONTAINER }}
-          image: "${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}"
+          image: '${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}'
 
       - name: Clean up environment file
         if: always()
