@@ -24,7 +24,7 @@ jobs:
       DOCKER_PLATFORM: amd64
 
       # AWS
-      AWS_REGION: ap-southeast-2
+      AWS_REGION: ap-northeast-2
       AWS_ROLE: ${{ secrets.AWS_ROLE_ARN }}
 
       # Elastic Container Registry
@@ -97,7 +97,8 @@ jobs:
             KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
             KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
 
       - name: Download Task Definition
         run: |
