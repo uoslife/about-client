@@ -1,14 +1,11 @@
 import { NotionManager } from '@features/notion';
 import { Singletons } from '@shared/utils/SingletonRegistry';
-import { TIME } from '@shared/const/time';
 import Image from 'next/image';
-
-export const revalidate = TIME.HOUR;
 
 export default async function PeoplePage() {
   const notionManager = Singletons[NotionManager.TOKEN];
   const peopleData = await notionManager.getPeopleData();
-
+  console.log(peopleData);
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-16">
@@ -78,9 +75,9 @@ export default async function PeoplePage() {
               </div>
 
               <div className="relative z-10 px-6 pb-6">
-                {person.link_others && (
+                {person.blog && (
                   <a
-                    href={person.link_others}
+                    href={person.blog}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 group/link shadow-md hover:shadow-lg w-full"

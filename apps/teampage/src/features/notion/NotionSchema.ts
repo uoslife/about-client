@@ -1,39 +1,39 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const NotionTitlePropertySchema = z.object({
-  type: z.literal("title"),
+  type: z.literal('title'),
   title: z
     .array(
       z.object({
         plain_text: z.string(),
-      })
+      }),
     )
     .min(1),
 });
 
 export const NotionRichTextPropertySchema = z.object({
-  type: z.literal("rich_text"),
+  type: z.literal('rich_text'),
   rich_text: z.array(
     z.object({
       plain_text: z.string(),
-    })
+    }),
   ),
 });
 
 export const NotionSelectPropertySchema = z.object({
-  type: z.literal("select"),
+  type: z.literal('select'),
   select: z.object({
     name: z.string(),
   }),
 });
 
 export const NotionUrlPropertySchema = z.object({
-  type: z.literal("url"),
+  type: z.literal('url'),
   url: z.string().url().nullable(),
 });
 
 export const NotionFilesPropertySchema = z.object({
-  type: z.literal("files"),
+  type: z.literal('files'),
   files: z.array(z.any()),
 });
 
@@ -52,17 +52,19 @@ export const NotionPagePropertiesSchema = z.object({
   position: NotionSelectPropertySchema,
   career: OptionalNotionRichTextPropertySchema,
   major: NotionRichTextPropertySchema,
-  link_others: OptionalNotionUrlPropertySchema,
   image_profile: OptionalNotionFilesPropertySchema,
   summary: OptionalNotionRichTextPropertySchema,
+  github: OptionalNotionUrlPropertySchema,
+  blog: OptionalNotionUrlPropertySchema,
+  linkedin: OptionalNotionUrlPropertySchema,
 });
 
 export const NotionPageSchema = z.object({
-  object: z.literal("page"),
+  object: z.literal('page'),
   properties: NotionPagePropertiesSchema,
 });
 
 export const NotionListResponseSchema = z.object({
-  object: z.literal("list"),
+  object: z.literal('list'),
   results: z.array(NotionPageSchema),
 });

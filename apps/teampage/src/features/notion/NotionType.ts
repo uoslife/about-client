@@ -1,16 +1,16 @@
-import { z } from "zod";
-import { NotionListResponseSchema, NotionPageSchema } from "./NotionSchema";
+import { z } from 'zod';
+import { NotionListResponseSchema, NotionPageSchema } from './NotionSchema';
 
 export type NotionPage = z.infer<typeof NotionPageSchema>;
 export type NotionListResponse = z.infer<typeof NotionListResponseSchema>;
 
 export const NOTION_POSITION = {
-  PM: "Product Manager",
-  MARKETING: "Marketer",
-  DESIGN: "Designer",
-  DEV: "Developer",
-  LEAD: "Leader",
-  SUB: "Subleader",
+  PM: 'Product Manager',
+  MARKETING: 'Marketer',
+  DESIGN: 'Designer',
+  DEV: 'Developer',
+  LEAD: 'Leader',
+  SUB: 'Subleader',
 } as const;
 
 export type PositionType =
@@ -26,7 +26,9 @@ export type PeopleData = {
   position: PositionType;
   career?: string;
   major: string;
-  link_others?: string;
   image_profile?: string;
   summary?: string;
+  blog?: string;
+  github?: string;
+  linkedin?: string;
 };
