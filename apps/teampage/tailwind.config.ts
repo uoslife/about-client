@@ -4,7 +4,7 @@ const config: Config = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
-      width: {
+      maxWidth: {
         pc: '1440px',
       },
       colors: {
