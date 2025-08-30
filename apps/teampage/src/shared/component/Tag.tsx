@@ -1,16 +1,18 @@
+import type React from 'react';
 import { type ColorValue, Text } from './Text';
 
-interface TagProps {
+interface TagProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   color: 'white' | 'black' | 'blur';
 }
 
-export function Tag({ children, color }: TagProps) {
+export function Tag({ children, color, className, ...props }: TagProps) {
   const currentColor = colorClass[color] ?? colorClass.white;
 
   return (
     <div
-      className={`flex items-center h-10 justify-center px-4 py-0 rounded-[20px] ${currentColor?.background} ${currentColor?.text}`}
+      className={`flex items-center h-10 justify-center px-4 py-0 rounded-[20px] ${currentColor?.background} ${currentColor?.text} ${className || ''}`}
+      {...props}
     >
       <Text variant="body-18-m" color={colorClass[color].text}>
         {children}
