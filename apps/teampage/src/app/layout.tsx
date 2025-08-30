@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
+import { Footer } from '@/widgets/footer/Footer';
+import Header from '@/widgets/header/Header';
 import { ClientProvider } from './provider/client-provider';
 import { ServerProvider } from './provider/server-provider';
-import Header from '@/widgets/header/Header';
 
 export const metadata: Metadata = {
   title: 'UOSLIFE',
@@ -20,6 +21,7 @@ export default function RootLayout({
           <ClientProvider>
             <Header />
             {children}
+            <Footer />
           </ClientProvider>
         </ServerProvider>
       </body>
