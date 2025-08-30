@@ -1,6 +1,6 @@
 import type React from 'react';
 
-type TextVariant =
+export type TextVariant =
   | 'heading-220-b'
   | 'heading-100-b'
   | 'heading-80-b'
@@ -23,9 +23,10 @@ type TextVariant =
   | 'body-14-sb'
   | 'body-14-m';
 
-type ColorValue =
+export type ColorValue =
   | 'grey-900'
   | 'black'
+  | 'white'
   | 'grey-50'
   | 'grey-100'
   | 'grey-200'
@@ -72,6 +73,7 @@ const variantToClassMap: Record<TextVariant, string> = {
 
 const colorToClassMap: Record<ColorValue, string> = {
   black: 'text-black',
+  white: 'text-white',
   'grey-50': 'text-grey-50',
   'grey-100': 'text-grey-100',
   'grey-200': 'text-grey-200',
