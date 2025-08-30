@@ -1,10 +1,8 @@
-import Header from '@widgets/header/Header';
 import Image from 'next/image';
 
 export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center">
-      <Header />
       <main>
         <div className="relative mx-10 px-24 bg-black rounded-3xl overflow-hidden flex items-center justify-center">
           <Image

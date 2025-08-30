@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
-import { ClientProvider } from "./provider/client-provider";
-import { ServerProvider } from "./provider/server-provider";
+import type { Metadata } from 'next';
+import { ClientProvider } from './provider/client-provider';
+import { ServerProvider } from './provider/server-provider';
+import Header from '@/widgets/header/Header';
 
 export const metadata: Metadata = {
-  title: "UOSLIFE",
-  description: "UOSLIFE",
+  title: 'UOSLIFE',
+  description: 'UOSLIFE',
 };
 
 export default function RootLayout({
@@ -16,7 +17,10 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <ServerProvider>
-          <ClientProvider>{children}</ClientProvider>
+          <ClientProvider>
+            <Header />
+            {children}
+          </ClientProvider>
         </ServerProvider>
       </body>
     </html>
