@@ -1,11 +1,16 @@
 import { type ColorValue, Text } from './Text';
 
-interface TabProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface TabButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   color: 'light' | 'dark';
 }
 
-export function Tab({ children, color, className, ...props }: TabProps) {
+export function TabButton({
+  children,
+  color,
+  className,
+  ...props
+}: TabButtonProps) {
   const currentColor = colorClass[color] ?? colorClass.light;
 
   return (
