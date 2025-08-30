@@ -1,7 +1,7 @@
-import { Singletons } from "@shared/utils/SingletonRegistry";
-import { TIME } from "@shared/const/time";
-import { NotionManager } from "@/shared";
-import Image from "next/image";
+import { NotionManager } from '@features/notion';
+import { Singletons } from '@shared/utils/SingletonRegistry';
+import { TIME } from '@shared/const/time';
+import Image from 'next/image';
 
 export const revalidate = TIME.HOUR;
 

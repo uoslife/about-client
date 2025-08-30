@@ -1,7 +1,7 @@
 'use client';
+import { useAuth } from '@entities/auth/useAuth';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useAuth } from '../auth/useAuth';
 
 const Route = {
   HOME: {

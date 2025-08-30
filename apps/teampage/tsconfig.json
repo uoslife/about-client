@@ -19,6 +19,7 @@
       "@pages/*": ["./src/page/*"],
       "@features/*": ["./src/features/*"],
       "@entities/*": ["./src/entities/*"],
+      "@widgets/*": ["./src/widgets/*"],
       "@shared/*": ["./src/shared/*"]
     }
   },
