@@ -49,7 +49,7 @@ function TopBar() {
           {CATEGORYS.map((cat) => (
             <TabButton
               key={cat}
-              color={category === cat ? 'dark' : 'light'}
+              clicked={category === cat}
               onClick={() => setCategory(cat)}
             >
               {cat}
