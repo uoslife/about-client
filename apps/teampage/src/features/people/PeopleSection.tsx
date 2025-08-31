@@ -4,6 +4,7 @@ import { useContext } from 'react';
 import { PeopleContext, PeopleProvider } from './PeopleProvider';
 import { PeopleData } from '@features/notion/NotionType';
 import { SearchField } from '@/shared/component/search-field';
+import { Dropdown } from '@/shared/component/dropdown';
 
 const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
   const { selectedGeneration, debouncedSearchQuery } =
@@ -15,15 +16,15 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
 
   const generations = [
     '전체 기수',
-    ...Array.from(new Set(peopleData.map((person) => person.generation))).sort(
-      sortGenerationWithNumber,
-    ),
+    ...Array.from(new Set(peopleData.map((person) => person.generation)))
+      .sort(sortGenerationWithNumber)
+      .reverse(),
   ];
 
   return (
     <main className="flex items-center justify-center py-[100px]">
       <div className="w-[1120px] flex flex-col gap-10">
-        <PeopleHeader />
+        <PeopleHeader generations={generations} />
         <div className="flex gap-5">
           {peopleData
             .filter(
@@ -55,16 +56,32 @@ const PeopleSection = ({ peopleData }: { peopleData: PeopleData[] }) => {
 
 export default PeopleSection;
 
-const PeopleHeader = () => {
-  const { searchQuery, setSearchQuery } = useContext(PeopleContext)!;
+const PeopleHeader = ({ generations }: { generations: string[] }) => {
+  const {
+    searchQuery,
+    setSearchQuery,
+    selectedGeneration,
+    setSelectedGeneration,
+  } = useContext(PeopleContext)!;
+
   return (
     <div className="w-full flex justify-between items-center">
       <SearchField
         size="small"
-        placeholder="제목을 입력해주세요"
+        placeholder="제목을 검색하세요."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onClear={() => setSearchQuery('')}
+      />
+      <Dropdown
+        options={generations}
+        value={
+          selectedGeneration === -1
+            ? generations[0]
+            : generations[selectedGeneration]
+        }
+        onChange={(_, index) => setSelectedGeneration(index === 0 ? -1 : index)}
+        placeholder="전체 기수"
       />
     </div>
   );
