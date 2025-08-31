@@ -26,6 +26,14 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
+      - name: Create environment file
+        run: |
+          echo "NOTION_API_KEY=dummy" >> apps/teampage/.env
+          echo "NOTION_PEOPLE_DATABASE_ID=dummy" >> apps/teampage/.env
+          echo "KEYCLOAK_CLIENT_ID=dummy" >> apps/teampage/.env
+          echo "KEYCLOAK_CLIENT_SECRET=dummy" >> apps/teampage/.env
+          echo "KEYCLOAK_ISSUER=dummy" >> apps/teampage/.env
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -37,3 +45,8 @@ jobs:
 
       - name: Build project
         run: pnpm run build
+
+      - name: Clean up environment file
+        if: always()
+        run: |
+          rm -f apps/teampage/.env
