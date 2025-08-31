@@ -10,8 +10,6 @@ import type { CardProps } from './types';
 
 export function CardA({ content, className }: CardProps) {
   const {
-    id,
-    authorId,
     authorName,
     title,
     category,
