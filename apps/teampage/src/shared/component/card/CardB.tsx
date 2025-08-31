@@ -43,13 +43,13 @@ export function CardB({ content, className }: CardProps) {
             >
               {title}
             </Text>
-            <Text variant="body-18-m" className="text-grey-700 w-full">
+            <Text variant="body-18-m" color="grey-700" className="w-full">
               {summary}
             </Text>
           </div>
         </div>
         <div className="flex gap-2 items-center">
-          <Text variant="body-16-b" className="text-grey-700 whitespace-pre">
+          <Text variant="body-16-b" color="grey-700" className="whitespace-pre">
             {authorName}
           </Text>
           <Divider
@@ -58,8 +58,12 @@ export function CardB({ content, className }: CardProps) {
             color="bg-grey-200"
             className="h-2.5"
           />
-          <Text variant="body-16-m" className="text-grey-600 whitespace-pre">
-            {createdAt}
+          <Text variant="body-16-m" color="grey-600" className="whitespace-pre">
+            {new Date(createdAt).toLocaleDateString('ko-KR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           </Text>
           <Divider
             orientation="vertical"
@@ -69,7 +73,8 @@ export function CardB({ content, className }: CardProps) {
           />
           <Text
             variant="body-16-m"
-            className="text-grey-600 whitespace-pre text-right"
+            color="grey-600"
+            className="whitespace-pre text-right"
           >
             조회수 {viewCount.toLocaleString()}
           </Text>
