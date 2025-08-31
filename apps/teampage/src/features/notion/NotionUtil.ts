@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 import {
   NotionListResponseSchema,
   NotionPageSchema,
@@ -8,14 +8,14 @@ import {
   NotionSelectPropertySchema,
   NotionTitlePropertySchema,
   OptionalNotionUrlPropertySchema,
-} from "./NotionSchema";
+} from './NotionSchema';
 import type {
   NotionPage,
   PeopleData,
   GenerationType,
   NotionListResponse,
   PositionType,
-} from "./NotionType";
+} from './NotionType';
 
 export class NotionUtil {
   public static parseNotionPage = (page: unknown): NotionPage => {
@@ -27,53 +27,53 @@ export class NotionUtil {
   };
 
   public static extractName = (
-    property: z.infer<typeof NotionTitlePropertySchema>
+    property: z.infer<typeof NotionTitlePropertySchema>,
   ): string => {
     return property.title[0].plain_text;
   };
 
   public static extractGeneration = (
-    property: z.infer<typeof NotionRichTextPropertySchema>
+    property: z.infer<typeof NotionRichTextPropertySchema>,
   ): GenerationType => {
     const text = property.rich_text[0]?.plain_text;
     if (!text || !/^\d+기$/.test(text)) {
-      throw new Error("Invalid generation format");
+      throw new Error('Invalid generation format');
     }
     return text as GenerationType;
   };
 
   public static extractPosition = (
-    property: z.infer<typeof NotionSelectPropertySchema>
+    property: z.infer<typeof NotionSelectPropertySchema>,
   ): PositionType => {
     return property.select.name as PositionType;
   };
 
   public static extractCareer = (
-    property?: z.infer<typeof OptionalNotionRichTextPropertySchema>
+    property?: z.infer<typeof OptionalNotionRichTextPropertySchema>,
   ): string | undefined => {
     return property?.rich_text?.[0]?.plain_text;
   };
 
   public static extractMajor = (
-    property: z.infer<typeof NotionRichTextPropertySchema>
+    property: z.infer<typeof NotionRichTextPropertySchema>,
   ): string => {
-    return property.rich_text[0]?.plain_text ?? "";
+    return property.rich_text[0]?.plain_text ?? '';
   };
 
-  public static extractLinkOthers = (
-    property?: z.infer<typeof OptionalNotionUrlPropertySchema>
+  public static extractLink = (
+    property?: z.infer<typeof OptionalNotionUrlPropertySchema>,
   ): string | undefined => {
     return property?.url ?? undefined;
   };
 
   public static extractImageProfile = (
-    property?: z.infer<typeof OptionalNotionFilesPropertySchema>
+    property?: z.infer<typeof OptionalNotionFilesPropertySchema>,
   ): string | undefined => {
     return property?.files?.[0]?.file?.url ?? undefined;
   };
 
   public static extractSummary = (
-    property?: z.infer<typeof OptionalNotionRichTextPropertySchema>
+    property?: z.infer<typeof OptionalNotionRichTextPropertySchema>,
   ): string | undefined => {
     return property?.rich_text?.[0]?.plain_text;
   };
@@ -86,9 +86,11 @@ export class NotionUtil {
       position: NotionUtil.extractPosition(properties.position),
       career: NotionUtil.extractCareer(properties.career),
       major: NotionUtil.extractMajor(properties.major),
-      link_others: NotionUtil.extractLinkOthers(properties.link_others),
       image_profile: NotionUtil.extractImageProfile(properties.image_profile),
       summary: NotionUtil.extractSummary(properties.summary),
+      blog: NotionUtil.extractLink(properties.blog),
+      github: NotionUtil.extractLink(properties.github),
+      linkedin: NotionUtil.extractLink(properties.linkedin),
     };
   };
 }
