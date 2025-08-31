@@ -106,7 +106,7 @@ export function Pagination({
   onPageChange,
   className,
 }: PaginationProps) {
-  const pageNumbers = [];
+  const pageNumbers: number[] = [];
   const MAX_PAGES_TO_SHOW = 5;
   let startPage = Math.max(1, currentPage - Math.floor(MAX_PAGES_TO_SHOW / 2));
   const endPage = Math.min(totalPages, startPage + MAX_PAGES_TO_SHOW - 1);
