@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { WritingButton } from '@/shared/component/buttons';
+// import { WritingButton } from '@shared/component/buttons';
 import { Card } from '@/shared/component/card';
 import type { Content } from '@/shared/component/card/types';
 import { Pagination } from '@/shared/component/pagination';
@@ -35,7 +35,7 @@ export function CareerMainSection() {
         onPageChange={setPage}
         className="my-10"
       />
-      <WritingButton className="fixed bottom-6 right-8" />
+      {/* <WritingButton className="fixed bottom-6 right-8" /> */}
     </ArticleMainSectionContainer>
   );
 }
