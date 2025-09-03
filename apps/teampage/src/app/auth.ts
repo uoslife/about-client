@@ -1,4 +1,4 @@
-import { NextAuthOptions } from 'next-auth';
+import type { NextAuthOptions } from 'next-auth';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 
 const getAuthOptions = (): NextAuthOptions => {
@@ -36,7 +36,6 @@ const getAuthOptions = (): NextAuthOptions => {
           refreshToken: token.refreshToken,
         };
       },
-      secret: process.env.NEXTAUTH_SECRET,
     },
     secret: process.env.NEXTAUTH_SECRET,
   };
