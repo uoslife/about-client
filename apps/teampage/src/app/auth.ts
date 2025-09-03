@@ -36,6 +36,7 @@ const getAuthOptions = (): NextAuthOptions => {
           refreshToken: token.refreshToken,
         };
       },
+      secret: process.env.NEXTAUTH_SECRET,
     },
     secret: process.env.NEXTAUTH_SECRET,
   };

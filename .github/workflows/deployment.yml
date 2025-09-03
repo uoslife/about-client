@@ -100,7 +100,6 @@ jobs:
             KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}
             KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
             KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
-            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
             NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
           tags: |
