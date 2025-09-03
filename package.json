@@ -11,6 +11,9 @@
     "prettier": "^3.2.5",
     "turbo": "^2.5.5"
   },
-  "packageManager": "pnpm@8.15.6",
-  "name": "uoslife"
+  "packageManager": "pnpm@9.5.0",
+  "name": "uoslife",
+  "dependencies": {
+    "orval": "^7.11.2"
+  }
 }

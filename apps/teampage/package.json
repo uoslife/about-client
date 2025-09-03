@@ -11,14 +11,14 @@
   "dependencies": {
     "@notion-render/client": "^0.0.2",
     "@notionhq/client": "^4.0.2",
-    "@tanstack/react-query": "^5.84.2",
+    "@tanstack/react-query": "catalog:",
     "@toast-ui/react-editor": "^3.2.3",
     "jotai": "^2.13.0",
     "motion": "^12.23.12",
-    "next": "14.2.31",
-    "next-auth": "^4.24.11",
-    "react": "^18",
-    "react-dom": "^18",
+    "next": "catalog:",
+    "next-auth": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "zod": "^4.0.17"
   },
   "devDependencies": {
@@ -31,6 +31,6 @@
     "eslint-config-next": "14.2.31",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "catalog:"
   }
 }

@@ -1,3 +1,12 @@
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
+
+catalog:
+  '@tanstack/react-query': ^5.84.2
+  'next': 14.2.31
+  'next-auth': ^4.24.11
+  'react': ^18
+  'react-dom': ^18
+  'typescript': ^5
+  'orval': ^7.11.2
