@@ -1,5 +1,5 @@
-import { NextAuthOptions } from "next-auth";
-import KeycloakProvider from "next-auth/providers/keycloak";
+import { NextAuthOptions } from 'next-auth';
+import KeycloakProvider from 'next-auth/providers/keycloak';
 
 const getAuthOptions = () => {
   const clientId = process.env.KEYCLOAK_CLIENT_ID;
@@ -7,7 +7,7 @@ const getAuthOptions = () => {
   const issuer = process.env.KEYCLOAK_ISSUER;
 
   if (!clientId || !clientSecret || !issuer) {
-    throw new Error("Missing Keycloak configuration");
+    throw new Error('Missing Keycloak configuration');
   }
 
   return {
@@ -19,7 +19,7 @@ const getAuthOptions = () => {
       }),
     ],
     session: {
-      strategy: "jwt" as const,
+      strategy: 'jwt' as const,
     },
     callbacks: {
       async jwt({ token, account }) {
@@ -36,6 +36,7 @@ const getAuthOptions = () => {
           refreshToken: token.refreshToken,
         };
       },
+      secret: process.env.NEXTAUTH_SECRET,
     },
   };
 };
