@@ -34,7 +34,7 @@ export function WritingButton({
   ...props
 }: WritingButtonProps) {
   return (
-    <Link href={{ pathname: '/editor', query: { from } }}>
+    <Link href={{ pathname: '/write', query: { from } }}>
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
