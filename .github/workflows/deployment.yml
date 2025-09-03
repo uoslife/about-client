@@ -58,13 +58,16 @@ jobs:
           echo "KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID" >> apps/teampage/.env
           echo "KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET" >> apps/teampage/.env
           echo "KEYCLOAK_ISSUER=$KEYCLOAK_ISSUER" >> apps/teampage/.env
+          echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> apps/teampage/.env
+          echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> apps/teampage/.env
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
           NOTION_PEOPLE_DATABASE_ID: ${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
           KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_CLIENT_ID }}
           KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           KEYCLOAK_ISSUER: ${{ secrets.KEYCLOAK_ISSUER }}
-
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -96,6 +99,8 @@ jobs:
             KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}
             KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
             KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
