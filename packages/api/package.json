@@ -1,0 +1,20 @@
+{
+  "name": "@uoslife/api",
+  "version": "1.0.0",
+  "description": "UOSLife API client generated from OpenAPI specs",
+  "main": "./src/index.ts",
+  "scripts": {
+    "generate": "orval",
+    "generate:watch": "orval --watch"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "catalog:"
+  },
+  "devDependencies": {
+    "orval": "catalog:",
+    "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  }
+}
