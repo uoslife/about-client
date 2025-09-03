@@ -1,7 +1,7 @@
-"use client";
-import { Editor, EditorProps } from "@toast-ui/react-editor";
-import "@toast-ui/editor/dist/toastui-editor.css";
-import { ForwardedRef } from "react";
+'use client';
+import { Editor, type EditorProps } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import type { ForwardedRef } from 'react';
 
 interface WrappedEditorProps {
   forwardedRef: ForwardedRef<Editor & EditorProps>;
