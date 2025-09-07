@@ -10,9 +10,9 @@ type Person = {
   career?: string;
   summary?: string;
   image_profile?: string;
-  blog?: string;
-  github?: string;
-  linkedin?: string;
+  link_others?: string;
+  link_github?: string;
+  link_linkedin?: string;
 };
 
 interface PeopleCardProps {
@@ -97,10 +97,10 @@ export default function PeopleCard({ person }: PeopleCardProps) {
             </div>
           )}
           <div className="flex items-center gap-0.5 ml-auto">
-            {person.blog && (
+            {person.link_others && (
               <button
                 className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-                onClick={() => window.open(person.blog, '_blank')}
+                onClick={() => window.open(person.link_others, '_blank')}
               >
                 <div className="flex items-center justify-center w-11 h-11 rounded-full  overflow-hidden hover:bg-gray-200">
                   <Image
@@ -112,10 +112,10 @@ export default function PeopleCard({ person }: PeopleCardProps) {
                 </div>
               </button>
             )}
-            {person.github && (
+            {person.link_github && (
               <button
                 className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-                onClick={() => window.open(person.github, '_blank')}
+                onClick={() => window.open(person.link_github, '_blank')}
               >
                 <div className="flex items-center justify-center w-11 h-11 rounded-full  overflow-hidden hover:bg-gray-200">
                   <Image
@@ -127,10 +127,10 @@ export default function PeopleCard({ person }: PeopleCardProps) {
                 </div>
               </button>
             )}
-            {person.linkedin && (
+            {person.link_linkedin && (
               <button
                 className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-                onClick={() => window.open(person.linkedin, '_blank')}
+                onClick={() => window.open(person.link_linkedin, '_blank')}
               >
                 <div className="flex items-center justify-center w-11 h-11 rounded-full  overflow-hidden hover:bg-gray-200">
                   <Image

@@ -54,9 +54,9 @@ export const NotionPagePropertiesSchema = z.object({
   major: NotionRichTextPropertySchema,
   image_profile: OptionalNotionFilesPropertySchema,
   summary: OptionalNotionRichTextPropertySchema,
-  github: OptionalNotionUrlPropertySchema,
-  blog: OptionalNotionUrlPropertySchema,
-  linkedin: OptionalNotionUrlPropertySchema,
+  link_github: OptionalNotionUrlPropertySchema,
+  link_others: OptionalNotionUrlPropertySchema,
+  link_linkedin: OptionalNotionUrlPropertySchema,
 });
 
 export const NotionPageSchema = z.object({

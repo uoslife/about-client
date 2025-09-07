@@ -88,9 +88,9 @@ export class NotionUtil {
       major: NotionUtil.extractMajor(properties.major),
       image_profile: NotionUtil.extractImageProfile(properties.image_profile),
       summary: NotionUtil.extractSummary(properties.summary),
-      blog: NotionUtil.extractLink(properties.blog),
-      github: NotionUtil.extractLink(properties.github),
-      linkedin: NotionUtil.extractLink(properties.linkedin),
+      link_others: NotionUtil.extractLink(properties.link_others),
+      link_github: NotionUtil.extractLink(properties.link_github),
+      link_linkedin: NotionUtil.extractLink(properties.link_linkedin),
     };
   };
 }
