@@ -1,9 +1,15 @@
 name: Deployment
 
 on:
-  workflow_dispatch: # 수동 트리거
+  workflow_dispatch:
+    inputs:
+      use_cache:
+        description: 'Docker 빌드 캐시 사용'
+        required: false
+        default: true
+        type: boolean
   push:
-    branches: ['main'] # 기존 PR merge 이벤트트
+    branches: ['main']
 
 permissions:
   id-token: write
@@ -83,7 +89,8 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and Push Docker Image to ECR
+      - name: Build and Push Docker Image to ECR (with cache)
+        if: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.use_cache == true) }}
         uses: docker/build-push-action@v4
         with:
           push: true
@@ -93,6 +100,29 @@ jobs:
           platforms: linux/${{ env.DOCKER_PLATFORM }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+            NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+            NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
+            KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}
+            KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+            KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
+
+      - name: Build and Push Docker Image to ECR (no cache)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.use_cache == false }}
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: .
+          file: ${{ env.DOCKER_FILE }}
+          target: ${{ env.DOCKER_STAGE }}
+          platforms: linux/${{ env.DOCKER_PLATFORM }}
+          no-cache: true
           build-args: |
             NODE_ENV=production
             NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
