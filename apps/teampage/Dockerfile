@@ -35,7 +35,6 @@ ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 ENV NEXTAUTH_URL=$NEXTAUTH_URL
 
 RUN pnpm run build
-RUN pnpm --filter teampage deploy --prod /opt/teampage
 
 FROM node:18-alpine AS runner
 RUN apk add --no-cache libc6-compat
@@ -62,11 +61,12 @@ ENV NEXTAUTH_URL=$NEXTAUTH_URL
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /opt/teampage /app
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 
 USER nextjs
-ENV NODE_PATH=/app/apps/teampage/node_modules:/app/node_modules
-WORKDIR /app
 EXPOSE 80
 ENV PORT=80
 ENV HOSTNAME="0.0.0.0"
