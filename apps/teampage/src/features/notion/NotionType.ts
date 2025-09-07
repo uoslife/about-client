@@ -28,7 +28,7 @@ export type PeopleData = {
   major: string;
   image_profile?: string;
   summary?: string;
-  blog?: string;
-  github?: string;
-  linkedin?: string;
+  link_others?: string;
+  link_github?: string;
+  link_linkedin?: string;
 };

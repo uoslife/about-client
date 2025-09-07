@@ -1,5 +1,6 @@
 export type CardProps = {
   content: Content;
+  link: string;
   className?: string;
 };
 
