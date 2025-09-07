@@ -61,11 +61,13 @@ ENV NEXTAUTH_URL=$NEXTAUTH_URL
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next/standalone /app
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next/standalone/server.js /app/
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next/standalone/package.json /app/
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next/standalone/.next /app/.next
 COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next/static /app/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/public /app/public
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules /app/node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/node_modules /app/apps/teampage/node_modules
+ENV NODE_PATH=/app/node_modules
 
 USER nextjs
 EXPOSE 80
