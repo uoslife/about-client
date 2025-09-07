@@ -35,7 +35,6 @@ ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 ENV NEXTAUTH_URL=$NEXTAUTH_URL
 
 RUN pnpm run build
-RUN pnpm --filter teampage deploy --prod /opt/teampage
 
 FROM node:18-alpine AS runner
 RUN apk add --no-cache libc6-compat
@@ -61,11 +60,18 @@ ENV NEXTAUTH_URL=$NEXTAUTH_URL
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
-COPY --from=builder --chown=nextjs:nodejs /opt/teampage ./
+
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/package.json ./
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/next.config.mjs ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/apps/teampage/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-workspace.yaml ./
 
 USER nextjs
 EXPOSE 80
 ENV PORT=80
 ENV HOSTNAME="0.0.0.0"
-CMD ["node_modules/.bin/next", "start"]
+
+# TODO: 의존성 문제 해결 후 CMD 수정 필요
+CMD ["node_modules/.pnpm/node_modules/.bin/next", "start"]
