@@ -25,7 +25,7 @@ jobs:
 
     env:
       # Dockerfile
-      DOCKER_FILE: ./apps/teampage/Dockerfile
+      DOCKER_FILE: apps/teampage/Dockerfile
       DOCKER_STAGE: runner
       DOCKER_PLATFORM: amd64
 
