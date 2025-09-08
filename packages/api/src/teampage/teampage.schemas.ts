@@ -59,6 +59,20 @@ export interface ArticleListItem {
 
 export interface CommentResponse {
   id: number;
+  articleId: number;
+  isMember: boolean;
+  memberId?: string;
+  nonMemberId?: string;
+  nickname: string;
+  profileImageUrl: string;
+  content: string;
+  createdAt: Date;
+}
+
+export interface CommentCreateRequest {
+  nonMemberId?: string;
+  nonMemberNickName?: string;
+  content: string;
 }
 
 export interface UpdateArticleRequest {
@@ -73,6 +87,10 @@ export interface UpdateArticleRequest {
   content?: string;
   /** 썸네일 url */
   thumbnailUrl?: string;
+}
+
+export interface CommentUpdateRequest {
+  content: string;
 }
 
 export type Me200 = { [key: string]: { [key: string]: unknown } };
