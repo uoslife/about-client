@@ -116,11 +116,7 @@ function ArticleList() {
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
       {/* TODO: Change To Real Data */}
       {Array.from({ length: 5 }).map((_, index) => (
-        <Card.B
-          key={index}
-          content={DUMMY_CONTENT}
-          link={`/tech/${index}?type=tech`}
-        />
+        <Card.B key={index} content={DUMMY_CONTENT} link={`/tech/${index}`} />
       ))}
     </div>
   );

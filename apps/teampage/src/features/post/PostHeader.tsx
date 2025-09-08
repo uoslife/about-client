@@ -49,15 +49,14 @@ export const PostHeader = ({
           <Text variant="body-18-m" color="grey-500">
             {new Date(createdAt).toLocaleDateString('ko-KR')}
           </Text>
-          {type === 'tech' ||
-            (type === 'career' && (
-              <>
-                <div className="bg-grey-400 h-2.5 w-px" />
-                <Text variant="body-18-m" color="grey-500">
-                  조회수 {viewCount.toLocaleString()}
-                </Text>
-              </>
-            ))}
+          {(type === 'tech' || type === 'career') && (
+            <>
+              <div className="bg-grey-400 h-2.5 w-px" />
+              <Text variant="body-18-m" color="grey-500">
+                조회수 {viewCount.toLocaleString()}
+              </Text>
+            </>
+          )}
         </div>
 
         <div className="flex gap-2 items-center">

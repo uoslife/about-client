@@ -88,7 +88,7 @@ function ArticleList() {
         <Card.A
           key={index}
           content={DUMMY_CONTENT}
-          link={`/moments/${index}?type=moments`}
+          link={`/moments/${index}`}
         />
       ))}
     </div>

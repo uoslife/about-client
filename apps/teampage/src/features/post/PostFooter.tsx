@@ -1,5 +1,10 @@
+'use client';
 import { Text } from '@/shared/component/Text';
 import { CommentResponse } from '@uoslife/api';
+import { useState } from 'react';
+import Image from 'next/image';
+import TextareaAutosize from 'react-textarea-autosize';
+import { CommentItem } from './CommentItem';
 
 type PostFooterProps = {
   likeCount: number;
@@ -7,39 +12,62 @@ type PostFooterProps = {
 };
 
 export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
+  const [like, setLike] = useState(false);
+  const [commentText, setCommentText] = useState('');
   return (
     <>
       <div className="flex gap-8 items-center">
-        <button className="border border-grey-100 border-solid flex gap-2 items-center px-5 py-3 rounded-[40px]">
+        <button
+          className={`flex gap-2 items-center px-5 py-3 box-border rounded-[40px] transition-all duration-200 ${
+            like
+              ? 'bg-[#222227] border-[1.6px] border-solid border-[#222227]'
+              : 'bg-white border-[1.6px] border-solid border-[#e9e9ee]'
+          }`}
+          onClick={() => setLike(!like)}
+        >
           <div className="w-6 h-6 flex items-center justify-center">
-            <svg className="w-5 h-[18px]" viewBox="0 0 20 18" fill="none">
-              <path
-                d="M10 17.5L8.55 16.2C3.4 11.6 0 8.5 0 4.75C0 2.1 2.1 0 4.75 0C6.25 0 7.7 0.7 8.55 1.8C9.4 0.7 10.85 0 12.25 0C14.9 0 17 2.1 17 4.75C17 8.5 13.6 11.6 8.45 16.2L10 17.5Z"
-                fill="#E9E9EE"
-              />
-            </svg>
+            <Image
+              src={like ? '/svg/heart_fill.svg' : '/svg/heart_empty.svg'}
+              alt="좋아요"
+              width={24}
+              height={24}
+              className={`${like && 'brightness-0 invert'}`}
+            />
           </div>
-          <Text variant="body-18-m" color="grey-700">
+          <Text
+            variant="body-18-m"
+            color={like ? 'white' : 'grey-700'}
+            className="font-medium"
+          >
             좋아요
           </Text>
-          <Text variant="title-24-b" color="grey-700">
+          <Text
+            variant="title-24-b"
+            color={like ? 'white' : 'grey-700'}
+            className="font-bold"
+          >
             {likeCount}
           </Text>
         </button>
 
-        <div className="flex gap-2 items-center">
+        <button
+          onClick={() => {
+            alert('공유하기');
+          }}
+          className="flex gap-2 items-center cursor-pointer"
+        >
           <div className="w-6 h-6 flex items-center justify-center">
-            <svg className="w-[18px] h-5" viewBox="0 0 18 20" fill="none">
-              <path
-                d="M15 0H3C1.35 0 0 1.35 0 3V14C0 15.65 1.35 17 3 17H15L18 20V3C18 1.35 16.65 0 15 0Z"
-                fill="#44444C"
-              />
-            </svg>
+            <Image
+              src={'/svg/share.svg'}
+              alt="공유하기"
+              width={24}
+              height={24}
+            />
           </div>
           <Text variant="body-18-m" color="grey-800">
             공유하기
           </Text>
-        </div>
+        </button>
       </div>
 
       <div className="flex flex-col gap-9 items-start justify-start w-full">
@@ -48,13 +76,29 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
             댓글 {comments.length}개
           </Text>
           <div className="flex flex-col gap-4 items-end justify-start w-full">
-            <div className="bg-grey-50 flex items-center justify-start p-5 rounded-[20px] w-full">
-              <Text variant="body-18-m" color="grey-500">
-                허위사실, 욕설, 사칭 등의 댓글은 통보없이 삭제될 수 있습니다.
-              </Text>
+            <div className="relative w-full">
+              <TextareaAutosize
+                className={`bg-[#f7f7f9] box-border p-5 rounded-[20px] w-full resize-none border-none outline-none text-[#222227] placeholder:text-[#a2a2ae] text-[18px] font-medium leading-[1.6] ${
+                  commentText.length >= 5 ? 'ring-[1.6px] ring-[#222227]' : ''
+                }`}
+                placeholder="허위사실, 욕설, 사칭 등의 댓글은 통보없이 삭제될 수 있습니다."
+                minRows={1}
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+              />
             </div>
-            <button className="bg-grey-400 flex items-center justify-center h-12 px-5 py-1 rounded-[12px]">
-              <Text variant="body-20-m" color="white">
+            <button
+              onClick={() => {
+                alert('댓글 남기기');
+              }}
+              className={`box-border flex gap-2.5 h-12 items-center justify-center px-5 py-1 rounded-[12px] transition-all duration-200 ${
+                commentText.length >= 5
+                  ? 'bg-[#222227] cursor-pointer'
+                  : 'bg-[#bfbfcb] cursor-not-allowed'
+              }`}
+              disabled={commentText.length < 5}
+            >
+              <Text variant="body-20-m" color="white" className="font-medium">
                 댓글 남기기
               </Text>
             </button>
@@ -63,50 +107,9 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
 
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
-            <div className="bg-grey-50 flex flex-col gap-3 items-start justify-start px-8 py-7 rounded-[20px] w-[880px]">
-              <div className="flex items-center justify-between w-full">
-                <div className="flex gap-3 items-center">
-                  <div className="flex gap-2 items-center">
-                    <div className="w-7 h-7 bg-grey-300 rounded-full" />
-                    <Text variant="body-18-b" color="grey-900">
-                      작성자
-                    </Text>
-                  </div>
-                  <Text variant="body-16-m" color="grey-500">
-                    2025년 8월 17일
-                  </Text>
-                </div>
-                <div className="flex gap-3 items-center">
-                  <Text variant="body-14-m" color="grey-500">
-                    수정
-                  </Text>
-                  <div className="bg-grey-200 h-2 rounded w-px" />
-                  <Text variant="body-14-m" color="grey-500">
-                    삭제
-                  </Text>
-                </div>
-              </div>
-              <Text variant="body-18-m" color="grey-900">
-                댓글
-              </Text>
-            </div>
-
-            <div className="bg-grey-50 flex flex-col gap-3 items-start justify-start px-8 py-7 rounded-[20px] w-[880px]">
-              <div className="flex gap-3 items-center">
-                <div className="flex gap-2 items-center">
-                  <div className="w-7 h-7 bg-grey-300 rounded-full" />
-                  <Text variant="body-18-b" color="grey-900">
-                    작성자
-                  </Text>
-                </div>
-                <Text variant="body-16-m" color="grey-500">
-                  2025년 8월 17일
-                </Text>
-              </div>
-              <Text variant="body-18-m" color="grey-900">
-                댓글
-              </Text>
-            </div>
+            {comments.map((comment) => (
+              <CommentItem key={comment.id} comment={comment} />
+            ))}
           </div>
         </div>
       </div>
