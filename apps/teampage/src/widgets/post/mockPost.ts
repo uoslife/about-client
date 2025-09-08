@@ -61,5 +61,40 @@ export const mockPostData: ArticleDetailResponse = {
       'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
     createdAt: new Date('2024-09-07T09:15:00Z'),
   },
-  comments: [{ id: 1 }, { id: 2 }, { id: 3 }],
+  comments: [
+    {
+      id: 1,
+      articleId: 1,
+      isMember: true,
+      memberId: '1fa85f64-5717-4562-b3fc-2c963f66afa6',
+      nickname: '김댓글',
+      profileImageUrl:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100',
+      content: '정말 유용한 글이네요! App Router 도입을 고려해봐야겠어요.',
+      createdAt: new Date('2024-09-06T11:30:00Z'),
+    },
+    {
+      id: 2,
+      articleId: 1,
+      isMember: false,
+      nonMemberId: 'anonymous_user_123',
+      nickname: '익명사용자',
+      profileImageUrl:
+        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100',
+      content: '감사합니다. 많은 도움이 되었습니다.',
+      createdAt: new Date('2024-09-06T12:15:00Z'),
+    },
+    {
+      id: 3,
+      articleId: 1,
+      isMember: true,
+      memberId: '5fa85f64-5717-4562-b3fc-2c963f66afa6',
+      nickname: '박개발자',
+      profileImageUrl:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100',
+      content:
+        'Server Components 부분이 특히 인상깊네요. 실제 프로젝트에 적용해보겠습니다.',
+      createdAt: new Date('2024-09-06T13:45:00Z'),
+    },
+  ],
 };
