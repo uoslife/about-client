@@ -89,13 +89,22 @@ export default function PeopleCard({ person }: PeopleCardProps) {
         </div>
 
         <div className="flex items-center justify-between">
-          {person.position && (
-            <div className="bg-white px-4 py-1 rounded-[40px] h-8 flex items-center">
-              <Text variant="body-16-m" color="grey-900">
-                {person.position}
-              </Text>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {person.generation && (
+              <div className="bg-white px-4 py-1 rounded-[40px] h-8 flex items-center">
+                <Text variant="body-16-m" color="grey-900">
+                  {person.generation}
+                </Text>
+              </div>
+            )}
+            {
+              <div className="bg-white px-4 py-1 rounded-[40px] h-8 flex items-center">
+                <Text variant="body-16-m" color="grey-900">
+                  {person.position}
+                </Text>
+              </div>
+            }
+          </div>
           <div className="flex items-center gap-0.5 ml-auto">
             {person.link_others && (
               <button

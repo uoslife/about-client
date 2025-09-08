@@ -5,6 +5,7 @@ import { PeopleContext, PeopleProvider } from './PeopleProvider';
 import { PeopleData } from '@features/notion/NotionType';
 import { SearchField } from '@/shared/component/search-field';
 import { Dropdown } from '@/shared/component/dropdown';
+import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 
 const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
   const { selectedGeneration, debouncedSearchQuery } =
@@ -22,24 +23,30 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
   ];
 
   return (
-    <main className="flex items-center justify-center py-[100px]">
-      <div className="w-[1120px] flex flex-col gap-10">
-        <PeopleHeader generations={generations} />
-        <div className="flex gap-5">
-          {peopleData
-            .filter(
-              (person) =>
-                selectedGeneration === -1 ||
-                person.generation === generations[selectedGeneration],
-            )
-            .filter((person) =>
-              person.name
-                .toLowerCase()
-                .includes(debouncedSearchQuery.toLowerCase()),
-            )
-            .map((person, index) => (
-              <PeopleCard key={`${person.name}-${index}`} person={person} />
-            ))}
+    <main className="flex flex-col">
+      <ArticleBanner
+        title="People"
+        description="서로 다른 열정을 모아, 하나의 가능성을 만드는 시대생팀을 소개합니다."
+      />
+      <div className="flex items-center justify-center py-[100px]">
+        <div className="w-[1120px] flex flex-col gap-10">
+          <PeopleHeader generations={generations} />
+          <div className="flex gap-5">
+            {peopleData
+              .filter(
+                (person) =>
+                  selectedGeneration === -1 ||
+                  person.generation === generations[selectedGeneration],
+              )
+              .filter((person) =>
+                person.name
+                  .toLowerCase()
+                  .includes(debouncedSearchQuery.toLowerCase()),
+              )
+              .map((person, index) => (
+                <PeopleCard key={`${person.name}-${index}`} person={person} />
+              ))}
+          </div>
         </div>
       </div>
     </main>
