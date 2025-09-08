@@ -48,11 +48,11 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
             댓글 {comments.length}개
           </Text>
           <div className="flex flex-col gap-4 items-end justify-start w-full">
-            <div className="bg-grey-50 flex items-center justify-start p-5 rounded-[20px] w-full">
-              <Text variant="body-18-m" color="grey-500">
-                허위사실, 욕설, 사칭 등의 댓글은 통보없이 삭제될 수 있습니다.
-              </Text>
-            </div>
+            <textarea
+              className="bg-grey-50 p-5 rounded-[20px] w-full min-h-[60px] resize-none border-none outline-none text-grey-900 placeholder:text-grey-500"
+              placeholder="허위사실, 욕설, 사칭 등의 댓글은 통보없이 삭제될 수 있습니다."
+              style={{ fontSize: '18px', fontWeight: '500', lineHeight: '1.4' }}
+            />
             <button className="bg-grey-400 flex items-center justify-center h-12 px-5 py-1 rounded-[12px]">
               <Text variant="body-20-m" color="white">
                 댓글 남기기
