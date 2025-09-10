@@ -30,8 +30,338 @@ import type {
   CommentUpdateRequest,
   CreateArticleRequest,
   Me200,
+  PageArticleListItem,
+  SearchArticlesParams,
   UpdateArticleRequest,
 } from './teampage.schemas';
+
+export type searchArticlesResponse200 = {
+  data: PageArticleListItem;
+  status: 200;
+};
+
+export type searchArticlesResponseComposite = searchArticlesResponse200;
+
+export type searchArticlesResponse = searchArticlesResponseComposite & {
+  headers: Headers;
+};
+
+export const getSearchArticlesUrl = (params: SearchArticlesParams) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(
+        key,
+        value === null
+          ? 'null'
+          : value instanceof Date
+            ? value.toISOString()
+            : value.toString(),
+      );
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0
+    ? `https://apis.uoslife.team/articles?${stringifiedParams}`
+    : `https://apis.uoslife.team/articles`;
+};
+
+export const searchArticles = async (
+  params: SearchArticlesParams,
+  options?: RequestInit,
+): Promise<searchArticlesResponse> => {
+  const res = await fetch(getSearchArticlesUrl(params), {
+    ...options,
+    method: 'GET',
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  const data: searchArticlesResponse['data'] = body ? JSON.parse(body) : {};
+
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as searchArticlesResponse;
+};
+
+export const getSearchArticlesQueryKey = (params?: SearchArticlesParams) => {
+  return [
+    `https://apis.uoslife.team/articles`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getSearchArticlesQueryOptions = <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
+    signal,
+  }) => searchArticles(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof searchArticles>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type SearchArticlesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchArticles>>
+>;
+export type SearchArticlesQueryError = unknown;
+
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getSearchArticlesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchSearchArticlesQuery = async <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  queryClient: QueryClient,
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getSearchArticlesQueryOptions(params, options);
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+};
+
+export const getSearchArticlesSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
+    signal,
+  }) => searchArticles(params, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof searchArticles>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type SearchArticlesSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchArticles>>
+>;
+export type SearchArticlesSuspenseQueryError = unknown;
+
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options: {
+    query: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = unknown,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getSearchArticlesSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(
+    queryOptions,
+    queryClient,
+  ) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 export type createArticleResponse200 = {
   data: ArticleDetailResponse;
@@ -237,6 +567,317 @@ export const useCreateComment = <TError = unknown, TContext = unknown>(
 
   return useMutation(mutationOptions, queryClient);
 };
+
+export type findArticleResponse200 = {
+  data: ArticleDetailResponse;
+  status: 200;
+};
+
+export type findArticleResponseComposite = findArticleResponse200;
+
+export type findArticleResponse = findArticleResponseComposite & {
+  headers: Headers;
+};
+
+export const getFindArticleUrl = (articleId: number) => {
+  return `https://apis.uoslife.team/articles/${articleId}`;
+};
+
+export const findArticle = async (
+  articleId: number,
+  options?: RequestInit,
+): Promise<findArticleResponse> => {
+  const res = await fetch(getFindArticleUrl(articleId), {
+    ...options,
+    method: 'GET',
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  const data: findArticleResponse['data'] = body ? JSON.parse(body) : {};
+
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as findArticleResponse;
+};
+
+export const getFindArticleQueryKey = (articleId?: number) => {
+  return [`https://apis.uoslife.team/articles/${articleId}`] as const;
+};
+
+export const getFindArticleQueryOptions = <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getFindArticleQueryKey(articleId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
+    signal,
+  }) => findArticle(articleId, { signal, ...fetchOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!articleId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof findArticle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindArticleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findArticle>>
+>;
+export type FindArticleQueryError = unknown;
+
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindArticleQueryOptions(articleId, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchFindArticleQuery = async <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  queryClient: QueryClient,
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getFindArticleQueryOptions(articleId, options);
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+};
+
+export const getFindArticleSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getFindArticleQueryKey(articleId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
+    signal,
+  }) => findArticle(articleId, { signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof findArticle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindArticleSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findArticle>>
+>;
+export type FindArticleSuspenseQueryError = unknown;
+
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options: {
+    query: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = unknown,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindArticleSuspenseQueryOptions(articleId, options);
+
+  const query = useSuspenseQuery(
+    queryOptions,
+    queryClient,
+  ) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
 
 export type updateArticleResponse200 = {
   data: ArticleDetailResponse;
