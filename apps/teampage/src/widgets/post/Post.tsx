@@ -1,14 +1,16 @@
 import { PostSection } from '@/features/post/PostSection';
-import { mockPostData } from './mockPost';
 import { PostType } from '@/features/post/PostHeader';
+// import { findArticle } from '@uoslife/api';
+import { mockPostData } from './mockPost';
 
 export async function Post({
   id,
   category,
 }: {
-  id: string;
+  id: number;
   category: PostType;
 }) {
-  console.log('TODO: id 기반으로 데이터 조회', id);
+  console.log(id);
+  // const { data } = await findArticle(id);
   return <PostSection type={category} post={mockPostData} />;
 }

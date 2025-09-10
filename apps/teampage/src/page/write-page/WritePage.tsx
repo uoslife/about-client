@@ -6,6 +6,7 @@ import {
   type ChangeEvent,
   type DragEvent,
   type FormEvent,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -26,6 +27,7 @@ const SUMMARY_MAX_LENGTH = 88;
 export default function WritePage() {
   const searchParams = useSearchParams();
   const from = searchParams.get('from') || undefined;
+  const isEditMode = searchParams.get('edit') === 'true';
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -34,6 +36,23 @@ export default function WritePage() {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (isEditMode) {
+      const savedPost = sessionStorage.getItem('editPost');
+      if (savedPost) {
+        const post = JSON.parse(savedPost);
+        setTitle(post.title || '');
+        setContent(post.content || '');
+        setCategory(post.category || '');
+        setSummary(post.summary || '');
+        if (post.thumbnailUrl) {
+          setThumbnailPreview(post.thumbnailUrl);
+        }
+        sessionStorage.removeItem('editPost');
+      }
+    }
+  }, [isEditMode]);
 
   const isCareer = from === 'career';
   const isMoments = from === 'moments';
@@ -50,7 +69,6 @@ export default function WritePage() {
     if (isCareer) {
       return isEmpty(category) || isEmpty(summary);
     }
-    console.log('hi');
 
     return isEmpty(category) || isEmpty(summary) || thumbnailFile === null;
   }, [title, summary, content, category, thumbnailFile, isCareer, isMoments]);
@@ -97,8 +115,12 @@ export default function WritePage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    console.log({ title, content, category, summary, thumbnailFile });
-    alert('게시글이 등록되었습니다.');
+
+    if (isEditMode) {
+      alert('게시글이 수정되었습니다.');
+    } else {
+      alert('게시글이 등록되었습니다.');
+    }
   };
 
   return (
@@ -108,7 +130,9 @@ export default function WritePage() {
     >
       <div className="flex flex-col gap-12">
         <div>
-          <Text variant="title-36-b">게시글 작성</Text>
+          <Text variant="title-36-b">
+            {isEditMode ? '게시글 수정' : '게시글 작성'}
+          </Text>
           {from && CATEGORY_MAP[from] && (
             <Text variant="body-18-m" color="grey-500" className="mt-1">
               {`'${CATEGORY_MAP[from]}' 카테고리에 글을 작성하고 있어요.`}

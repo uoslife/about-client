@@ -18,15 +18,7 @@ export function PostSection({
     <ErrorBoundary errorComponent={() => <ErrorFallback />}>
       <div className="flex flex-col gap-[100px] items-center justify-start w-[880px] mx-auto mt-[140px] mb-[140px]">
         <div className="flex flex-col gap-[60px] items-start justify-start w-full">
-          <PostHeader
-            type={type}
-            title={post.title}
-            category={post.category || ''}
-            authorName={post.authorName}
-            createdAt={post.createdAt}
-            viewCount={post.viewCount}
-          />
-
+          <PostHeader post={post} type={type} />
           <div className="flex flex-col gap-[60px] items-start justify-start w-full">
             {post.thumbnailUrl && (
               <div
