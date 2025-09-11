@@ -2,6 +2,7 @@ import { Section01 } from './section/Section01';
 import { Section02 } from './section/Section02';
 import { Section03 } from './section/Section03';
 import { Section04 } from './section/Section04';
+import { Section06 } from './section/Section06';
 import { SectionMain } from './section/SectionMain';
 
 export default async function MainPage() {
@@ -13,6 +14,7 @@ export default async function MainPage() {
         <Section02 />
         <Section03 />
         <Section04 />
+        <Section06 />
       </main>
     </div>
   );
