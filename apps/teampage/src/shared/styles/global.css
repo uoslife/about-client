@@ -3,44 +3,58 @@
 @tailwind utilities;
 
 @font-face {
-	font-family: "Pretendard-Bold";
-	src: url("/fonts/Pretendard-Bold.woff2") format("woff2");
-	font-weight: 700;
-	line-height: 1.2;
-	letter-spacing: 0;
-	font-style: normal;
+  font-family: 'Pretendard-Bold';
+  src: url('/fonts/Pretendard-Bold.woff2') format('woff2');
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-style: normal;
 }
 
 @font-face {
-	font-family: "Pretendard-SemiBold";
-	src: url("/fonts/Pretendard-SemiBold.woff2") format("woff2");
-	font-weight: 600;
-	font-style: normal;
+  font-family: 'Pretendard-SemiBold';
+  src: url('/fonts/Pretendard-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
 }
 
 @font-face {
-	font-family: "Pretendard-Medium";
-	src: url("/fonts/Pretendard-Medium.woff2") format("woff2");
-	font-weight: 500;
-	font-style: normal;
+  font-family: 'Pretendard-Medium';
+  src: url('/fonts/Pretendard-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
 }
 
 :root {
-	--background: #ffffff;
-	--foreground: #171717;
+  --background: #ffffff;
+  --foreground: #171717;
+}
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-	color: var(--foreground);
-	background: var(--background);
-	font-family: "Pretendard-Medium";
-	src: url("/fonts/Pretendard-Medium.woff2") format("woff2");
-	font-weight: 500;
-	font-style: normal;
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Pretendard-Medium';
+  src: url('/fonts/Pretendard-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+}
+
+.main_bg {
+  border-radius: 60px;
+  background: radial-gradient(
+      90.84% 66.16% at 50% 100%,
+      #438ffc 0%,
+      #22487e 15.38%,
+      #000 40.38%
+    ),
+    #000;
 }
 
 @layer utilities {
-	.text-balance {
-		text-wrap: balance;
-	}
+  .text-balance {
+    text-wrap: balance;
+  }
 }

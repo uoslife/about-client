@@ -3,7 +3,10 @@ import { Divider } from '@/shared/component/Divider';
 
 export function Section01() {
   return (
-    <div className="flex flex-col items-center justify-center gap-20 my-20">
+    <div
+      id="section01"
+      className="scroll-m-40 flex flex-col items-center justify-center gap-20 my-52"
+    >
       <div className="flex flex-col items-center text-center gap-6">
         <Text variant="heading-220-b" color="primary-gradiant">
           TEAM UOSLIFE
