@@ -30,7 +30,7 @@ export function TechMainSection() {
       <TopBar />
       <ArticleList />
       <Pagination
-        totalPages={10}
+        totalPages={1}
         currentPage={page}
         onPageChange={setPage}
         className="my-10"
@@ -115,9 +115,51 @@ function ArticleList() {
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
       {/* TODO: Change To Real Data */}
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Card.B key={index} content={DUMMY_CONTENT} link={`/tech/${index}`} />
+      {TECH_CONTENT_MOCK.map((content) => (
+        <Card.B
+          key={content.id}
+          content={content}
+          link={`/tech/${content.id}`}
+        />
       ))}
     </div>
   );
 }
+
+export const TECH_CONTENT_MOCK: Content[] = [
+  {
+    id: 1,
+    authorId: 'frontend-lead',
+    authorName: '김프롱',
+    thumbnailUrl: '/img/section02_value_01.webp',
+    title: 'React 최적화, useMemo와 useCallback 제대로 사용하기',
+    summary: '불필요한 렌더링을 방지하여 성능을 개선하는 방법을 알아봅니다.',
+    category: '개발',
+    viewCount: 152,
+    createdAt: '2025-09-10T10:00:00Z',
+  },
+  {
+    id: 2,
+    authorId: 'backend-lead',
+    authorName: '박백둥',
+    thumbnailUrl: '/img/section02_value_02.webp',
+    title: 'Spring Boot에서 JPA N+1 문제 해결하기',
+    summary:
+      '지연 로딩과 페치 조인을 활용하여 데이터베이스 쿼리 효율을 높이는 전략을 소개합니다.',
+    category: '개발',
+    viewCount: 230,
+    createdAt: '2025-09-09T14:00:00Z',
+  },
+  {
+    id: 3,
+    authorId: 'infra-lead',
+    authorName: '최인프',
+    thumbnailUrl: '/img/section02_value_03.webp',
+    title: 'Docker와 Github Actions로 CI/CD 파이프라인 구축하기',
+    summary:
+      '애플리케이션을 자동으로 빌드, 테스트, 배포하는 과정을 자동화하는 방법을 알아봅니다.',
+    category: '개발',
+    viewCount: 188,
+    createdAt: '2025-09-08T18:00:00Z',
+  },
+];

@@ -24,6 +24,7 @@ const config: Config = {
         'grey-900': '#222227',
         'primary-ui': '#0F6EFB',
         'primary-brand': '#4686FF',
+        'primary-lighter-alt': '#E9F3FF',
       },
       fontFamily: {
         extrabold: ['Pretendard-ExtraBold', 'sans-serif'],
