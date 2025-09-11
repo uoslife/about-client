@@ -1,0 +1,13 @@
+import { Section01 } from './section/Section01';
+import { SectionMain } from './section/SectionMain';
+
+export default async function MainPage() {
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <main>
+        <SectionMain />
+        <Section01 />
+      </main>
+    </div>
+  );
+}

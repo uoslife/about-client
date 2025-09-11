@@ -1,13 +1,10 @@
-import { Section01 } from '@/features/home/screens/section/Section01';
-import { SectionMain } from '@/features/home/screens/section/SectionMain';
+import { Suspense } from 'react';
+import _MainPage from '@/page/main-page';
 
-export default function Home() {
+export default function MainPage() {
   return (
-    <div className="flex flex-col items-center justify-center">
-      <main>
-        <SectionMain />
-        <Section01 />
-      </main>
-    </div>
+    <Suspense>
+      <_MainPage />
+    </Suspense>
   );
 }
