@@ -2,12 +2,12 @@
 
 import { motion } from 'motion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { Divider } from '../Divider';
 import { Tag } from '../Tag';
 import { Text } from '../Text';
 import type { CardProps } from './types';
-import Link from 'next/link';
 
 export function CardA({ content, className, link }: CardProps) {
   const {
