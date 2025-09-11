@@ -1,4 +1,5 @@
 import { Section01 } from './section/Section01';
+import { Section02 } from './section/Section02';
 import { SectionMain } from './section/SectionMain';
 
 export default async function MainPage() {
@@ -7,6 +8,7 @@ export default async function MainPage() {
       <main>
         <SectionMain />
         <Section01 />
+        <Section02 />
       </main>
     </div>
   );
