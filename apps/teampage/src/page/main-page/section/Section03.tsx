@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export function Section03() {
   return (
-    <div className="relative flex flex-col items-center justify-center gap-40 my-32 pb-[520px]">
+    <div className="relative flex flex-col items-center justify-center gap-40 my-32 pb-[512px]">
       <div className="flex flex-col items-center text-center gap-4">
         <div className="text-4xl font-bold">
           <Text variant="title-28-b" color="grey-500">
@@ -22,7 +22,7 @@ export function Section03() {
           </Text>
         </div>
       </div>
-      <div className="relative flex flex-row justify-between gap-20 pb-[320px]">
+      <div className="relative flex flex-row justify-between gap-40 pb-[420px]">
         <div className="flex flex-col gap-4 mt-[54px]">
           <Text variant="title-28-b" color="primary-ui">
             시간표 · 공지사항
@@ -50,7 +50,7 @@ export function Section03() {
         </div>
 
         <div className="absolute bottom-0 flex flex-row-reverse items-end justify-between gap-20">
-          <div className="flex flex-col gap-4 mt-[54px] pb-32">
+          <div className="flex flex-col gap-4 mt-[54px] pb-40">
             <Text variant="title-28-b" color="primary-ui">
               시대팅
             </Text>
