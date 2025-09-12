@@ -4,7 +4,7 @@ import { DOMMotionComponents, motion, MotionProps } from 'motion/react';
 import React, { useState } from 'react';
 
 type HoverScaleAnimationProps<T extends keyof DOMMotionComponents> = {
-  as: T;
+  as?: T;
   children: (isHovered: boolean) => React.ReactNode;
   className?: string;
   whileHover?: MotionProps['whileHover'];
