@@ -119,7 +119,7 @@ export const TECH_CONTENT_MOCK: Content[] = [
   {
     id: 1,
     authorId: 'frontend-lead',
-    authorName: '김프롱',
+    authorName: '공은배',
     thumbnailUrl: '/img/section02_value_01.webp',
     title: 'React 최적화, useMemo와 useCallback 제대로 사용하기',
     summary: '불필요한 렌더링을 방지하여 성능을 개선하는 방법을 알아봅니다.',
@@ -130,7 +130,7 @@ export const TECH_CONTENT_MOCK: Content[] = [
   {
     id: 2,
     authorId: 'backend-lead',
-    authorName: '박백둥',
+    authorName: '정인우',
     thumbnailUrl: '/img/section02_value_02.webp',
     title: 'Spring Boot에서 JPA N+1 문제 해결하기',
     summary:
@@ -142,7 +142,7 @@ export const TECH_CONTENT_MOCK: Content[] = [
   {
     id: 3,
     authorId: 'infra-lead',
-    authorName: '최인프',
+    authorName: '이준수',
     thumbnailUrl: '/img/section02_value_03.webp',
     title: 'Docker와 Github Actions로 CI/CD 파이프라인 구축하기',
     summary:

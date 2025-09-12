@@ -9,16 +9,63 @@ import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 
-const DUMMY_CONTENT: Content = {
-  id: 0,
-  authorId: 'abc',
-  authorName: '문정민',
-  thumbnailUrl: '',
-  category: 'Category',
-  title:
-    '문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고',
-  createdAt: new Date().toISOString(),
-};
+const DUMMY_CONTENT: Content[] = [
+  {
+    id: 1,
+    authorId: 'career_author_1',
+    authorName: '정인우',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800',
+    category: '취업/인턴',
+    title: '네이버 백엔드 개발자 합격 후기',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3시간 전
+    viewCount: 12,
+  },
+  {
+    id: 2,
+    authorId: 'career_author_2',
+    authorName: '박인턴',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
+    category: '취업/인턴',
+    title: '카카오페이 백엔드 개발자 합격 후기',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12시간 전
+    viewCount: 10,
+  },
+  {
+    id: 3,
+    authorId: 'career_author_3',
+    authorName: '김은서',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800',
+    category: '대외활동',
+    title: '리멤버 Community 프로덕트 매니저 후기',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1일 전
+    viewCount: 8,
+  },
+  {
+    id: 4,
+    authorId: 'career_author_4',
+    authorName: '정인우',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800',
+    category: '취업/인턴',
+    title: '개발자 포트폴리오 제작 가이드',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2일 전
+    viewCount: 6,
+  },
+  {
+    id: 5,
+    authorId: 'career_author_5',
+    authorName: '조종빈',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800',
+    category: '대외활동',
+    title: '미리디 - 웹에디터 프론트엔드 개발자 인턴 경험',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 4).toISOString(), // 4일 전
+    viewCount: 4,
+  },
+];
 
 const CATEGORYS = ['전체', '취업/인턴', '대외활동'] as const;
 
@@ -114,9 +161,12 @@ function TopBar() {
 function ArticleList() {
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
-      {/* TODO: Change To Real Data */}
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Card.B key={index} content={DUMMY_CONTENT} link={`/career/${index}`} />
+      {DUMMY_CONTENT.map((content) => (
+        <Card.B
+          key={content.id}
+          content={content}
+          link={`/career/${content.id}`}
+        />
       ))}
     </div>
   );
