@@ -1,6 +1,7 @@
 import { Divider } from '@shared/component/Divider';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export function Footer() {
   return (
@@ -23,21 +24,28 @@ export function Footer() {
           </Text>
         </div>
         <div className="flex gap-[34px] items-center">
-          <Text variant="body-20-m" className="text-white">
-            Team UOSLIFE E-Mail
-          </Text>
+          <Link href="mailto:support@uoslife.team">
+            <Text variant="body-20-m" className="text-white">
+              Team UOSLIFE E-Mail
+            </Text>
+          </Link>
           <Divider
             orientation="vertical"
             thickness="px"
             color="bg-grey-700"
             className="h-3"
           />
-          <Text variant="body-20-m" className="text-white">
-            Term of Service
-          </Text>
+          <Link
+            href="https://www.notion.so/uoslife/2025-182de257e4b180968679ec4c30392b52?source=copy_link"
+            target="_blank"
+          >
+            <Text variant="body-20-m" className="text-white">
+              Term of Service
+            </Text>
+          </Link>
         </div>
         <div className="flex gap-5 items-center justify-center">
-          <a
+          <Link
             href="https://instagram.com/uoslife_official"
             target="_blank"
             rel="noopener"
@@ -52,8 +60,8 @@ export function Footer() {
                 filter: 'invert(1)',
               }}
             />
-          </a>
-          <a
+          </Link>
+          <Link
             href="https://github.com/uoslife"
             target="_blank"
             rel="noopener"
@@ -68,9 +76,9 @@ export function Footer() {
                 filter: 'invert(1)',
               }}
             />
-          </a>
-          <a
-            href="_blank"
+          </Link>
+          <Link
+            href="http://pf.kakao.com/_gMEHK"
             target="_blank"
             rel="noopener"
             className="hover:bg-grey-700 rounded-xl"
@@ -84,7 +92,7 @@ export function Footer() {
                 filter: 'invert(1)',
               }}
             />
-          </a>
+          </Link>
         </div>
       </div>
     </div>
