@@ -23,7 +23,7 @@ export function Section07() {
       </div>
       <div className="grid grid-cols-2 gap-8">
         {TECH_CONTENT_MOCK.map((data) => (
-          <Card.A link={'/'} key={data.title} content={data} />
+          <Card.A link={'/tech/0'} key={data.title} content={data} />
         ))}
       </div>
       <Link
