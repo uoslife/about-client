@@ -8,16 +8,58 @@ import { SearchField } from '@/shared/component/search-field';
 import { Text } from '@/shared/component/Text';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 
-const DUMMY_CONTENT: Content = {
-  id: 0,
-  authorId: 'abc',
-  authorName: '문정민',
-  thumbnailUrl: '',
-  category: 'Category',
-  title:
-    '문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고 문정민 최고',
-  createdAt: new Date().toISOString(),
-};
+const DUMMY_CONTENT: Content[] = [
+  {
+    id: 1,
+    authorId: 'moments_author_1',
+    authorName: '이서현',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800',
+    category: '동아리활동',
+    title: 'UOSLIFE 2024년 1학기 정기모임 회의',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(), // 4시간 전
+  },
+  {
+    id: 2,
+    authorId: 'moments_author_2',
+    authorName: '유현승',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800',
+    category: '동아리활동',
+    title: '2025 UOSLIFE MT 기록',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(), // 18시간 전
+  },
+  {
+    id: 3,
+    authorId: 'moments_author_3',
+    authorName: '조종빈',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800',
+    category: '동아리활동',
+    title: '시대생 축제 주점 기록',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2일 전
+  },
+  {
+    id: 4,
+    authorId: 'moments_author_4',
+    authorName: '송수아',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800',
+    category: '동아리활동',
+    title: 'UOSLIFE 팀페이지 리뉴얼 프로젝트',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5).toISOString(), // 5일 전
+  },
+  {
+    id: 5,
+    authorId: 'moments_author_5',
+    authorName: '김고은',
+    thumbnailUrl:
+      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800',
+    category: '동아리활동',
+    title: '프론트엔드 신입 기수 온보딩',
+    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(), // 7일 전
+  },
+];
 
 export function MomentsMainSection() {
   const [page, setPage] = useState(1);
@@ -83,12 +125,11 @@ function TopBar() {
 function ArticleList() {
   return (
     <div className="grid grid-cols-2 gap-x-4 gap-y-20 max-w-pc w-full">
-      {/* TODO: Change To Real Data */}
-      {Array.from({ length: 5 }).map((_, index) => (
+      {DUMMY_CONTENT.map((content) => (
         <Card.A
-          key={index}
-          content={DUMMY_CONTENT}
-          link={`/moments/${index}`}
+          key={content.id}
+          content={content}
+          link={`/moments/${content.id}`}
         />
       ))}
     </div>
