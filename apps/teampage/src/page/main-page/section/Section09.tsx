@@ -1,13 +1,8 @@
-'use client';
-
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
-import { useCallback } from 'react';
+import Link from 'next/link';
 
 export function Section09() {
-  const handlePressGetRecruitmentNotice = useCallback(() => {
-    alert('모집 알림 받기 기능은 준비중이에요.');
-  }, []);
   return (
     <div className="relative flex flex-col justify-center px-[240px] h-[600px]">
       <Image
@@ -25,13 +20,13 @@ export function Section09() {
             다음 모집 소식을 가장 먼저 이메일로 받아보세요.
           </Text>
         </div>
-        <button
-          type="button"
+        <Link
+          href="https://docs.google.com/forms/d/1O61Rt-m2OOX9KbCMG-CtkGR-2ytaEgsRiXB2STQKxi4/edit"
+          target="_blank"
           className="bg-white px-7 py-4 rounded-[32px]"
-          onClick={handlePressGetRecruitmentNotice}
         >
           <Text variant="title-24-b">모집 알림 받기</Text>
-        </button>
+        </Link>
       </div>
     </div>
   );
