@@ -151,8 +151,8 @@ export interface CommentUpdateRequest {
 export interface PageArticleListItem {
   totalElements?: number;
   totalPages?: number;
-  numberOfElements?: number;
   pageable?: PageableObject;
+  numberOfElements?: number;
   size?: number;
   content?: ArticleListItem[];
   number?: number;
@@ -163,17 +163,17 @@ export interface PageArticleListItem {
 }
 
 export interface PageableObject {
-  unpaged?: boolean;
   paged?: boolean;
   pageNumber?: number;
   pageSize?: number;
+  unpaged?: boolean;
   offset?: number;
   sort?: SortObject;
 }
 
 export interface SortObject {
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
   empty?: boolean;
 }
 
