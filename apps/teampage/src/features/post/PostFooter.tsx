@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Comment } from './Comment';
+import { useToast } from '@/shared/component/toast';
 
 type PostFooterProps = {
   likeCount: number;
@@ -12,6 +13,7 @@ type PostFooterProps = {
 };
 
 export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
+  const { toast } = useToast();
   const [like, setLike] = useState(false);
   const [commentText, setCommentText] = useState('');
   return (
@@ -52,7 +54,8 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
 
         <button
           onClick={() => {
-            alert('공유하기');
+            toast('URL 링크가 복사되었습니다.', 1000);
+            navigator.clipboard.writeText(window.location.href);
           }}
           className="flex gap-2 items-center cursor-pointer"
         >
