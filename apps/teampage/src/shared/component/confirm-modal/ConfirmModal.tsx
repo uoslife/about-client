@@ -55,7 +55,6 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
-          {/* Dim background */}
           <motion.div
             className="absolute inset-0 bg-black/50"
             initial={{ opacity: 0 }}
@@ -64,9 +63,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
             onClick={onClose}
           />
 
-          {/* Modal */}
           <motion.div
-            className="relative bg-white rounded-[16px] shadow-[0px_0px_20px_0px_rgba(0,0,0,0.1)] p-6 w-full max-w-[400px]"
+            className="relative bg-white rounded-[16px] shadow-[0px_0px_20px_0px_rgba(0,0,0,0.1)] p-6 w-full min-w-[650px] sm:max-w-[400px]"
             initial={{
               opacity: 0,
               scale: 0.9,
@@ -89,14 +87,12 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               duration: 0.3,
             }}
           >
-            {/* Content */}
             <div className="flex flex-col gap-6">
-              {/* Text content */}
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 w-full sm:w-auto">
                 <Text
                   variant="title-24-b"
                   color="grey-900"
-                  className="leading-[1.5]"
+                  className="leading-[1.5] sm:text-[24px] text-[18px] w-full sm:w-auto"
                 >
                   {title}
                 </Text>
@@ -104,20 +100,23 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   <Text
                     variant="body-16-m"
                     color="grey-700"
-                    className="leading-[1.6]"
+                    className="leading-[1.6] sm:text-[16px] text-[14px] w-full sm:w-auto"
                   >
                     {description}
                   </Text>
                 )}
               </div>
 
-              {/* Buttons */}
-              <div className="flex gap-3 justify-end">
+              <div className="flex gap-3 justify-end w-full sm:w-auto">
                 <button
                   onClick={onClose}
-                  className="bg-[#f7f7f9] hover:bg-[#e9e9ee] transition-colors duration-200 flex items-center justify-center px-5 py-3 h-12 rounded-[12px] min-w-[80px]"
+                  className="bg-[#f7f7f9] hover:bg-[#e9e9ee] transition-colors duration-200 flex items-center justify-center px-3 sm:px-5 py-0 h-11 sm:h-12 rounded-[8px] sm:rounded-[12px] flex-1 sm:flex-none sm:min-w-[80px]"
                 >
-                  <Text variant="body-20-m" color="grey-700">
+                  <Text
+                    variant="body-20-m"
+                    color="grey-700"
+                    className="text-[16px] sm:text-[20px]"
+                  >
                     {cancelText}
                   </Text>
                 </button>
@@ -130,9 +129,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                     variant === 'danger'
                       ? 'bg-red-600 hover:bg-red-700'
                       : 'bg-[#222227] hover:bg-[#1a1a1f]'
-                  } transition-colors duration-200 flex items-center justify-center px-5 py-3 h-12 rounded-[12px] min-w-[80px]`}
+                  } transition-colors duration-200 flex items-center justify-center px-3 sm:px-5 py-0 h-11 sm:h-12 rounded-[8px] sm:rounded-[12px] flex-1 sm:flex-none sm:min-w-[80px]`}
                 >
-                  <Text variant="body-20-m" color="white">
+                  <Text
+                    variant="body-20-m"
+                    color="white"
+                    className="text-[16px] sm:text-[20px]"
+                  >
                     {confirmText}
                   </Text>
                 </button>

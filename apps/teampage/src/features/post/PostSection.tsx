@@ -33,7 +33,11 @@ export function PostSection({
           </div>
         </div>
 
-        <PostFooter likeCount={post.likeCount} comments={post.comments} />
+        <PostFooter
+          postId={post.id}
+          likeCount={post.likeCount}
+          comments={post.comments}
+        />
       </div>
     </ErrorBoundary>
   );

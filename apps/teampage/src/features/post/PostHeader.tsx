@@ -1,3 +1,4 @@
+import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
 import { Text } from '@/shared/component/Text';
 import { ArticleDetailResponse } from '@uoslife/api';
@@ -11,6 +12,8 @@ interface PostHeaderProps {
 
 export const PostHeader = (props: PostHeaderProps) => {
   const { post, type } = props;
+  const { open: openConfirmModal } = useConfirmModal();
+
   return (
     <div className="flex flex-col gap-7 items-start justify-start w-full">
       <div className="flex flex-col gap-5 items-start justify-start w-full">
@@ -55,7 +58,15 @@ export const PostHeader = (props: PostHeaderProps) => {
           <div className="bg-grey-100 h-2.5 rounded w-px" />
           <button
             onClick={() => {
-              confirm('삭제하시겠습니까?');
+              openConfirmModal({
+                title: '게시글을 삭제하시겠습니까?',
+                description: '삭제된 게시물은 복구할 수 없습니다.',
+                confirmText: '삭제',
+                cancelText: '취소',
+                onConfirm: () => {
+                  console.log('삭제');
+                },
+              });
             }}
             className="cursor-pointer"
           >
