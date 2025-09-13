@@ -2,7 +2,7 @@
 import { type ArticleListItem, useSearchArticlesInfinite } from '@uoslife/api';
 import { useState } from 'react';
 import { WritingButton } from '@/shared/component/buttons';
-import { Card } from '@/shared/component/card';
+import { Card, CardSkeletonList } from '@/shared/component/card';
 import { Pagination } from '@/shared/component/pagination';
 import { SearchField } from '@/shared/component/search-field';
 import { TabButton } from '@/shared/component/TabButton';
@@ -31,7 +31,7 @@ export function TechMainSection() {
   const [category, setCategory] = useState<CategoryTypeWithALL>('ALL');
   const [keyword, setKeyword] = useState('');
   // const { session } = useAuth(); TODO
-  const { data } = useSearchArticlesInfinite(
+  const { data, isLoading } = useSearchArticlesInfinite(
     {
       spaceId: SpaceIdEnum.TECH,
       page,
@@ -65,7 +65,11 @@ export function TechMainSection() {
         setCategory={setCategory}
         setKeyword={setKeyword}
       />
-      {articles.length > 0 && <ArticleList articles={articles} />}
+      {isLoading ? (
+        <CardSkeletonList.B />
+      ) : (
+        articles.length > 0 && <ArticleList articles={articles} />
+      )}
       <Pagination
         totalPages={totalPages}
         currentPage={page + 1}
