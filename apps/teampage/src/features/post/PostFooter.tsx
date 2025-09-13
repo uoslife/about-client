@@ -6,7 +6,6 @@ import Image from 'next/image';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Comment } from './Comment';
 import { useToast } from '@/shared/component/toast';
-import { headers } from 'next/headers';
 
 type PostFooterProps = {
   likeCount: number;
