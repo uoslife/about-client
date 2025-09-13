@@ -9,69 +9,6 @@ import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 
-const DUMMY_CONTENT: Content[] = [
-  {
-    id: 0,
-    authorId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    authorName: '김개발',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
-    category: '개발',
-    title: 'Next.js 13 App Router 완전 정복하기',
-    createdAt: '2024-09-06T10:30:00Z',
-  },
-  {
-    id: 1,
-    authorId: 'tech_author_1',
-    authorName: '김개발',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800',
-    category: '개발',
-    title: 'React 18의 새로운 기능들과 성능 최적화 전략',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2시간 전
-  },
-  {
-    id: 2,
-    authorId: 'tech_author_2',
-    authorName: '박프로덕트',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800',
-    category: 'PM',
-    title: '사용자 경험을 위한 프로덕트 매니지먼트 가이드',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(), // 6시간 전
-  },
-  {
-    id: 3,
-    authorId: 'tech_author_3',
-    authorName: '이디자인',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800',
-    category: '디자인',
-    title: 'Figma를 활용한 효율적인 디자인 시스템 구축하기',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1일 전
-  },
-  {
-    id: 4,
-    authorId: 'tech_author_4',
-    authorName: '최마케팅',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
-    category: '마케팅',
-    title: '개발자를 위한 데이터 기반 마케팅 전략',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2일 전
-  },
-  {
-    id: 5,
-    authorId: 'tech_author_5',
-    authorName: '정백엔드',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
-    category: '개발',
-    title: 'Node.js와 TypeScript로 안정적인 API 서버 구축하기',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3).toISOString(), // 3일 전
-  },
-];
-
 const CATEGORYS = ['전체', 'PM', '마케팅', '디자인', '개발'] as const;
 
 export function TechMainSection() {
@@ -166,7 +103,8 @@ function TopBar() {
 function ArticleList() {
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
-      {DUMMY_CONTENT.map((content) => (
+      {/* TODO: Change To Real Data */}
+      {TECH_CONTENT_MOCK.map((content) => (
         <Card.B
           key={content.id}
           content={content}
@@ -181,7 +119,7 @@ export const TECH_CONTENT_MOCK: Content[] = [
   {
     id: 1,
     authorId: 'frontend-lead',
-    authorName: '김프롱',
+    authorName: '공은배',
     thumbnailUrl: '/img/section02_value_01.webp',
     title: 'React 최적화, useMemo와 useCallback 제대로 사용하기',
     summary: '불필요한 렌더링을 방지하여 성능을 개선하는 방법을 알아봅니다.',
@@ -192,7 +130,7 @@ export const TECH_CONTENT_MOCK: Content[] = [
   {
     id: 2,
     authorId: 'backend-lead',
-    authorName: '박백둥',
+    authorName: '정인우',
     thumbnailUrl: '/img/section02_value_02.webp',
     title: 'Spring Boot에서 JPA N+1 문제 해결하기',
     summary:
@@ -204,7 +142,7 @@ export const TECH_CONTENT_MOCK: Content[] = [
   {
     id: 3,
     authorId: 'infra-lead',
-    authorName: '최인프',
+    authorName: '이준수',
     thumbnailUrl: '/img/section02_value_03.webp',
     title: 'Docker와 Github Actions로 CI/CD 파이프라인 구축하기',
     summary:
