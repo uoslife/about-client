@@ -8,8 +8,7 @@ import { Dropdown } from '@/shared/component/dropdown';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 
 const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
-  const { selectedGeneration, debouncedSearchQuery } =
-    useContext(PeopleContext)!;
+  const { selectedGeneration, searchQuery } = useContext(PeopleContext)!;
 
   const sortGenerationWithNumber = (a: string, b: string) => {
     return Number(a.slice(0, -1)) - Number(b.slice(0, -1));
@@ -39,9 +38,7 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
                   person.generation === generations[selectedGeneration],
               )
               .filter((person) =>
-                person.name
-                  .toLowerCase()
-                  .includes(debouncedSearchQuery.toLowerCase()),
+                person.name.toLowerCase().includes(searchQuery.toLowerCase()),
               )
               .map((person, index) => (
                 <PeopleCard key={`${person.name}-${index}`} person={person} />
@@ -79,6 +76,11 @@ const PeopleHeader = ({ generations }: { generations: string[] }) => {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onClear={() => setSearchQuery('')}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.currentTarget.blur();
+          }
+        }}
       />
       <Dropdown
         options={generations}

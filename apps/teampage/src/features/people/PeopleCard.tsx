@@ -1,6 +1,7 @@
 import { Divider } from '@/shared/component/Divider';
 import { Text } from '@/shared/component/Text';
 import Image from 'next/image';
+import { motion } from 'motion/react';
 
 type Person = {
   name: string;
@@ -21,7 +22,29 @@ interface PeopleCardProps {
 
 export default function PeopleCard({ person }: PeopleCardProps) {
   return (
-    <div className="w-[360px] flex flex-col gap-6 bg-gray-50 rounded-[24px] px-6 py-8">
+    <motion.div
+      className="w-[360px] flex flex-col gap-6 bg-gray-50 rounded-[24px] px-6 py-8"
+      initial={{
+        opacity: 0,
+        y: 20,
+        scale: 0.95,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+      }}
+      whileHover={{
+        y: -2,
+        scale: 1.01,
+        boxShadow: '0 10px 25px rgba(0,0,0,0.08)',
+        transition: { duration: 0.3, ease: 'easeOut' },
+      }}
+      transition={{
+        duration: 0.4,
+        ease: 'easeOut',
+      }}
+    >
       <div className="flex items-start gap-5">
         <div className="w-[120px] h-[120px] rounded-full overflow-hidden bg-gray-300 flex-shrink-0">
           {person.image_profile ? (
@@ -154,6 +177,6 @@ export default function PeopleCard({ person }: PeopleCardProps) {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
