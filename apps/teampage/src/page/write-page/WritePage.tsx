@@ -42,8 +42,9 @@ export default function WritePage() {
       const savedPost = sessionStorage.getItem('editPost');
       if (savedPost) {
         const post = JSON.parse(savedPost);
+        const processedContent = post.content?.replace(/\\n/g, '\n');
         setTitle(post.title || '');
-        setContent(post.content || '');
+        setContent(processedContent || '');
         setCategory(post.category || '');
         setSummary(post.summary || '');
         if (post.thumbnailUrl) {
