@@ -38,28 +38,29 @@ export const mockPostData: ArticleDetailResponse = {
   thumbnailUrl:
     'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
   likeCount: 42,
+  isLike: false,
   createdAt: '2024-09-06T10:30:00Z',
   prevArticle: {
     id: 2,
-    writerId: '2fa85f64-5717-4562-b3fc-2c963f66afa6',
-    writerName: '박디자인',
+    authorId: '2fa85f64-5717-4562-b3fc-2c963f66afa6',
+    authorName: '박디자인',
     title: '디자인 시스템 구축하기',
     summary: '일관된 사용자 경험을 위한 디자인 시스템 구축 방법',
     viewCount: 892,
     thumbnailUrl:
       'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800',
-    createdAt: new Date('2024-09-05T14:20:00Z'),
+    createdAt: new Date('2024-09-05T14:20:00Z').toISOString(),
   },
   nextArticle: {
     id: 3,
-    writerId: '4fa85f64-5717-4562-b3fc-2c963f66afa6',
-    writerName: '이마케팅',
+    authorId: '4fa85f64-5717-4562-b3fc-2c963f66afa6',
+    authorName: '이마케팅',
     title: '효과적인 콘텐츠 마케팅 전략',
     summary: '타겟 오디언스에게 다가가는 콘텐츠 마케팅 노하우',
     viewCount: 634,
     thumbnailUrl:
       'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
-    createdAt: new Date('2024-09-07T09:15:00Z'),
+    createdAt: new Date('2024-09-07T09:15:00Z').toISOString(),
   },
   comments: [
     {

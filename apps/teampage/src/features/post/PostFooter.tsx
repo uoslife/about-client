@@ -1,18 +1,42 @@
 'use client';
 import { Text } from '@/shared/component/Text';
-import { CommentResponse } from '@uoslife/api';
+import { CommentResponse, useAddReaction } from '@uoslife/api';
 import { useState } from 'react';
 import Image from 'next/image';
 import TextareaAutosize from 'react-textarea-autosize';
-import { CommentItem } from './CommentItem';
+import { Comment } from './Comment';
+import { useToast } from '@/shared/component/toast';
 
 type PostFooterProps = {
   likeCount: number;
   comments: CommentResponse[];
+  postId: number;
 };
 
-export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
+export const PostFooter = ({
+  likeCount,
+  comments,
+  postId,
+}: PostFooterProps) => {
+  const { toast } = useToast();
   const [like, setLike] = useState(false);
+  const [optimisticLikeCount, setOptimisticLikeCount] = useState(likeCount);
+
+  const { mutate: addReaction } = useAddReaction({
+    mutation: {
+      onMutate: async () => {
+        setLike(true);
+        setOptimisticLikeCount((prev) => prev + 1);
+      },
+      onError: () => {
+        setTimeout(() => {
+          setLike(false);
+          setOptimisticLikeCount(likeCount);
+          toast('좋아요 처리 중 오류가 발생했습니다.', 2000);
+        }, 500);
+      },
+    },
+  });
   const [commentText, setCommentText] = useState('');
   return (
     <>
@@ -23,7 +47,10 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
               ? 'bg-[#222227] border-[1.6px] border-solid border-[#222227]'
               : 'bg-white border-[1.6px] border-solid border-[#e9e9ee]'
           }`}
-          onClick={() => setLike(!like)}
+          onClick={() => {
+            addReaction({ articleId: postId, data: { nonMemberId: 'jbcho' } });
+          }}
+          disabled={like}
         >
           <div className="w-6 h-6 flex items-center justify-center">
             <Image
@@ -46,13 +73,14 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
             color={like ? 'white' : 'grey-700'}
             className="font-bold"
           >
-            {likeCount}
+            {optimisticLikeCount}
           </Text>
         </button>
 
         <button
           onClick={() => {
-            alert('공유하기');
+            toast('URL 링크가 복사되었습니다.', 1000);
+            navigator.clipboard.writeText(window.location.href);
           }}
           className="flex gap-2 items-center cursor-pointer"
         >
@@ -108,7 +136,7 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
             {comments.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
+              <Comment key={comment.id} comment={comment} />
             ))}
           </div>
         </div>
