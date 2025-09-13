@@ -1,6 +1,6 @@
 'use client';
 import PeopleCard from './PeopleCard';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { PeopleContext, PeopleProvider } from './PeopleProvider';
 import { PeopleData } from '@features/notion/NotionType';
 import { SearchField } from '@/shared/component/search-field';
@@ -8,8 +8,7 @@ import { Dropdown } from '@/shared/component/dropdown';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 
 const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
-  const { selectedGeneration, debouncedSearchQuery } =
-    useContext(PeopleContext)!;
+  const { selectedGeneration, searchQuery } = useContext(PeopleContext)!;
 
   const sortGenerationWithNumber = (a: string, b: string) => {
     return Number(a.slice(0, -1)) - Number(b.slice(0, -1));
@@ -31,7 +30,7 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
       <div className="flex items-center justify-center py-[100px]">
         <div className="w-[1120px] flex flex-col gap-10">
           <PeopleHeader generations={generations} />
-          <div className="flex gap-5">
+          <div className="flex gap-5 flex-wrap">
             {peopleData
               .filter(
                 (person) =>
@@ -39,9 +38,7 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
                   person.generation === generations[selectedGeneration],
               )
               .filter((person) =>
-                person.name
-                  .toLowerCase()
-                  .includes(debouncedSearchQuery.toLowerCase()),
+                person.name.toLowerCase().includes(searchQuery.toLowerCase()),
               )
               .map((person, index) => (
                 <PeopleCard key={`${person.name}-${index}`} person={person} />
@@ -65,20 +62,36 @@ export default PeopleSection;
 
 const PeopleHeader = ({ generations }: { generations: string[] }) => {
   const {
-    searchQuery,
     setSearchQuery,
     selectedGeneration,
     setSelectedGeneration,
+    queryText,
   } = useContext(PeopleContext)!;
+
+  const [isComposing, setIsComposing] = useState(false);
 
   return (
     <div className="w-full flex justify-between items-center">
       <SearchField
         size="small"
         placeholder="제목을 검색하세요."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onClear={() => setSearchQuery('')}
+        defaultValue=""
+        onChange={(e) => {
+          if (e.target.value === '') setSearchQuery('');
+          queryText.current = e.target.value;
+        }}
+        onCompositionStart={() => setIsComposing(true)}
+        onCompositionEnd={() => setIsComposing(false)}
+        onClear={() => {
+          queryText.current = '';
+          setSearchQuery('');
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !isComposing) {
+            setSearchQuery(queryText.current);
+            e.currentTarget.blur();
+          }
+        }}
       />
       <Dropdown
         options={generations}
