@@ -8,7 +8,8 @@
     "generate:watch": "orval --watch"
   },
   "dependencies": {
-    "@tanstack/react-query": "catalog:"
+    "@tanstack/react-query": "catalog:",
+    "axios": "^1.12.1"
   },
   "devDependencies": {
     "orval": "catalog:",
