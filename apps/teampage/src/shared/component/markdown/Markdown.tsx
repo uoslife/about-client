@@ -4,6 +4,7 @@ import { Text } from '../Text';
 import Image from 'next/image';
 
 export const Markdown = ({ content }: { content: string }) => {
+  const proccessedContent = content.replace(/\\n/g, '\n');
   return (
     <ReactMarkdown
       components={{
@@ -106,7 +107,7 @@ export const Markdown = ({ content }: { content: string }) => {
         ),
       }}
     >
-      {content}
+      {proccessedContent}
     </ReactMarkdown>
   );
 };
