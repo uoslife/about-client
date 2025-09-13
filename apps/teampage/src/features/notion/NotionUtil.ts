@@ -69,7 +69,16 @@ export class NotionUtil {
   public static extractImageProfile = (
     property?: z.infer<typeof OptionalNotionFilesPropertySchema>,
   ): string | undefined => {
-    return property?.files?.[0]?.file?.url ?? undefined;
+    if (!property?.files?.[0]?.file?.url) return undefined;
+
+    const fileUrl = property.files[0].file.url;
+    const fileName = property.files[0].name || '';
+
+    if (fileName.toLowerCase().includes('.heic')) {
+      return undefined;
+    }
+
+    return fileUrl;
   };
 
   public static extractSummary = (
@@ -80,6 +89,20 @@ export class NotionUtil {
 
   public static convertToPeopleData = (page: NotionPage): PeopleData => {
     const { properties } = page;
+    if (properties.name.title[0].plain_text === '김영민') {
+      console.log('=== 김영민 데이터 디버깅 ===');
+      console.log('name:', properties.name);
+      console.log('generation:', properties.generation);
+      console.log('position:', properties.position);
+      console.log('career:', properties.career);
+      console.log('major:', properties.major);
+      console.log('image_profile:', properties.image_profile);
+      console.log('summary:', properties.summary);
+      console.log('link_others:', properties.link_others);
+      console.log('link_github:', properties.link_github);
+      console.log('link_linkedin:', properties.link_linkedin);
+      console.log('========================');
+    }
     return {
       name: NotionUtil.extractName(properties.name),
       generation: NotionUtil.extractGeneration(properties.generation),
