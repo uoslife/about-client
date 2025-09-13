@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Divider } from '../Divider';
 import { HoverScaleAnimation } from '../animation/HoverScaleAnimation';
+import { Divider } from '../Divider';
 import { Tag } from '../Tag';
 import { Text } from '../Text';
 import type { CardProps } from './types';
@@ -27,13 +27,15 @@ export function CardA({ content, className, link }: CardProps) {
         {(isHovered) => (
           <>
             <div className="h-[324px] flex">
-              <Image
-                src={thumbnailUrl}
-                alt={title}
-                width={768}
-                height={324}
-                className="object-cover rounded-t-3xl"
-              />
+              {thumbnailUrl && (
+                <Image
+                  src={thumbnailUrl}
+                  alt={title}
+                  width={768}
+                  height={324}
+                  className="object-cover rounded-t-3xl"
+                />
+              )}
             </div>
             {category && (
               <Tag color={'blur'} className="absolute top-5 left-5 opacity-80">

@@ -14,46 +14,19 @@ import { useAuth } from '@/entities/auth/useAuth';
 import { ContentEditor } from '@/features/editor';
 import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
+import {
+  CategoryEnum,
+  CategoryKorean,
+  type CategoryType,
+  SpaceIdEnum,
+  type SpaceType,
+} from '@/shared/const/category';
 import { type CreateArticleInput, processArticle } from './processArticle';
 
 const CATEGORY_MAP: { [key: string]: string } = {
   TECH: 'UOSLIFE Tech',
   CAREER: 'UOSLIFE CAREER',
   MOMENTS: 'UOSLIFE Moments',
-};
-
-export enum CategoryEnum {
-  DEVELOP = 'DEVELOP',
-  DESIGN = 'DESIGN',
-  MARKETING = 'MARKETING',
-  PM = 'PM',
-  EMPLOYMENT = 'EMPLOYMENT',
-  EXTERNAL_ACTIVITY = 'EXTERNAL_ACTIVITY',
-}
-
-export enum SpaceEnum {
-  TECH = 'TECH',
-  CAREER = 'CAREER',
-  MOMENTS = 'MOMENTS',
-}
-
-export type SpaceType = keyof typeof SpaceEnum;
-
-export enum SpaceIdEnum {
-  TECH = 3,
-  CAREER = 4,
-  MOMENTS = 5,
-}
-
-type CategoryType = keyof typeof CategoryEnum;
-
-const CategoryKorean = {
-  [CategoryEnum.DEVELOP]: '개발',
-  [CategoryEnum.DESIGN]: '디자인',
-  [CategoryEnum.MARKETING]: '마케팅',
-  [CategoryEnum.PM]: '기획',
-  [CategoryEnum.EMPLOYMENT]: '채용',
-  [CategoryEnum.EXTERNAL_ACTIVITY]: '대외활동',
 };
 
 const TITLE_MAX_LENGTH = 56;
@@ -97,6 +70,7 @@ export default function WritePage() {
         ];
     }
   }, [space]);
+
   useEffect(() => {
     if (isEditMode) {
       const savedPost = sessionStorage.getItem('editPost');

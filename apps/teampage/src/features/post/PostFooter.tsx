@@ -1,11 +1,11 @@
 'use client';
-import { Text } from '@/shared/component/Text';
-import { CommentResponse, useAddReaction } from '@uoslife/api';
-import { useState } from 'react';
+import { type CommentResponse, useAddReaction } from '@uoslife/api';
 import Image from 'next/image';
+import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
-import { Comment } from './Comment';
+import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
+import { Comment } from './Comment';
 
 type PostFooterProps = {
   likeCount: number;

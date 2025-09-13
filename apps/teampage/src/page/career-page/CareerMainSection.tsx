@@ -1,90 +1,75 @@
 'use client';
-import { WritingButton } from '@shared/component/buttons';
+
+import type { ArticleListItem } from '@uoslife/api';
+import { useSearchArticlesInfinite } from '@uoslife/api';
 import { useState } from 'react';
+import { WritingButton } from '@/shared/component/buttons';
 import { Card } from '@/shared/component/card';
-import type { Content } from '@/shared/component/card/types';
 import { Pagination } from '@/shared/component/pagination';
 import { SearchField } from '@/shared/component/search-field';
 import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
+import {
+  CategoryAllEnum,
+  CategoryEnum,
+  CategoryKoreanWithAll,
+  type CategoryTypeWithALL,
+  SortKorean,
+  type SortType,
+  SpaceIdEnum,
+} from '@/shared/const/category';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
-import { CategoryEnum } from '../write-page/WritePage';
 
-const DUMMY_CONTENT: Content[] = [
-  {
-    id: 1,
-    authorId: 'career_author_1',
-    authorName: '정인우',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800',
-    category: '취업/인턴',
-    title: '네이버 백엔드 개발자 합격 후기',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3시간 전
-    viewCount: 12,
-  },
-  {
-    id: 2,
-    authorId: 'career_author_2',
-    authorName: '박인턴',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
-    category: '취업/인턴',
-    title: '카카오페이 백엔드 개발자 합격 후기',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(), // 12시간 전
-    viewCount: 10,
-  },
-  {
-    id: 3,
-    authorId: 'career_author_3',
-    authorName: '김은서',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800',
-    category: '대외활동',
-    title: '리멤버 Community 프로덕트 매니저 후기',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1일 전
-    viewCount: 8,
-  },
-  {
-    id: 4,
-    authorId: 'career_author_4',
-    authorName: '정인우',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1551650975-87deedd944c3?w=800',
-    category: '취업/인턴',
-    title: '개발자 포트폴리오 제작 가이드',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2).toISOString(), // 2일 전
-    viewCount: 6,
-  },
-  {
-    id: 5,
-    authorId: 'career_author_5',
-    authorName: '조종빈',
-    thumbnailUrl:
-      'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800',
-    category: '대외활동',
-    title: '미리디 - 웹에디터 프론트엔드 개발자 인턴 경험',
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 4).toISOString(), // 4일 전
-    viewCount: 4,
-  },
-];
-
-const CategoryKorean = {
-  [CategoryEnum.EMPLOYMENT]: '채용',
-  [CategoryEnum.EXTERNAL_ACTIVITY]: '대외활동',
-};
-
-export const CATEGORYS = ['전체', ...Object.values(CategoryKorean)] as const;
+export const CATEGORYS = [
+  CategoryAllEnum.ALL,
+  CategoryEnum.EMPLOYMENT,
+  CategoryEnum.EXTERNAL_ACTIVITY,
+] as const;
 
 export function CareerMainSection() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
+  const [sort, setSort] = useState<SortType>('LATEST');
+  const [category, setCategory] = useState<CategoryTypeWithALL>('ALL');
+  const [keyword, setKeyword] = useState('');
+  // const { session } = useAuth();
+  const { data } = useSearchArticlesInfinite(
+    {
+      spaceId: SpaceIdEnum.TECH,
+      page,
+      size: 10,
+      category: category === 'ALL' ? undefined : category,
+      sortBy: sort === 'POPULAR' ? 'VIEW_COUNT' : 'CREATED_AT',
+      sortOrder: 'DESC',
+      keyword: keyword || undefined,
+    },
+    {
+      query: {
+        getNextPageParam: (lastPage) => {
+          if (!lastPage.data.last) {
+            return (lastPage.data.number ?? 0) + 1;
+          }
+          return undefined;
+        },
+      },
+    },
+  );
+
+  const articles = data?.pages.flatMap((page) => page.data.content ?? []) ?? [];
+  const totalPages = data?.pages[0]?.data.totalPages ?? 0;
 
   return (
     <ArticleMainSectionContainer>
-      <TopBar />
-      <ArticleList />
+      <TopBar
+        sort={sort}
+        setSort={setSort}
+        category={category}
+        setCategory={setCategory}
+        setKeyword={setKeyword}
+      />
+      {articles.length > 0 && <ArticleList articles={articles} />}
       <Pagination
-        totalPages={10}
-        currentPage={page}
+        totalPages={totalPages}
+        currentPage={page + 1}
         onPageChange={setPage}
         className="my-10"
       />
@@ -93,10 +78,21 @@ export function CareerMainSection() {
   );
 }
 
-function TopBar() {
-  const [sort, setSort] = useState<'최신순' | '인기순'>('최신순');
-  const [category, setCategory] = useState<(typeof CATEGORYS)[number]>('전체');
+type TopBarProps = {
+  sort: SortType;
+  setSort: (sort: SortType) => void;
+  category: CategoryTypeWithALL;
+  setCategory: (category: CategoryTypeWithALL) => void;
+  setKeyword: (keyword: string) => void;
+};
 
+function TopBar({
+  sort,
+  setSort,
+  category,
+  setCategory,
+  setKeyword,
+}: TopBarProps) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-4">
@@ -107,16 +103,28 @@ function TopBar() {
               clicked={category === cat}
               onClick={() => setCategory(cat)}
             >
-              {cat}
+              {CategoryKoreanWithAll[cat]}
             </TabButton>
           ))}
         </div>
-        <SearchField size="small" placeholder="제목을 입력해주세요" />
+        <SearchField
+          size="small"
+          placeholder="제목을 입력해주세요"
+          onChange={(e) => {
+            if (e.target.value === '') setKeyword('');
+            setKeyword(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.currentTarget.blur();
+            }
+          }}
+        />
       </div>
       <div className="group relative">
         <div className="flex items-center gap-1.5 py-2 px-5 cursor-default">
           <Text variant="body-18-m" color="grey-900">
-            {sort}
+            {SortKorean[sort]}
           </Text>
           <svg
             width="16"
@@ -141,9 +149,9 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('최신순')}
+                onClick={() => setSort('LATEST')}
               >
-                최신순
+                {SortKorean.LATEST}
               </Text>
             </div>
           </button>
@@ -152,9 +160,9 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('인기순')}
+                onClick={() => setSort('POPULAR')}
               >
-                인기순
+                {SortKorean.POPULAR}
               </Text>
             </div>
           </button>
@@ -164,10 +172,14 @@ function TopBar() {
   );
 }
 
-function ArticleList() {
+type ArticleListProps = {
+  articles: ArticleListItem[];
+};
+
+function ArticleList({ articles }: ArticleListProps) {
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
-      {DUMMY_CONTENT.map((content) => (
+      {articles.map((content) => (
         <Card.B
           key={content.id}
           content={content}

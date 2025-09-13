@@ -2,12 +2,12 @@
 
 import { motion } from 'motion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { Divider } from '../Divider';
 import { Tag } from '../Tag';
 import { Text } from '../Text';
 import type { CardProps } from './types';
-import Link from 'next/link';
 
 export function CardB({ content, className, link }: CardProps) {
   const {
@@ -91,13 +91,15 @@ export function CardB({ content, className, link }: CardProps) {
           </div>
         </div>
         <div className="h-36 w-60 rounded-[12px] overflow-hidden flex-shrink-0">
-          <Image
-            src={thumbnailUrl}
-            alt={title}
-            width={240}
-            height={144}
-            className="object-cover w-full h-full"
-          />
+          {thumbnailUrl && (
+            <Image
+              src={thumbnailUrl}
+              alt={title}
+              width={240}
+              height={144}
+              className="object-cover w-full h-full"
+            />
+          )}
         </div>
       </motion.div>
     </Link>

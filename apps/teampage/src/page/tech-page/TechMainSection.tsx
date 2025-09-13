@@ -1,26 +1,74 @@
 'use client';
+import { type ArticleListItem, useSearchArticlesInfinite } from '@uoslife/api';
 import { useState } from 'react';
 import { WritingButton } from '@/shared/component/buttons';
 import { Card } from '@/shared/component/card';
-import type { Content } from '@/shared/component/card/types';
 import { Pagination } from '@/shared/component/pagination';
 import { SearchField } from '@/shared/component/search-field';
 import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
+import {
+  CategoryAllEnum,
+  CategoryEnum,
+  type CategoryTypeWithALL,
+  SortKorean,
+  type SortType,
+  SpaceIdEnum,
+} from '@/shared/const/category';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 
-export const CATEGORYS = ['전체', 'PM', '마케팅', '디자인', '개발'] as const;
+export const CATEGORYS = [
+  CategoryAllEnum.ALL,
+  CategoryEnum.PM,
+  CategoryEnum.MARKETING,
+  CategoryEnum.DESIGN,
+  CategoryEnum.DEVELOP,
+] as const;
 
 export function TechMainSection() {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
+  const [sort, setSort] = useState<SortType>('LATEST');
+  const [category, setCategory] = useState<CategoryTypeWithALL>('ALL');
+  const [keyword, setKeyword] = useState('');
+  // const { session } = useAuth(); TODO
+  const { data } = useSearchArticlesInfinite(
+    {
+      spaceId: SpaceIdEnum.TECH,
+      page,
+      size: 10,
+      category: category === 'ALL' ? undefined : category,
+      sortBy: sort === 'POPULAR' ? 'VIEW_COUNT' : 'CREATED_AT',
+      sortOrder: 'DESC',
+      keyword: keyword || undefined,
+    },
+    {
+      query: {
+        getNextPageParam: (lastPage) => {
+          if (!lastPage.data.last) {
+            return (lastPage.data.number ?? 0) + 1;
+          }
+          return undefined;
+        },
+      },
+    },
+  );
+
+  const articles = data?.pages.flatMap((page) => page.data.content ?? []) ?? [];
+  const totalPages = data?.pages[0]?.data.totalPages ?? 0;
 
   return (
     <ArticleMainSectionContainer>
-      <TopBar />
-      <ArticleList />
+      <TopBar
+        sort={sort}
+        setSort={setSort}
+        category={category}
+        setCategory={setCategory}
+        setKeyword={setKeyword}
+      />
+      {articles.length > 0 && <ArticleList articles={articles} />}
       <Pagination
-        totalPages={1}
-        currentPage={page}
+        totalPages={totalPages}
+        currentPage={page + 1}
         onPageChange={setPage}
         className="my-10"
       />
@@ -29,10 +77,21 @@ export function TechMainSection() {
   );
 }
 
-function TopBar() {
-  const [sort, setSort] = useState<'최신순' | '인기순'>('최신순');
-  const [category, setCategory] = useState<(typeof CATEGORYS)[number]>('전체');
+type TopBarProps = {
+  sort: SortType;
+  setSort: (sort: SortType) => void;
+  category: CategoryTypeWithALL;
+  setCategory: (category: CategoryTypeWithALL) => void;
+  setKeyword: (keyword: string) => void;
+};
 
+function TopBar({
+  sort,
+  setSort,
+  category,
+  setCategory,
+  setKeyword,
+}: TopBarProps) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-4">
@@ -47,7 +106,19 @@ function TopBar() {
             </TabButton>
           ))}
         </div>
-        <SearchField size="small" placeholder="제목을 입력해주세요" />
+        <SearchField
+          size="small"
+          placeholder="제목을 입력해주세요"
+          onChange={(e) => {
+            if (e.target.value === '') setKeyword('');
+            setKeyword(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.currentTarget.blur();
+            }
+          }}
+        />
       </div>
       <div className="group relative">
         <div className="flex items-center gap-1.5 py-2 px-5 cursor-default">
@@ -77,9 +148,9 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('최신순')}
+                onClick={() => setSort('LATEST')}
               >
-                최신순
+                {SortKorean.LATEST}
               </Text>
             </div>
           </button>
@@ -88,9 +159,9 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('인기순')}
+                onClick={() => setSort('POPULAR')}
               >
-                인기순
+                {SortKorean.POPULAR}
               </Text>
             </div>
           </button>
@@ -100,55 +171,20 @@ function TopBar() {
   );
 }
 
-function ArticleList() {
+type ArticleListProps = {
+  articles: ArticleListItem[];
+};
+
+function ArticleList({ articles }: ArticleListProps) {
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
-      {/* TODO: Change To Real Data */}
-      {TECH_CONTENT_MOCK.map((content) => (
+      {articles.map((content) => (
         <Card.B
           key={content.id}
           content={content}
-          link={`/tech/${content.id}`}
+          link={`/career/${content.id}`}
         />
       ))}
     </div>
   );
 }
-
-export const TECH_CONTENT_MOCK: Content[] = [
-  {
-    id: 1,
-    authorId: 'frontend-lead',
-    authorName: '공은배',
-    thumbnailUrl: '/img/section02_value_01.webp',
-    title: 'React 최적화, useMemo와 useCallback 제대로 사용하기',
-    summary: '불필요한 렌더링을 방지하여 성능을 개선하는 방법을 알아봅니다.',
-    category: '개발',
-    viewCount: 152,
-    createdAt: '2025-09-10T10:00:00Z',
-  },
-  {
-    id: 2,
-    authorId: 'backend-lead',
-    authorName: '정인우',
-    thumbnailUrl: '/img/section02_value_02.webp',
-    title: 'Spring Boot에서 JPA N+1 문제 해결하기',
-    summary:
-      '지연 로딩과 페치 조인을 활용하여 데이터베이스 쿼리 효율을 높이는 전략을 소개합니다.',
-    category: '개발',
-    viewCount: 230,
-    createdAt: '2025-09-09T14:00:00Z',
-  },
-  {
-    id: 3,
-    authorId: 'infra-lead',
-    authorName: '이준수',
-    thumbnailUrl: '/img/section02_value_03.webp',
-    title: 'Docker와 Github Actions로 CI/CD 파이프라인 구축하기',
-    summary:
-      '애플리케이션을 자동으로 빌드, 테스트, 배포하는 과정을 자동화하는 방법을 알아봅니다.',
-    category: '개발',
-    viewCount: 188,
-    createdAt: '2025-09-08T18:00:00Z',
-  },
-];
