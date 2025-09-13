@@ -151,8 +151,8 @@ export interface CommentUpdateRequest {
 export interface PageArticleListItem {
   totalElements?: number;
   totalPages?: number;
-  numberOfElements?: number;
   pageable?: PageableObject;
+  numberOfElements?: number;
   size?: number;
   content?: ArticleListItem[];
   number?: number;
@@ -163,17 +163,17 @@ export interface PageArticleListItem {
 }
 
 export interface PageableObject {
-  unpaged?: boolean;
   paged?: boolean;
   pageNumber?: number;
   pageSize?: number;
+  unpaged?: boolean;
   offset?: number;
   sort?: SortObject;
 }
 
 export interface SortObject {
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
   empty?: boolean;
 }
 
@@ -186,7 +186,7 @@ export type SearchArticlesParams = {
   /**
    * 게시글 콘텐츠 분류, spaceResponse에서 가능한 카테고리 확인 가능
    */
-  category: Category;
+  category?: Category;
   /**
    * 정렬 기준 필드. CREATED_AT 혹은 VIEW_COUNT (25.09.08 기준)
    */

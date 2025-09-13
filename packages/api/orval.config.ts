@@ -17,6 +17,7 @@ export default defineConfig({
         enumGenerationType: 'union',
         query: {
           useSuspenseQuery: true,
+          useInfinite: true,
           usePrefetch: true,
         },
         useDates: true,

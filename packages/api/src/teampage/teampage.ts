@@ -5,16 +5,25 @@
  * Uoslife Teampage API Swagger
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -62,6 +71,173 @@ export const getSearchArticlesQueryKey = (params?: SearchArticlesParams) => {
     `https://apis.uoslife.team/articles`,
     ...(params ? [params] : []),
   ] as const;
+};
+
+export const getSearchArticlesInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
+    signal,
+  }) => searchArticles(params, { signal, ...axiosOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof searchArticles>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type SearchArticlesInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchArticles>>
+>;
+export type SearchArticlesInfiniteQueryError = AxiosError<unknown>;
+
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getSearchArticlesInfiniteQueryOptions(params, options);
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchSearchArticlesInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  queryClient: QueryClient,
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getSearchArticlesInfiniteQueryOptions(params, options);
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
 };
 
 export const getSearchArticlesQueryOptions = <
@@ -772,6 +948,193 @@ export const getFindArticleQueryKey = (
   ] as const;
 };
 
+export const getFindArticleInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
+    signal,
+  }) => findArticle(articleId, params, { signal, ...axiosOptions });
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!articleId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof findArticle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindArticleInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findArticle>>
+>;
+export type FindArticleInfiniteQueryError = AxiosError<unknown>;
+
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params: undefined | FindArticleParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindArticleInfiniteQueryOptions(
+    articleId,
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchFindArticleInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  queryClient: QueryClient,
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getFindArticleInfiniteQueryOptions(
+    articleId,
+    params,
+    options,
+  );
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+};
+
 export const getFindArticleQueryOptions = <
   TData = Awaited<ReturnType<typeof findArticle>>,
   TError = AxiosError<unknown>,
@@ -1313,6 +1676,138 @@ export const me = (
 
 export const getMeQueryKey = () => {
   return [`https://apis.uoslife.team/auth/me`] as const;
+};
+
+export const getMeInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = AxiosError<unknown>,
+>(options?: {
+  query?: Partial<
+    UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+  >;
+  axios?: AxiosRequestConfig;
+}) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof me>>> = ({ signal }) =>
+    me({ signal, ...axiosOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof me>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof me>>>;
+export type MeInfiniteQueryError = AxiosError<unknown>;
+
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = AxiosError<unknown>,
+>(
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof me>>,
+          TError,
+          Awaited<ReturnType<typeof me>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof me>>,
+          TError,
+          Awaited<ReturnType<typeof me>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = AxiosError<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getMeInfiniteQueryOptions(options);
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchMeInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof me>>,
+  TError = AxiosError<unknown>,
+>(
+  queryClient: QueryClient,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getMeInfiniteQueryOptions(options);
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
 };
 
 export const getMeQueryOptions = <
