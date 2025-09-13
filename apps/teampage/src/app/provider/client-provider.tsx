@@ -3,7 +3,17 @@ import { SessionProvider } from 'next-auth/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '@/shared/component/toast/ToastContext';
 import { ConfirmModalProvider } from '@/shared/component/confirm-modal/ConfirmModalContext';
-import { DimRenderer } from '@/widgets/renderer/DimRenderer';
+import dynamic from 'next/dynamic';
+
+const DimRenderer = dynamic(
+  () =>
+    import('@/widgets/renderer/DimRenderer').then((mod) => ({
+      default: mod.DimRenderer,
+    })),
+  {
+    ssr: false,
+  },
+);
 
 export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
