@@ -23,54 +23,328 @@ import type {
   UseSuspenseQueryResult,
 } from '@tanstack/react-query';
 
+import axios from 'axios';
+import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+
 import type {
   ArticleDetailResponse,
   CommentCreateRequest,
   CommentResponse,
   CommentUpdateRequest,
   CreateArticleRequest,
+  ErrorResponse,
+  FindArticleParams,
+  ImageUploadResponse,
   Me200,
+  PageArticleListItem,
+  ReactionRequest,
+  ReactionResponse,
+  SearchArticlesParams,
   UpdateArticleRequest,
+  UploadImageBody,
+  UploadImageParams,
+  UploadThumbnailImageBody,
+  UploadThumbnailImageParams,
 } from './teampage.schemas';
 
-export type createArticleResponse200 = {
-  data: ArticleDetailResponse;
-  status: 200;
-};
-
-export type createArticleResponseComposite = createArticleResponse200;
-
-export type createArticleResponse = createArticleResponseComposite & {
-  headers: Headers;
-};
-
-export const getCreateArticleUrl = () => {
-  return `https://apis.uoslife.team/articles`;
-};
-
-export const createArticle = async (
-  createArticleRequest: CreateArticleRequest,
-  options?: RequestInit,
-): Promise<createArticleResponse> => {
-  const res = await fetch(getCreateArticleUrl(), {
+export const searchArticles = (
+  params: SearchArticlesParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<PageArticleListItem>> => {
+  return axios.get(`https://apis.uoslife.team/articles`, {
     ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(createArticleRequest),
+    params: { ...params, ...options?.params },
   });
+};
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  const data: createArticleResponse['data'] = body ? JSON.parse(body) : {};
+export const getSearchArticlesQueryKey = (params?: SearchArticlesParams) => {
+  return [
+    `https://apis.uoslife.team/articles`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as createArticleResponse;
+export const getSearchArticlesQueryOptions = <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
+    signal,
+  }) => searchArticles(params, { signal, ...axiosOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof searchArticles>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type SearchArticlesQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchArticles>>
+>;
+export type SearchArticlesQueryError = AxiosError<unknown>;
+
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useSearchArticles<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getSearchArticlesQueryOptions(params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchSearchArticlesQuery = async <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  queryClient: QueryClient,
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getSearchArticlesQueryOptions(params, options);
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+};
+
+export const getSearchArticlesSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
+    signal,
+  }) => searchArticles(params, { signal, ...axiosOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof searchArticles>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type SearchArticlesSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchArticles>>
+>;
+export type SearchArticlesSuspenseQueryError = AxiosError<unknown>;
+
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options: {
+    query: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useSearchArticlesSuspense<
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = AxiosError<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getSearchArticlesSuspenseQueryOptions(params, options);
+
+  const query = useSuspenseQuery(
+    queryOptions,
+    queryClient,
+  ) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const createArticle = (
+  createArticleRequest: CreateArticleRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<ArticleDetailResponse>> => {
+  return axios.post(
+    `https://apis.uoslife.team/articles`,
+    createArticleRequest,
+    options,
+  );
 };
 
 export const getCreateArticleMutationOptions = <
-  TError = unknown,
+  TError = AxiosError<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -79,7 +353,7 @@ export const getCreateArticleMutationOptions = <
     { data: CreateArticleRequest },
     TContext
   >;
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createArticle>>,
   TError,
@@ -87,13 +361,13 @@ export const getCreateArticleMutationOptions = <
   TContext
 > => {
   const mutationKey = ['createArticle'];
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
+  const { mutation: mutationOptions, axios: axiosOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined };
+    : { mutation: { mutationKey }, axios: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createArticle>>,
@@ -101,7 +375,7 @@ export const getCreateArticleMutationOptions = <
   > = (props) => {
     const { data } = props ?? {};
 
-    return createArticle(data, fetchOptions);
+    return createArticle(data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -111,9 +385,12 @@ export type CreateArticleMutationResult = NonNullable<
   Awaited<ReturnType<typeof createArticle>>
 >;
 export type CreateArticleMutationBody = CreateArticleRequest;
-export type CreateArticleMutationError = unknown;
+export type CreateArticleMutationError = AxiosError<unknown>;
 
-export const useCreateArticle = <TError = unknown, TContext = unknown>(
+export const useCreateArticle = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createArticle>>,
@@ -121,7 +398,7 @@ export const useCreateArticle = <TError = unknown, TContext = unknown>(
       { data: CreateArticleRequest },
       TContext
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -135,45 +412,107 @@ export const useCreateArticle = <TError = unknown, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 
-export type createCommentResponse200 = {
-  data: CommentResponse;
-  status: 200;
+export const addReaction = (
+  articleId: number,
+  reactionRequest: ReactionRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<ReactionResponse>> => {
+  return axios.post(
+    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/likes`,
+    reactionRequest,
+    options,
+  );
 };
 
-export type createCommentResponseComposite = createCommentResponse200;
+export const getAddReactionMutationOptions = <
+  TError = AxiosError<
+    ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+  >,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addReaction>>,
+    TError,
+    { articleId: number; data: ReactionRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addReaction>>,
+  TError,
+  { articleId: number; data: ReactionRequest },
+  TContext
+> => {
+  const mutationKey = ['addReaction'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
-export type createCommentResponse = createCommentResponseComposite & {
-  headers: Headers;
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addReaction>>,
+    { articleId: number; data: ReactionRequest }
+  > = (props) => {
+    const { articleId, data } = props ?? {};
+
+    return addReaction(articleId, data, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
 };
 
-export const getCreateCommentUrl = (articleId: number) => {
-  return `https://apis.uoslife.team/articles/${articleId}/comments`;
+export type AddReactionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof addReaction>>
+>;
+export type AddReactionMutationBody = ReactionRequest;
+export type AddReactionMutationError = AxiosError<
+  ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+>;
+
+export const useAddReaction = <
+  TError = AxiosError<
+    ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+  >,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof addReaction>>,
+      TError,
+      { articleId: number; data: ReactionRequest },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof addReaction>>,
+  TError,
+  { articleId: number; data: ReactionRequest },
+  TContext
+> => {
+  const mutationOptions = getAddReactionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
 };
 
-export const createComment = async (
+export const createComment = (
   articleId: number,
   commentCreateRequest: CommentCreateRequest,
-  options?: RequestInit,
-): Promise<createCommentResponse> => {
-  const res = await fetch(getCreateCommentUrl(articleId), {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(commentCreateRequest),
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  const data: createCommentResponse['data'] = body ? JSON.parse(body) : {};
-
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as createCommentResponse;
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<CommentResponse>> => {
+  return axios.post(
+    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
+    commentCreateRequest,
+    options,
+  );
 };
 
 export const getCreateCommentMutationOptions = <
-  TError = unknown,
+  TError = AxiosError<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -182,7 +521,7 @@ export const getCreateCommentMutationOptions = <
     { articleId: number; data: CommentCreateRequest },
     TContext
   >;
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createComment>>,
   TError,
@@ -190,13 +529,13 @@ export const getCreateCommentMutationOptions = <
   TContext
 > => {
   const mutationKey = ['createComment'];
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
+  const { mutation: mutationOptions, axios: axiosOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined };
+    : { mutation: { mutationKey }, axios: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createComment>>,
@@ -204,7 +543,7 @@ export const getCreateCommentMutationOptions = <
   > = (props) => {
     const { articleId, data } = props ?? {};
 
-    return createComment(articleId, data, fetchOptions);
+    return createComment(articleId, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -214,9 +553,12 @@ export type CreateCommentMutationResult = NonNullable<
   Awaited<ReturnType<typeof createComment>>
 >;
 export type CreateCommentMutationBody = CommentCreateRequest;
-export type CreateCommentMutationError = unknown;
+export type CreateCommentMutationError = AxiosError<unknown>;
 
-export const useCreateComment = <TError = unknown, TContext = unknown>(
+export const useCreateComment = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createComment>>,
@@ -224,7 +566,7 @@ export const useCreateComment = <TError = unknown, TContext = unknown>(
       { articleId: number; data: CommentCreateRequest },
       TContext
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -238,45 +580,502 @@ export const useCreateComment = <TError = unknown, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 
-export type updateArticleResponse200 = {
-  data: ArticleDetailResponse;
-  status: 200;
+export const uploadThumbnailImage = (
+  uploadThumbnailImageBody: UploadThumbnailImageBody,
+  params: UploadThumbnailImageParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<ImageUploadResponse>> => {
+  return axios.post(
+    `https://apis.uoslife.team/articles/uploadThumbnailImage`,
+    uploadThumbnailImageBody,
+    {
+      ...options,
+      params: { ...params, ...options?.params },
+    },
+  );
 };
 
-export type updateArticleResponseComposite = updateArticleResponse200;
+export const getUploadThumbnailImageMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadThumbnailImage>>,
+    TError,
+    { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof uploadThumbnailImage>>,
+  TError,
+  { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+  TContext
+> => {
+  const mutationKey = ['uploadThumbnailImage'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
-export type updateArticleResponse = updateArticleResponseComposite & {
-  headers: Headers;
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadThumbnailImage>>,
+    { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams }
+  > = (props) => {
+    const { data, params } = props ?? {};
+
+    return uploadThumbnailImage(data, params, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
 };
 
-export const getUpdateArticleUrl = (articleId: number) => {
-  return `https://apis.uoslife.team/articles/${articleId}`;
+export type UploadThumbnailImageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadThumbnailImage>>
+>;
+export type UploadThumbnailImageMutationBody = UploadThumbnailImageBody;
+export type UploadThumbnailImageMutationError = AxiosError<unknown>;
+
+export const useUploadThumbnailImage = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof uploadThumbnailImage>>,
+      TError,
+      { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof uploadThumbnailImage>>,
+  TError,
+  { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+  TContext
+> => {
+  const mutationOptions = getUploadThumbnailImageMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
 };
 
-export const updateArticle = async (
+export const uploadImage = (
+  uploadImageBody: UploadImageBody,
+  params: UploadImageParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<ImageUploadResponse>> => {
+  return axios.post(
+    `https://apis.uoslife.team/articles/uploadImage`,
+    uploadImageBody,
+    {
+      ...options,
+      params: { ...params, ...options?.params },
+    },
+  );
+};
+
+export const getUploadImageMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadImage>>,
+    TError,
+    { data: UploadImageBody; params: UploadImageParams },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof uploadImage>>,
+  TError,
+  { data: UploadImageBody; params: UploadImageParams },
+  TContext
+> => {
+  const mutationKey = ['uploadImage'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadImage>>,
+    { data: UploadImageBody; params: UploadImageParams }
+  > = (props) => {
+    const { data, params } = props ?? {};
+
+    return uploadImage(data, params, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UploadImageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadImage>>
+>;
+export type UploadImageMutationBody = UploadImageBody;
+export type UploadImageMutationError = AxiosError<unknown>;
+
+export const useUploadImage = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof uploadImage>>,
+      TError,
+      { data: UploadImageBody; params: UploadImageParams },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof uploadImage>>,
+  TError,
+  { data: UploadImageBody; params: UploadImageParams },
+  TContext
+> => {
+  const mutationOptions = getUploadImageMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+export const findArticle = (
   articleId: number,
-  updateArticleRequest: UpdateArticleRequest,
-  options?: RequestInit,
-): Promise<updateArticleResponse> => {
-  const res = await fetch(getUpdateArticleUrl(articleId), {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(updateArticleRequest),
-  });
+  params?: FindArticleParams,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<ArticleDetailResponse>> => {
+  return axios.get(
+    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+    {
+      ...options,
+      params: { ...params, ...options?.params },
+    },
+  );
+};
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  const data: updateArticleResponse['data'] = body ? JSON.parse(body) : {};
+export const getFindArticleQueryKey = (
+  articleId?: number,
+  params?: FindArticleParams,
+) => {
+  return [
+    `https://apis.uoslife.team/articles/${articleId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
+
+export const getFindArticleQueryOptions = <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
+    signal,
+  }) => findArticle(articleId, params, { signal, ...axiosOptions });
 
   return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as updateArticleResponse;
+    queryKey,
+    queryFn,
+    enabled: !!articleId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof findArticle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindArticleQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findArticle>>
+>;
+export type FindArticleQueryError = AxiosError<unknown>;
+
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params: undefined | FindArticleParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useFindArticle<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindArticleQueryOptions(articleId, params, options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchFindArticleQuery = async <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  queryClient: QueryClient,
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
+    >;
+    axios?: AxiosRequestConfig;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getFindArticleQueryOptions(articleId, params, options);
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+};
+
+export const getFindArticleSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+) => {
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
+    signal,
+  }) => findArticle(articleId, params, { signal, ...axiosOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof findArticle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindArticleSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findArticle>>
+>;
+export type FindArticleSuspenseQueryError = AxiosError<unknown>;
+
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params: undefined | FindArticleParams,
+  options: {
+    query: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useFindArticleSuspense<
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = AxiosError<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseSuspenseQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindArticleSuspenseQueryOptions(
+    articleId,
+    params,
+    options,
+  );
+
+  const query = useSuspenseQuery(
+    queryOptions,
+    queryClient,
+  ) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const updateArticle = (
+  articleId: number,
+  updateArticleRequest: UpdateArticleRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<ArticleDetailResponse>> => {
+  return axios.patch(
+    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+    updateArticleRequest,
+    options,
+  );
 };
 
 export const getUpdateArticleMutationOptions = <
-  TError = unknown,
+  TError = AxiosError<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -285,7 +1084,7 @@ export const getUpdateArticleMutationOptions = <
     { articleId: number; data: UpdateArticleRequest },
     TContext
   >;
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateArticle>>,
   TError,
@@ -293,13 +1092,13 @@ export const getUpdateArticleMutationOptions = <
   TContext
 > => {
   const mutationKey = ['updateArticle'];
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
+  const { mutation: mutationOptions, axios: axiosOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined };
+    : { mutation: { mutationKey }, axios: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateArticle>>,
@@ -307,7 +1106,7 @@ export const getUpdateArticleMutationOptions = <
   > = (props) => {
     const { articleId, data } = props ?? {};
 
-    return updateArticle(articleId, data, fetchOptions);
+    return updateArticle(articleId, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -317,9 +1116,12 @@ export type UpdateArticleMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateArticle>>
 >;
 export type UpdateArticleMutationBody = UpdateArticleRequest;
-export type UpdateArticleMutationError = unknown;
+export type UpdateArticleMutationError = AxiosError<unknown>;
 
-export const useUpdateArticle = <TError = unknown, TContext = unknown>(
+export const useUpdateArticle = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateArticle>>,
@@ -327,7 +1129,7 @@ export const useUpdateArticle = <TError = unknown, TContext = unknown>(
       { articleId: number; data: UpdateArticleRequest },
       TContext
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -341,43 +1143,19 @@ export const useUpdateArticle = <TError = unknown, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 
-export type deleteCommentResponse200 = {
-  data: null;
-  status: 200;
-};
-
-export type deleteCommentResponseComposite = deleteCommentResponse200;
-
-export type deleteCommentResponse = deleteCommentResponseComposite & {
-  headers: Headers;
-};
-
-export const getDeleteCommentUrl = (articleId: number, commentId: number) => {
-  return `https://apis.uoslife.team/articles/${articleId}/comments/${commentId}`;
-};
-
-export const deleteComment = async (
+export const deleteComment = (
   articleId: number,
   commentId: number,
-  options?: RequestInit,
-): Promise<deleteCommentResponse> => {
-  const res = await fetch(getDeleteCommentUrl(articleId, commentId), {
-    ...options,
-    method: 'DELETE',
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  const data: deleteCommentResponse['data'] = body ? JSON.parse(body) : {};
-
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as deleteCommentResponse;
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<null>> => {
+  return axios.delete(
+    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
+    options,
+  );
 };
 
 export const getDeleteCommentMutationOptions = <
-  TError = unknown,
+  TError = AxiosError<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -386,7 +1164,7 @@ export const getDeleteCommentMutationOptions = <
     { articleId: number; commentId: number },
     TContext
   >;
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteComment>>,
   TError,
@@ -394,13 +1172,13 @@ export const getDeleteCommentMutationOptions = <
   TContext
 > => {
   const mutationKey = ['deleteComment'];
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
+  const { mutation: mutationOptions, axios: axiosOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined };
+    : { mutation: { mutationKey }, axios: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteComment>>,
@@ -408,7 +1186,7 @@ export const getDeleteCommentMutationOptions = <
   > = (props) => {
     const { articleId, commentId } = props ?? {};
 
-    return deleteComment(articleId, commentId, fetchOptions);
+    return deleteComment(articleId, commentId, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -418,9 +1196,12 @@ export type DeleteCommentMutationResult = NonNullable<
   Awaited<ReturnType<typeof deleteComment>>
 >;
 
-export type DeleteCommentMutationError = unknown;
+export type DeleteCommentMutationError = AxiosError<unknown>;
 
-export const useDeleteComment = <TError = unknown, TContext = unknown>(
+export const useDeleteComment = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof deleteComment>>,
@@ -428,7 +1209,7 @@ export const useDeleteComment = <TError = unknown, TContext = unknown>(
       { articleId: number; commentId: number },
       TContext
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -442,46 +1223,21 @@ export const useDeleteComment = <TError = unknown, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 
-export type updateCommentResponse200 = {
-  data: CommentResponse;
-  status: 200;
-};
-
-export type updateCommentResponseComposite = updateCommentResponse200;
-
-export type updateCommentResponse = updateCommentResponseComposite & {
-  headers: Headers;
-};
-
-export const getUpdateCommentUrl = (articleId: number, commentId: number) => {
-  return `https://apis.uoslife.team/articles/${articleId}/comments/${commentId}`;
-};
-
-export const updateComment = async (
+export const updateComment = (
   articleId: number,
   commentId: number,
   commentUpdateRequest: CommentUpdateRequest,
-  options?: RequestInit,
-): Promise<updateCommentResponse> => {
-  const res = await fetch(getUpdateCommentUrl(articleId, commentId), {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(commentUpdateRequest),
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  const data: updateCommentResponse['data'] = body ? JSON.parse(body) : {};
-
-  return {
-    data,
-    status: res.status,
-    headers: res.headers,
-  } as updateCommentResponse;
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<CommentResponse>> => {
+  return axios.patch(
+    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
+    commentUpdateRequest,
+    options,
+  );
 };
 
 export const getUpdateCommentMutationOptions = <
-  TError = unknown,
+  TError = AxiosError<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -490,7 +1246,7 @@ export const getUpdateCommentMutationOptions = <
     { articleId: number; commentId: number; data: CommentUpdateRequest },
     TContext
   >;
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateComment>>,
   TError,
@@ -498,13 +1254,13 @@ export const getUpdateCommentMutationOptions = <
   TContext
 > => {
   const mutationKey = ['updateComment'];
-  const { mutation: mutationOptions, fetch: fetchOptions } = options
+  const { mutation: mutationOptions, axios: axiosOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, fetch: undefined };
+    : { mutation: { mutationKey }, axios: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateComment>>,
@@ -512,7 +1268,7 @@ export const getUpdateCommentMutationOptions = <
   > = (props) => {
     const { articleId, commentId, data } = props ?? {};
 
-    return updateComment(articleId, commentId, data, fetchOptions);
+    return updateComment(articleId, commentId, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -522,9 +1278,12 @@ export type UpdateCommentMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateComment>>
 >;
 export type UpdateCommentMutationBody = CommentUpdateRequest;
-export type UpdateCommentMutationError = unknown;
+export type UpdateCommentMutationError = AxiosError<unknown>;
 
-export const useUpdateComment = <TError = unknown, TContext = unknown>(
+export const useUpdateComment = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateComment>>,
@@ -532,7 +1291,7 @@ export const useUpdateComment = <TError = unknown, TContext = unknown>(
       { articleId: number; commentId: number; data: CommentUpdateRequest },
       TContext
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -546,31 +1305,10 @@ export const useUpdateComment = <TError = unknown, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 
-export type meResponse200 = {
-  data: Me200;
-  status: 200;
-};
-
-export type meResponseComposite = meResponse200;
-
-export type meResponse = meResponseComposite & {
-  headers: Headers;
-};
-
-export const getMeUrl = () => {
-  return `https://apis.uoslife.team/auth/me`;
-};
-
-export const me = async (options?: RequestInit): Promise<meResponse> => {
-  const res = await fetch(getMeUrl(), {
-    ...options,
-    method: 'GET',
-  });
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  const data: meResponse['data'] = body ? JSON.parse(body) : {};
-
-  return { data, status: res.status, headers: res.headers } as meResponse;
+export const me = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<Me200>> => {
+  return axios.get(`https://apis.uoslife.team/auth/me`, options);
 };
 
 export const getMeQueryKey = () => {
@@ -579,19 +1317,19 @@ export const getMeQueryKey = () => {
 
 export const getMeQueryOptions = <
   TData = Awaited<ReturnType<typeof me>>,
-  TError = unknown,
+  TError = AxiosError<unknown>,
 >(options?: {
   query?: Partial<
     UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
   >;
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getMeQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof me>>> = ({ signal }) =>
-    me({ signal, ...fetchOptions });
+    me({ signal, ...axiosOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof me>>,
@@ -601,9 +1339,12 @@ export const getMeQueryOptions = <
 };
 
 export type MeQueryResult = NonNullable<Awaited<ReturnType<typeof me>>>;
-export type MeQueryError = unknown;
+export type MeQueryError = AxiosError<unknown>;
 
-export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
+export function useMe<
+  TData = Awaited<ReturnType<typeof me>>,
+  TError = AxiosError<unknown>,
+>(
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
@@ -616,13 +1357,16 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
         >,
         'initialData'
       >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
+export function useMe<
+  TData = Awaited<ReturnType<typeof me>>,
+  TError = AxiosError<unknown>,
+>(
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
@@ -635,30 +1379,36 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
         >,
         'initialData'
       >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
-export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
+export function useMe<
+  TData = Awaited<ReturnType<typeof me>>,
+  TError = AxiosError<unknown>,
+>(
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 };
 
-export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
+export function useMe<
+  TData = Awaited<ReturnType<typeof me>>,
+  TError = AxiosError<unknown>,
+>(
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -678,14 +1428,14 @@ export function useMe<TData = Awaited<ReturnType<typeof me>>, TError = unknown>(
 
 export const prefetchMeQuery = async <
   TData = Awaited<ReturnType<typeof me>>,
-  TError = unknown,
+  TError = AxiosError<unknown>,
 >(
   queryClient: QueryClient,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
 ): Promise<QueryClient> => {
   const queryOptions = getMeQueryOptions(options);
@@ -697,19 +1447,19 @@ export const prefetchMeQuery = async <
 
 export const getMeSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof me>>,
-  TError = unknown,
+  TError = AxiosError<unknown>,
 >(options?: {
   query?: Partial<
     UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
   >;
-  fetch?: RequestInit;
+  axios?: AxiosRequestConfig;
 }) => {
-  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+  const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getMeQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof me>>> = ({ signal }) =>
-    me({ signal, ...fetchOptions });
+    me({ signal, ...axiosOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof me>>,
@@ -719,17 +1469,17 @@ export const getMeSuspenseQueryOptions = <
 };
 
 export type MeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof me>>>;
-export type MeSuspenseQueryError = unknown;
+export type MeSuspenseQueryError = AxiosError<unknown>;
 
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = unknown,
+  TError = AxiosError<unknown>,
 >(
   options: {
     query: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -737,13 +1487,13 @@ export function useMeSuspense<
 };
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = unknown,
+  TError = AxiosError<unknown>,
 >(
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -751,13 +1501,13 @@ export function useMeSuspense<
 };
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = unknown,
+  TError = AxiosError<unknown>,
 >(
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -766,13 +1516,13 @@ export function useMeSuspense<
 
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = unknown,
+  TError = AxiosError<unknown>,
 >(
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    fetch?: RequestInit;
+    axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -791,3 +1541,76 @@ export function useMeSuspense<
 
   return query;
 }
+
+export const deleteArticle = (
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<null>> => {
+  return axios.delete(`https://apis.uoslife.team/articles/articleId`, options);
+};
+
+export const getDeleteArticleMutationOptions = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteArticle>>,
+    TError,
+    void,
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteArticle>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['deleteArticle'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteArticle>>,
+    void
+  > = () => {
+    return deleteArticle(axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteArticleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteArticle>>
+>;
+
+export type DeleteArticleMutationError = AxiosError<unknown>;
+
+export const useDeleteArticle = <
+  TError = AxiosError<unknown>,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteArticle>>,
+      TError,
+      void,
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteArticle>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getDeleteArticleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};

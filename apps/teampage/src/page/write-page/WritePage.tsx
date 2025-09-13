@@ -6,6 +6,7 @@ import {
   type ChangeEvent,
   type DragEvent,
   type FormEvent,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -63,6 +64,7 @@ export default function WritePage() {
   const searchParams = useSearchParams();
   const from = (searchParams.get('from') as SpaceType) || 'TECH';
   const [space, setSpace] = useState<SpaceType>(from);
+  const isEditMode = searchParams.get('edit') === 'true';
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -95,6 +97,23 @@ export default function WritePage() {
         ];
     }
   }, [space]);
+  useEffect(() => {
+    if (isEditMode) {
+      const savedPost = sessionStorage.getItem('editPost');
+      if (savedPost) {
+        const post = JSON.parse(savedPost);
+        const processedContent = post.content?.replace(/\\n/g, '\n');
+        setTitle(post.title || '');
+        setContent(processedContent || '');
+        setCategory(post.category || '');
+        setSummary(post.summary || '');
+        if (post.thumbnailUrl) {
+          setThumbnailPreview(post.thumbnailUrl);
+        }
+        sessionStorage.removeItem('editPost');
+      }
+    }
+  }, [isEditMode]);
 
   const isDisabledSubmitButton = useMemo(() => {
     const isEmpty = (value: string) => value?.trim() === '';
@@ -108,7 +127,6 @@ export default function WritePage() {
     if (isCareer) {
       return isEmpty(category) || isEmpty(summary);
     }
-    console.log('hi');
 
     return isEmpty(category) || isEmpty(summary) || thumbnailFile === null;
   }, [title, summary, content, category, thumbnailFile, isCareer, isMoments]);
@@ -199,7 +217,9 @@ export default function WritePage() {
     >
       <div className="flex flex-col gap-12">
         <div className="flex flex-col gap-2">
-          <Text variant="title-36-b">게시글 작성</Text>
+          <Text variant="title-36-b">
+            {isEditMode ? '게시글 수정' : '게시글 작성'}
+          </Text>
           <div className="flex flex-row items-center gap-4">
             {space && CATEGORY_MAP[space] && (
               <Text variant="body-18-m" color="grey-500">

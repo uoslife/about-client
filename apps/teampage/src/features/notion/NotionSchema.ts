@@ -29,7 +29,7 @@ export const NotionSelectPropertySchema = z.object({
 
 export const NotionUrlPropertySchema = z.object({
   type: z.literal('url'),
-  url: z.string().url().nullable(),
+  url: z.string().nullable(),
 });
 
 export const NotionFilesPropertySchema = z.object({
