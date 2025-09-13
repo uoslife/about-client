@@ -9,7 +9,7 @@ import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 
-const CATEGORYS = ['전체', 'PM', '마케팅', '디자인', '개발'] as const;
+export const CATEGORYS = ['전체', 'PM', '마케팅', '디자인', '개발'] as const;
 
 export function TechMainSection() {
   const [page, setPage] = useState(1);
@@ -24,7 +24,7 @@ export function TechMainSection() {
         onPageChange={setPage}
         className="my-10"
       />
-      <WritingButton from="tech" className="fixed bottom-6 right-8" />
+      <WritingButton from="TECH" className="fixed bottom-6 right-8" />
     </ArticleMainSectionContainer>
   );
 }

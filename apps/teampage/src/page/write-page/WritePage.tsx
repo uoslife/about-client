@@ -9,34 +9,92 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { useAuth } from '@/entities/auth/useAuth';
 import { ContentEditor } from '@/features/editor';
 import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
+import { type CreateArticleInput, processArticle } from './processArticle';
 
-const CATEGORIES = ['tech', 'career', 'moments'];
 const CATEGORY_MAP: { [key: string]: string } = {
-  tech: 'UOSLIFE Tech',
-  career: 'UOSLIFE Career',
-  moments: 'UOSLIFE Moments',
+  TECH: 'UOSLIFE Tech',
+  CAREER: 'UOSLIFE CAREER',
+  MOMENTS: 'UOSLIFE Moments',
+};
+
+export enum CategoryEnum {
+  DEVELOP = 'DEVELOP',
+  DESIGN = 'DESIGN',
+  MARKETING = 'MARKETING',
+  PM = 'PM',
+  EMPLOYMENT = 'EMPLOYMENT',
+  EXTERNAL_ACTIVITY = 'EXTERNAL_ACTIVITY',
+}
+
+export enum SpaceEnum {
+  TECH = 'TECH',
+  CAREER = 'CAREER',
+  MOMENTS = 'MOMENTS',
+}
+
+export type SpaceType = keyof typeof SpaceEnum;
+
+export enum SpaceIdEnum {
+  TECH = 3,
+  CAREER = 4,
+  MOMENTS = 5,
+}
+
+type CategoryType = keyof typeof CategoryEnum;
+
+const CategoryKorean = {
+  [CategoryEnum.DEVELOP]: '개발',
+  [CategoryEnum.DESIGN]: '디자인',
+  [CategoryEnum.MARKETING]: '마케팅',
+  [CategoryEnum.PM]: '기획',
+  [CategoryEnum.EMPLOYMENT]: '채용',
+  [CategoryEnum.EXTERNAL_ACTIVITY]: '대외활동',
 };
 
 const TITLE_MAX_LENGTH = 56;
 const SUMMARY_MAX_LENGTH = 88;
 
 export default function WritePage() {
+  const session = useAuth();
   const searchParams = useSearchParams();
-  const from = searchParams.get('from') || undefined;
+  const from = (searchParams.get('from') as SpaceType) || 'TECH';
+  const [space, setSpace] = useState<SpaceType>(from);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState<CategoryType>('DESIGN');
   const [summary, setSummary] = useState('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const isCareer = from === 'career';
-  const isMoments = from === 'moments';
+  const isCareer = space === 'CAREER';
+  const isMoments = space === 'MOMENTS';
+
+  const categories = useMemo(() => {
+    switch (space) {
+      case 'TECH':
+        return [
+          CategoryEnum.DEVELOP,
+          CategoryEnum.DESIGN,
+          CategoryEnum.MARKETING,
+          CategoryEnum.PM,
+        ];
+      case 'CAREER':
+        return [CategoryEnum.EMPLOYMENT, CategoryEnum.EXTERNAL_ACTIVITY];
+      default:
+        return [
+          CategoryEnum.DEVELOP,
+          CategoryEnum.DESIGN,
+          CategoryEnum.MARKETING,
+          CategoryEnum.PM,
+        ];
+    }
+  }, [space]);
 
   const isDisabledSubmitButton = useMemo(() => {
     const isEmpty = (value: string) => value?.trim() === '';
@@ -97,8 +155,41 @@ export default function WritePage() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!session.session) return;
+    const accessToken = session.session.accessToken;
     console.log({ title, content, category, summary, thumbnailFile });
-    alert('게시글이 등록되었습니다.');
+    const data: CreateArticleInput = {
+      spaceId: SpaceIdEnum[space],
+      title,
+      content,
+      category,
+      summary,
+      thumbnailFile,
+    };
+    processArticle(data, accessToken).subscribe({
+      next: async (data) => {
+        fetch('https://apis.uoslife.team/articles', {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }).then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Thumbnail upload failed: ${response.status} ${response.statusText}`,
+            );
+          }
+          return response.json();
+        });
+        alert('게시글 등록 완료.');
+        // invalidateQuery.setQuery(data)
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
   };
 
   return (
@@ -107,13 +198,69 @@ export default function WritePage() {
       className="w-full max-w-4xl mx-auto py-12 px-4 flex flex-col gap-12"
     >
       <div className="flex flex-col gap-12">
-        <div>
+        <div className="flex flex-col gap-2">
           <Text variant="title-36-b">게시글 작성</Text>
-          {from && CATEGORY_MAP[from] && (
-            <Text variant="body-18-m" color="grey-500" className="mt-1">
-              {`'${CATEGORY_MAP[from]}' 카테고리에 글을 작성하고 있어요.`}
-            </Text>
-          )}
+          <div className="flex flex-row items-center gap-4">
+            {space && CATEGORY_MAP[space] && (
+              <Text variant="body-18-m" color="grey-500">
+                {`'${CATEGORY_MAP[space]}' 공간에 글을 작성하고 있어요.`}
+              </Text>
+            )}
+            <div className="group relative">
+              <div className="flex items-center gap-1.5 py-2 w-32 cursor-default">
+                <Image
+                  src="/svg/switch.svg"
+                  alt="switch"
+                  width={24}
+                  height={24}
+                />
+              </div>
+              <div className="z-10 hidden group-hover:block absolute top-full bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl left-1/2 -translate-x-1/2 w-full px-2 shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)]">
+                <button
+                  type="button"
+                  className="w-full group/career"
+                  onClick={() => setSpace('CAREER')}
+                >
+                  <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
+                    <Text
+                      variant="body-18-m"
+                      className="group-hover/career:text-primary-ui"
+                    >
+                      Career
+                    </Text>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  className="w-full group/career"
+                  onClick={() => setSpace('MOMENTS')}
+                >
+                  <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
+                    <Text
+                      variant="body-18-m"
+                      className="group-hover/career:text-primary-ui"
+                    >
+                      Moments
+                    </Text>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  className="w-full group/career"
+                  onClick={() => setSpace('TECH')}
+                >
+                  <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
+                    <Text
+                      variant="body-18-m"
+                      className="group-hover/career:text-primary-ui"
+                    >
+                      Tech
+                    </Text>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <input
           type="text"
@@ -135,8 +282,8 @@ export default function WritePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col gap-4">
             <Text variant="title-24-b">카테고리</Text>
-            <div className="flex gap-2">
-              {CATEGORIES.map((cat) => (
+            <div className="grid grid-cols-3 gap-2">
+              {categories.map((cat) => (
                 <TabButton
                   key={cat}
                   type="button"
@@ -144,7 +291,7 @@ export default function WritePage() {
                   onClick={() => setCategory(cat)}
                   clicked={false}
                 >
-                  {cat}
+                  {CategoryKorean[cat]}
                 </TabButton>
               ))}
             </div>
