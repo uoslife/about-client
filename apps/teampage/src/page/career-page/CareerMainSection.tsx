@@ -36,7 +36,7 @@ export function CareerMainSection() {
   const { data, isLoading } = useSearchArticlesInfinite(
     {
       spaceId: SpaceIdEnum.TECH,
-      page: Math.min(page - 1, 0),
+      page: Math.max(page - 1, 0),
 
       size: 10,
       category: category === 'ALL' ? undefined : category,
