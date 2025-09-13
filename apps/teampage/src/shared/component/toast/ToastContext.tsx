@@ -6,6 +6,7 @@ import React, {
   ReactNode,
   useRef,
 } from 'react';
+import { Toast } from './Toast';
 
 interface ToastContextType {
   message: string;
@@ -60,4 +61,9 @@ export const useToastContext = () => {
     throw new Error('useToastContext must be used within a ToastProvider');
   }
   return context;
+};
+
+export const ToastRenderer = () => {
+  const { message, isVisible, hideToast } = useToastContext();
+  return <Toast message={message} isVisible={isVisible} onClose={hideToast} />;
 };
