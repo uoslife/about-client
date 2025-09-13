@@ -4,7 +4,7 @@ import { CommentResponse } from '@uoslife/api';
 import { useState } from 'react';
 import Image from 'next/image';
 import TextareaAutosize from 'react-textarea-autosize';
-import { CommentItem } from './CommentItem';
+import { Comment } from './Comment';
 
 type PostFooterProps = {
   likeCount: number;
@@ -108,7 +108,7 @@ export const PostFooter = ({ likeCount, comments }: PostFooterProps) => {
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
             {comments.map((comment) => (
-              <CommentItem key={comment.id} comment={comment} />
+              <Comment key={comment.id} comment={comment} />
             ))}
           </div>
         </div>
