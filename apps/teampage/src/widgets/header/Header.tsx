@@ -51,7 +51,7 @@ export default function Header() {
 
   return (
     <header
-      className="sticky top-0 z-20 h-[60px] backdrop-blur-[25px] backdrop-filter bg-[rgba(255,255,255,0.8)] flex flex-row items-center justify-between px-[60px] w-full"
+      className="sticky top-0 z-30 h-[60px] backdrop-blur-[25px] backdrop-filter bg-[rgba(255,255,255,0.8)] flex flex-row items-center justify-between px-[60px] w-full"
       data-name="GNB"
     >
       <Link href="/">
