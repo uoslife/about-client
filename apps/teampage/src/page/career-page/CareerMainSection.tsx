@@ -18,6 +18,7 @@ import {
   type SortType,
   SpaceIdEnum,
 } from '@/shared/const/category';
+import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 
 export const CATEGORYS = [
@@ -35,7 +36,8 @@ export function CareerMainSection() {
   const { data, isLoading } = useSearchArticlesInfinite(
     {
       spaceId: SpaceIdEnum.TECH,
-      page,
+      page: Math.min(page - 1, 0),
+
       size: 10,
       category: category === 'ALL' ? undefined : category,
       sortBy: sort === 'POPULAR' ? 'VIEW_COUNT' : 'CREATED_AT',
@@ -68,12 +70,14 @@ export function CareerMainSection() {
       />
       {isLoading ? (
         <CardSkeletonList.B />
+      ) : articles.length > 0 ? (
+        <ArticleList articles={articles} />
       ) : (
-        articles.length > 0 && <ArticleList articles={articles} />
+        <ArticleListEmptyContainer />
       )}
       <Pagination
         totalPages={totalPages}
-        currentPage={page + 1}
+        currentPage={page}
         onPageChange={setPage}
         className="my-10"
       />

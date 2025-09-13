@@ -15,6 +15,7 @@ import {
   type SortType,
   SpaceIdEnum,
 } from '@/shared/const/category';
+import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 
 export const CATEGORYS = [
@@ -26,7 +27,7 @@ export const CATEGORYS = [
 ] as const;
 
 export function TechMainSection() {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [sort, setSort] = useState<SortType>('LATEST');
   const [category, setCategory] = useState<CategoryTypeWithALL>('ALL');
   const [keyword, setKeyword] = useState('');
@@ -34,7 +35,7 @@ export function TechMainSection() {
   const { data, isLoading } = useSearchArticlesInfinite(
     {
       spaceId: SpaceIdEnum.TECH,
-      page,
+      page: Math.min(page - 1, 0),
       size: 10,
       category: category === 'ALL' ? undefined : category,
       sortBy: sort === 'POPULAR' ? 'VIEW_COUNT' : 'CREATED_AT',
@@ -54,7 +55,7 @@ export function TechMainSection() {
   );
 
   const articles = data?.pages.flatMap((page) => page.data.content ?? []) ?? [];
-  const totalPages = data?.pages[0]?.data.totalPages ?? 0;
+  const totalPages = data?.pages[0]?.data.totalPages ?? 1;
 
   return (
     <ArticleMainSectionContainer>
@@ -67,12 +68,14 @@ export function TechMainSection() {
       />
       {isLoading ? (
         <CardSkeletonList.B />
+      ) : articles.length > 0 ? (
+        <ArticleList articles={articles} />
       ) : (
-        articles.length > 0 && <ArticleList articles={articles} />
+        <ArticleListEmptyContainer />
       )}
       <Pagination
         totalPages={totalPages}
-        currentPage={page + 1}
+        currentPage={page}
         onPageChange={setPage}
         className="my-10"
       />

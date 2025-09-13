@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 export function ArticleListEmptyContainer() {
   return (
-    <div className="py-24 flex flex-col items-center justify-center">
+    <div className="py-24 flex flex-col gap-5 items-center justify-center">
       <Image
         width={80}
         height={104}
