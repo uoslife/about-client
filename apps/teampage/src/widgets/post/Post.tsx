@@ -1,7 +1,6 @@
 import { PostSection } from '@/features/post/PostSection';
 import { PostType } from '@/features/post/PostHeader';
-// import { findArticle } from '@uoslife/api';
-import { mockPostData } from './mockPost';
+import { findArticle } from '@uoslife/api';
 
 export async function Post({
   id,
@@ -10,7 +9,6 @@ export async function Post({
   id: number;
   category: PostType;
 }) {
-  console.log(id);
-  // const { data } = await findArticle(id);
-  return <PostSection type={category} post={mockPostData} />;
+  const { data } = await findArticle(id);
+  return <PostSection type={category} post={data} />;
 }
