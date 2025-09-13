@@ -10,7 +10,7 @@ export default defineConfig({
     output: {
       baseUrl: 'https://apis.uoslife.team',
       client: 'react-query',
-      httpClient: 'fetch',
+      httpClient: 'axios',
       mode: 'split',
       target: './src/teampage',
       override: {
