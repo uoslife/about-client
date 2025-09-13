@@ -63,7 +63,14 @@ export class NotionUtil {
   public static extractLink = (
     property?: z.infer<typeof OptionalNotionUrlPropertySchema>,
   ): string | undefined => {
-    return property?.url ?? undefined;
+    const url = property?.url;
+    if (!url || url.trim() === '') return undefined;
+    try {
+      new URL(url);
+      return url;
+    } catch {
+      return undefined;
+    }
   };
 
   public static extractImageProfile = (
