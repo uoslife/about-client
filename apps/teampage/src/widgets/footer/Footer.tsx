@@ -36,7 +36,7 @@ export function Footer() {
             className="h-3"
           />
           <Link
-            href="https://www.notion.so/uoslife/2025-182de257e4b180968679ec4c30392b52?source=copy_link"
+            href="https://uoslife.notion.site/"
             target="_blank"
           >
             <Text variant="body-20-m" className="text-white">

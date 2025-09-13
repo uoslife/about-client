@@ -82,7 +82,7 @@ function OurValueBox({
       <Text variant="title-40-b" color="white">
         {title}
       </Text>
-      <Image src="/svg/add.svg" alt="add icon" width={24} height={24} />
+      <Image src="/svg/add.svg" alt="add icon" width={44} height={44} />
     </div>
   );
 }
