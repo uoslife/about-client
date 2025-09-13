@@ -69,7 +69,16 @@ export class NotionUtil {
   public static extractImageProfile = (
     property?: z.infer<typeof OptionalNotionFilesPropertySchema>,
   ): string | undefined => {
-    return property?.files?.[0]?.file?.url ?? undefined;
+    if (!property?.files?.[0]?.file?.url) return undefined;
+
+    const fileUrl = property.files[0].file.url;
+    const fileName = property.files[0].name || '';
+
+    if (fileName.toLowerCase().includes('.heic')) {
+      return undefined;
+    }
+
+    return fileUrl;
   };
 
   public static extractSummary = (
