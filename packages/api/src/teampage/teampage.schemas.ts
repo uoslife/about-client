@@ -91,6 +91,28 @@ export interface CommentResponse {
   createdAt: Date;
 }
 
+export interface ReactionRequest {
+  nonMemberId?: string;
+}
+
+export interface ErrorResponse {
+  code: string;
+  status: number;
+  message: string;
+  method: string;
+  path: string;
+  timestamp: string;
+  errors?: FieldError[];
+}
+
+export type FieldErrorValue = { [key: string]: unknown };
+
+export interface FieldError {
+  field: string;
+  value?: FieldErrorValue;
+  reason: string;
+}
+
 export interface ReactionResponse {
   isLike: boolean;
 }
@@ -101,9 +123,8 @@ export interface CommentCreateRequest {
   content: string;
 }
 
-export interface ImageUploadRequest {
-  spaceId: number;
-  file: Blob;
+export interface ImageUploadResponse {
+  url: string;
 }
 
 export interface UpdateArticleRequest {
@@ -128,10 +149,10 @@ export interface CommentUpdateRequest {
 }
 
 export interface PageArticleListItem {
-  totalPages?: number;
   totalElements?: number;
-  pageable?: PageableObject;
+  totalPages?: number;
   numberOfElements?: number;
+  pageable?: PageableObject;
   size?: number;
   content?: ArticleListItem[];
   number?: number;
@@ -201,4 +222,24 @@ export type SearchArticlesParams = {
 
 export type SearchArticlesSortBy = 'CREATED_AT' | 'VIEW_COUNT';
 export type SearchArticlesSortOrder = 'ASC' | 'DESC';
+export type UploadThumbnailImageParams = {
+  spaceId: number;
+};
+
+export type UploadThumbnailImageBody = {
+  file: Blob;
+};
+
+export type UploadImageParams = {
+  spaceId: number;
+};
+
+export type UploadImageBody = {
+  file: Blob;
+};
+
+export type FindArticleParams = {
+  nonMemberId?: string;
+};
+
 export type Me200 = { [key: string]: { [key: string]: unknown } };

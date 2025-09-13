@@ -32,12 +32,19 @@ import type {
   CommentResponse,
   CommentUpdateRequest,
   CreateArticleRequest,
-  ImageUploadRequest,
+  ErrorResponse,
+  FindArticleParams,
+  ImageUploadResponse,
   Me200,
   PageArticleListItem,
+  ReactionRequest,
   ReactionResponse,
   SearchArticlesParams,
   UpdateArticleRequest,
+  UploadImageBody,
+  UploadImageParams,
+  UploadThumbnailImageBody,
+  UploadThumbnailImageParams,
 } from './teampage.schemas';
 
 export const searchArticles = (
@@ -407,30 +414,33 @@ export const useCreateArticle = <
 
 export const addReaction = (
   articleId: number,
+  reactionRequest: ReactionRequest,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<ReactionResponse>> => {
   return axios.post(
     `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/likes`,
-    undefined,
+    reactionRequest,
     options,
   );
 };
 
 export const getAddReactionMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = AxiosError<
+    ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+  >,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof addReaction>>,
     TError,
-    { articleId: number },
+    { articleId: number; data: ReactionRequest },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof addReaction>>,
   TError,
-  { articleId: number },
+  { articleId: number; data: ReactionRequest },
   TContext
 > => {
   const mutationKey = ['addReaction'];
@@ -444,11 +454,11 @@ export const getAddReactionMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof addReaction>>,
-    { articleId: number }
+    { articleId: number; data: ReactionRequest }
   > = (props) => {
-    const { articleId } = props ?? {};
+    const { articleId, data } = props ?? {};
 
-    return addReaction(articleId, axiosOptions);
+    return addReaction(articleId, data, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -457,18 +467,22 @@ export const getAddReactionMutationOptions = <
 export type AddReactionMutationResult = NonNullable<
   Awaited<ReturnType<typeof addReaction>>
 >;
-
-export type AddReactionMutationError = AxiosError<unknown>;
+export type AddReactionMutationBody = ReactionRequest;
+export type AddReactionMutationError = AxiosError<
+  ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+>;
 
 export const useAddReaction = <
-  TError = AxiosError<unknown>,
+  TError = AxiosError<
+    ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
+  >,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof addReaction>>,
       TError,
-      { articleId: number },
+      { articleId: number; data: ReactionRequest },
       TContext
     >;
     axios?: AxiosRequestConfig;
@@ -477,7 +491,7 @@ export const useAddReaction = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof addReaction>>,
   TError,
-  { articleId: number },
+  { articleId: number; data: ReactionRequest },
   TContext
 > => {
   const mutationOptions = getAddReactionMutationOptions(options);
@@ -567,15 +581,16 @@ export const useCreateComment = <
 };
 
 export const uploadThumbnailImage = (
-  imageUploadRequest: ImageUploadRequest,
+  uploadThumbnailImageBody: UploadThumbnailImageBody,
+  params: UploadThumbnailImageParams,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string>> => {
+): Promise<AxiosResponse<ImageUploadResponse>> => {
   return axios.post(
     `https://apis.uoslife.team/articles/uploadThumbnailImage`,
-    imageUploadRequest,
+    uploadThumbnailImageBody,
     {
-      responseType: 'text',
       ...options,
+      params: { ...params, ...options?.params },
     },
   );
 };
@@ -587,14 +602,14 @@ export const getUploadThumbnailImageMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof uploadThumbnailImage>>,
     TError,
-    { data: ImageUploadRequest },
+    { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof uploadThumbnailImage>>,
   TError,
-  { data: ImageUploadRequest },
+  { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
   TContext
 > => {
   const mutationKey = ['uploadThumbnailImage'];
@@ -608,11 +623,11 @@ export const getUploadThumbnailImageMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof uploadThumbnailImage>>,
-    { data: ImageUploadRequest }
+    { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams }
   > = (props) => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return uploadThumbnailImage(data, axiosOptions);
+    return uploadThumbnailImage(data, params, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -621,7 +636,7 @@ export const getUploadThumbnailImageMutationOptions = <
 export type UploadThumbnailImageMutationResult = NonNullable<
   Awaited<ReturnType<typeof uploadThumbnailImage>>
 >;
-export type UploadThumbnailImageMutationBody = ImageUploadRequest;
+export type UploadThumbnailImageMutationBody = UploadThumbnailImageBody;
 export type UploadThumbnailImageMutationError = AxiosError<unknown>;
 
 export const useUploadThumbnailImage = <
@@ -632,7 +647,7 @@ export const useUploadThumbnailImage = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof uploadThumbnailImage>>,
       TError,
-      { data: ImageUploadRequest },
+      { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
       TContext
     >;
     axios?: AxiosRequestConfig;
@@ -641,7 +656,7 @@ export const useUploadThumbnailImage = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof uploadThumbnailImage>>,
   TError,
-  { data: ImageUploadRequest },
+  { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
   TContext
 > => {
   const mutationOptions = getUploadThumbnailImageMutationOptions(options);
@@ -650,15 +665,16 @@ export const useUploadThumbnailImage = <
 };
 
 export const uploadImage = (
-  imageUploadRequest: ImageUploadRequest,
+  uploadImageBody: UploadImageBody,
+  params: UploadImageParams,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<string>> => {
+): Promise<AxiosResponse<ImageUploadResponse>> => {
   return axios.post(
     `https://apis.uoslife.team/articles/uploadImage`,
-    imageUploadRequest,
+    uploadImageBody,
     {
-      responseType: 'text',
       ...options,
+      params: { ...params, ...options?.params },
     },
   );
 };
@@ -670,14 +686,14 @@ export const getUploadImageMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof uploadImage>>,
     TError,
-    { data: ImageUploadRequest },
+    { data: UploadImageBody; params: UploadImageParams },
     TContext
   >;
   axios?: AxiosRequestConfig;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof uploadImage>>,
   TError,
-  { data: ImageUploadRequest },
+  { data: UploadImageBody; params: UploadImageParams },
   TContext
 > => {
   const mutationKey = ['uploadImage'];
@@ -691,11 +707,11 @@ export const getUploadImageMutationOptions = <
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof uploadImage>>,
-    { data: ImageUploadRequest }
+    { data: UploadImageBody; params: UploadImageParams }
   > = (props) => {
-    const { data } = props ?? {};
+    const { data, params } = props ?? {};
 
-    return uploadImage(data, axiosOptions);
+    return uploadImage(data, params, axiosOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -704,7 +720,7 @@ export const getUploadImageMutationOptions = <
 export type UploadImageMutationResult = NonNullable<
   Awaited<ReturnType<typeof uploadImage>>
 >;
-export type UploadImageMutationBody = ImageUploadRequest;
+export type UploadImageMutationBody = UploadImageBody;
 export type UploadImageMutationError = AxiosError<unknown>;
 
 export const useUploadImage = <
@@ -715,7 +731,7 @@ export const useUploadImage = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof uploadImage>>,
       TError,
-      { data: ImageUploadRequest },
+      { data: UploadImageBody; params: UploadImageParams },
       TContext
     >;
     axios?: AxiosRequestConfig;
@@ -724,7 +740,7 @@ export const useUploadImage = <
 ): UseMutationResult<
   Awaited<ReturnType<typeof uploadImage>>,
   TError,
-  { data: ImageUploadRequest },
+  { data: UploadImageBody; params: UploadImageParams },
   TContext
 > => {
   const mutationOptions = getUploadImageMutationOptions(options);
@@ -734,16 +750,26 @@ export const useUploadImage = <
 
 export const findArticle = (
   articleId: number,
+  params?: FindArticleParams,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<ArticleDetailResponse>> => {
   return axios.get(
     `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
-    options,
+    {
+      ...options,
+      params: { ...params, ...options?.params },
+    },
   );
 };
 
-export const getFindArticleQueryKey = (articleId?: number) => {
-  return [`https://apis.uoslife.team/articles/${articleId}`] as const;
+export const getFindArticleQueryKey = (
+  articleId?: number,
+  params?: FindArticleParams,
+) => {
+  return [
+    `https://apis.uoslife.team/articles/${articleId}`,
+    ...(params ? [params] : []),
+  ] as const;
 };
 
 export const getFindArticleQueryOptions = <
@@ -751,6 +777,7 @@ export const getFindArticleQueryOptions = <
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
@@ -760,11 +787,12 @@ export const getFindArticleQueryOptions = <
 ) => {
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getFindArticleQueryKey(articleId);
+  const queryKey =
+    queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
     signal,
-  }) => findArticle(articleId, { signal, ...axiosOptions });
+  }) => findArticle(articleId, params, { signal, ...axiosOptions });
 
   return {
     queryKey,
@@ -788,6 +816,7 @@ export function useFindArticle<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params: undefined | FindArticleParams,
   options: {
     query: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
@@ -811,6 +840,7 @@ export function useFindArticle<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
@@ -834,6 +864,7 @@ export function useFindArticle<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
@@ -850,6 +881,7 @@ export function useFindArticle<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
@@ -860,7 +892,7 @@ export function useFindArticle<
 ): UseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getFindArticleQueryOptions(articleId, options);
+  const queryOptions = getFindArticleQueryOptions(articleId, params, options);
 
   const query = useQuery(queryOptions, queryClient) as UseQueryResult<
     TData,
@@ -878,6 +910,7 @@ export const prefetchFindArticleQuery = async <
 >(
   queryClient: QueryClient,
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
@@ -885,7 +918,7 @@ export const prefetchFindArticleQuery = async <
     axios?: AxiosRequestConfig;
   },
 ): Promise<QueryClient> => {
-  const queryOptions = getFindArticleQueryOptions(articleId, options);
+  const queryOptions = getFindArticleQueryOptions(articleId, params, options);
 
   await queryClient.prefetchQuery(queryOptions);
 
@@ -897,6 +930,7 @@ export const getFindArticleSuspenseQueryOptions = <
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -910,11 +944,12 @@ export const getFindArticleSuspenseQueryOptions = <
 ) => {
   const { query: queryOptions, axios: axiosOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getFindArticleQueryKey(articleId);
+  const queryKey =
+    queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
     signal,
-  }) => findArticle(articleId, { signal, ...axiosOptions });
+  }) => findArticle(articleId, params, { signal, ...axiosOptions });
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof findArticle>>,
@@ -933,6 +968,7 @@ export function useFindArticleSuspense<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params: undefined | FindArticleParams,
   options: {
     query: Partial<
       UseSuspenseQueryOptions<
@@ -952,6 +988,7 @@ export function useFindArticleSuspense<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -971,6 +1008,7 @@ export function useFindArticleSuspense<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -991,6 +1029,7 @@ export function useFindArticleSuspense<
   TError = AxiosError<unknown>,
 >(
   articleId: number,
+  params?: FindArticleParams,
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<
@@ -1005,7 +1044,11 @@ export function useFindArticleSuspense<
 ): UseSuspenseQueryResult<TData, TError> & {
   queryKey: DataTag<QueryKey, TData, TError>;
 } {
-  const queryOptions = getFindArticleSuspenseQueryOptions(articleId, options);
+  const queryOptions = getFindArticleSuspenseQueryOptions(
+    articleId,
+    params,
+    options,
+  );
 
   const query = useSuspenseQuery(
     queryOptions,
