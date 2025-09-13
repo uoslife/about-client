@@ -91,10 +91,19 @@ export interface CommentResponse {
   createdAt: Date;
 }
 
+export interface ReactionResponse {
+  isLike: boolean;
+}
+
 export interface CommentCreateRequest {
   nonMemberId?: string;
   nonMemberNickName?: string;
   content: string;
+}
+
+export interface ImageUploadRequest {
+  spaceId: number;
+  file: Blob;
 }
 
 export interface UpdateArticleRequest {

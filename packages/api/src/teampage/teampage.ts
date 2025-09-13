@@ -29,8 +29,10 @@ import type {
   CommentResponse,
   CommentUpdateRequest,
   CreateArticleRequest,
+  ImageUploadRequest,
   Me200,
   PageArticleListItem,
+  ReactionResponse,
   SearchArticlesParams,
   UpdateArticleRequest,
 } from './teampage.schemas';
@@ -465,6 +467,106 @@ export const useCreateArticle = <TError = unknown, TContext = unknown>(
   return useMutation(mutationOptions, queryClient);
 };
 
+export type addReactionResponse200 = {
+  data: ReactionResponse;
+  status: 200;
+};
+
+export type addReactionResponseComposite = addReactionResponse200;
+
+export type addReactionResponse = addReactionResponseComposite & {
+  headers: Headers;
+};
+
+export const getAddReactionUrl = (articleId: number) => {
+  return `https://apis.uoslife.team/articles/${articleId}/likes`;
+};
+
+export const addReaction = async (
+  articleId: number,
+  options?: RequestInit,
+): Promise<addReactionResponse> => {
+  const res = await fetch(getAddReactionUrl(articleId), {
+    ...options,
+    method: 'POST',
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  const data: addReactionResponse['data'] = body ? JSON.parse(body) : {};
+
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as addReactionResponse;
+};
+
+export const getAddReactionMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof addReaction>>,
+    TError,
+    { articleId: number },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof addReaction>>,
+  TError,
+  { articleId: number },
+  TContext
+> => {
+  const mutationKey = ['addReaction'];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof addReaction>>,
+    { articleId: number }
+  > = (props) => {
+    const { articleId } = props ?? {};
+
+    return addReaction(articleId, fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type AddReactionMutationResult = NonNullable<
+  Awaited<ReturnType<typeof addReaction>>
+>;
+
+export type AddReactionMutationError = unknown;
+
+export const useAddReaction = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof addReaction>>,
+      TError,
+      { articleId: number },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof addReaction>>,
+  TError,
+  { articleId: number },
+  TContext
+> => {
+  const mutationOptions = getAddReactionMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
 export type createCommentResponse200 = {
   data: CommentResponse;
   status: 200;
@@ -564,6 +666,214 @@ export const useCreateComment = <TError = unknown, TContext = unknown>(
   TContext
 > => {
   const mutationOptions = getCreateCommentMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+export type uploadThumbnailImageResponse200 = {
+  data: string;
+  status: 200;
+};
+
+export type uploadThumbnailImageResponseComposite =
+  uploadThumbnailImageResponse200;
+
+export type uploadThumbnailImageResponse =
+  uploadThumbnailImageResponseComposite & {
+    headers: Headers;
+  };
+
+export const getUploadThumbnailImageUrl = () => {
+  return `https://apis.uoslife.team/articles/uploadThumbnailImage`;
+};
+
+export const uploadThumbnailImage = async (
+  imageUploadRequest: ImageUploadRequest,
+  options?: RequestInit,
+): Promise<uploadThumbnailImageResponse> => {
+  const res = await fetch(getUploadThumbnailImageUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(imageUploadRequest),
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  const data: uploadThumbnailImageResponse['data'] = body
+    ? JSON.parse(body)
+    : {};
+
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as uploadThumbnailImageResponse;
+};
+
+export const getUploadThumbnailImageMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadThumbnailImage>>,
+    TError,
+    { data: ImageUploadRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof uploadThumbnailImage>>,
+  TError,
+  { data: ImageUploadRequest },
+  TContext
+> => {
+  const mutationKey = ['uploadThumbnailImage'];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadThumbnailImage>>,
+    { data: ImageUploadRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return uploadThumbnailImage(data, fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UploadThumbnailImageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadThumbnailImage>>
+>;
+export type UploadThumbnailImageMutationBody = ImageUploadRequest;
+export type UploadThumbnailImageMutationError = unknown;
+
+export const useUploadThumbnailImage = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof uploadThumbnailImage>>,
+      TError,
+      { data: ImageUploadRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof uploadThumbnailImage>>,
+  TError,
+  { data: ImageUploadRequest },
+  TContext
+> => {
+  const mutationOptions = getUploadThumbnailImageMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+export type uploadImageResponse200 = {
+  data: string;
+  status: 200;
+};
+
+export type uploadImageResponseComposite = uploadImageResponse200;
+
+export type uploadImageResponse = uploadImageResponseComposite & {
+  headers: Headers;
+};
+
+export const getUploadImageUrl = () => {
+  return `https://apis.uoslife.team/articles/uploadImage`;
+};
+
+export const uploadImage = async (
+  imageUploadRequest: ImageUploadRequest,
+  options?: RequestInit,
+): Promise<uploadImageResponse> => {
+  const res = await fetch(getUploadImageUrl(), {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(imageUploadRequest),
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  const data: uploadImageResponse['data'] = body ? JSON.parse(body) : {};
+
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as uploadImageResponse;
+};
+
+export const getUploadImageMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof uploadImage>>,
+    TError,
+    { data: ImageUploadRequest },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof uploadImage>>,
+  TError,
+  { data: ImageUploadRequest },
+  TContext
+> => {
+  const mutationKey = ['uploadImage'];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof uploadImage>>,
+    { data: ImageUploadRequest }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return uploadImage(data, fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UploadImageMutationResult = NonNullable<
+  Awaited<ReturnType<typeof uploadImage>>
+>;
+export type UploadImageMutationBody = ImageUploadRequest;
+export type UploadImageMutationError = unknown;
+
+export const useUploadImage = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof uploadImage>>,
+      TError,
+      { data: ImageUploadRequest },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof uploadImage>>,
+  TError,
+  { data: ImageUploadRequest },
+  TContext
+> => {
+  const mutationOptions = getUploadImageMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
@@ -1432,3 +1742,100 @@ export function useMeSuspense<
 
   return query;
 }
+
+export type deleteArticleResponse200 = {
+  data: null;
+  status: 200;
+};
+
+export type deleteArticleResponseComposite = deleteArticleResponse200;
+
+export type deleteArticleResponse = deleteArticleResponseComposite & {
+  headers: Headers;
+};
+
+export const getDeleteArticleUrl = () => {
+  return `https://apis.uoslife.team/articles/articleId`;
+};
+
+export const deleteArticle = async (
+  options?: RequestInit,
+): Promise<deleteArticleResponse> => {
+  const res = await fetch(getDeleteArticleUrl(), {
+    ...options,
+    method: 'DELETE',
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  const data: deleteArticleResponse['data'] = body ? JSON.parse(body) : {};
+
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as deleteArticleResponse;
+};
+
+export const getDeleteArticleMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteArticle>>,
+    TError,
+    void,
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteArticle>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationKey = ['deleteArticle'];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteArticle>>,
+    void
+  > = () => {
+    return deleteArticle(fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type DeleteArticleMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteArticle>>
+>;
+
+export type DeleteArticleMutationError = unknown;
+
+export const useDeleteArticle = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof deleteArticle>>,
+      TError,
+      void,
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof deleteArticle>>,
+  TError,
+  void,
+  TContext
+> => {
+  const mutationOptions = getDeleteArticleMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
