@@ -40,23 +40,14 @@ export default function PeopleCard({ person }: PeopleCardProps) {
                 width={80}
                 height={80}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  console.log(
-                    'Image load failed, falling back to initial:',
-                    person.image_profile,
-                  );
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove(
-                    'hidden',
-                  );
-                }}
               />
-            ) : null}
-            <div
-              className={`w-full h-full bg-gray-800 flex items-center justify-center text-white text-2xl font-bold ${person.image_profile ? 'hidden' : ''}`}
-            >
-              {person.name.charAt(0)}
-            </div>
+            ) : (
+              <div
+                className={`w-full h-full bg-gray-800 flex items-center justify-center text-white text-2xl font-bold ${person.image_profile ? 'hidden' : ''}`}
+              >
+                {person.name.charAt(0)}
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-1.5">
             <Text variant="title-24-b" color="grey-900">
