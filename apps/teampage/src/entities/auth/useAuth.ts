@@ -8,6 +8,10 @@ type SessionType = {
   refreshToken: string;
 } & Session;
 
+const parseUserName = (name: string) => {
+  return name.split(' ').reverse().join('');
+};
+
 export const useAuth = () => {
   const [session, setSession] = useState<SessionType | null>(null);
   const { data: rawSession, status } = useSession();
@@ -21,7 +25,14 @@ export const useAuth = () => {
 
   useEffect(() => {
     if (rawSession && safeParseSession(rawSession)) {
-      setSession(rawSession);
+      const session = {
+        ...rawSession,
+        user: {
+          ...rawSession.user,
+          name: parseUserName(rawSession.user?.name || ''),
+        },
+      };
+      setSession(session);
     }
   }, [rawSession]);
 
