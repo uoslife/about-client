@@ -19,6 +19,15 @@ interface PeopleCardProps {
 }
 
 export default function PeopleCard({ person }: PeopleCardProps) {
+  const openLink = (url: string) => {
+    if (!url) return;
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      window.open(url, '_blank');
+    } else {
+      window.open(`https://${url}`, '_blank');
+    }
+  };
+
   return (
     <div className="w-[360px] flex flex-col gap-4 bg-[#f7f7f9] rounded-[24px] p-6">
       <div className="flex flex-col gap-5 w-full">
@@ -31,23 +40,14 @@ export default function PeopleCard({ person }: PeopleCardProps) {
                 width={80}
                 height={80}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  console.log(
-                    'Image load failed, falling back to initial:',
-                    person.image_profile,
-                  );
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove(
-                    'hidden',
-                  );
-                }}
               />
-            ) : null}
-            <div
-              className={`w-full h-full bg-gray-800 flex items-center justify-center text-white text-2xl font-bold ${person.image_profile ? 'hidden' : ''}`}
-            >
-              {person.name.charAt(0)}
-            </div>
+            ) : (
+              <div
+                className={`w-full h-full bg-gray-800 flex items-center justify-center text-white text-2xl font-bold ${person.image_profile ? 'hidden' : ''}`}
+              >
+                {person.name.charAt(0)}
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-1.5">
             <Text variant="title-24-b" color="grey-900">
@@ -111,7 +111,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
         {person.link_others && (
           <button
             className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-            onClick={() => window.open(person.link_others, '_blank')}
+            onClick={() => openLink(person.link_others!)}
           >
             <div className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden hover:bg-gray-200">
               <Image width={44} height={44} src={'/svg/home.svg'} alt="home" />
@@ -121,7 +121,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
         {person.link_github && (
           <button
             className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-            onClick={() => window.open(person.link_github, '_blank')}
+            onClick={() => openLink(person.link_github!)}
           >
             <div className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden hover:bg-gray-200">
               <Image
@@ -136,7 +136,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
         {person.link_linkedin && (
           <button
             className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-            onClick={() => window.open(person.link_linkedin, '_blank')}
+            onClick={() => openLink(person.link_linkedin!)}
           >
             <div className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden hover:bg-gray-200">
               <Image
