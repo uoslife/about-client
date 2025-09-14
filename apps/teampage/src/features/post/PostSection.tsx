@@ -1,21 +1,26 @@
 'use client';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useFindArticle } from '@uoslife/api';
 import { Markdown } from '@/shared/component/markdown/Markdown';
 import { PostHeader, PostType } from './PostHeader';
 import { PostFooter } from './PostFooter';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import { ErrorFallback } from '@/shared/component/ErrorFallback';
-import { v4 as uuidv4 } from 'uuid';
+import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 
 export function PostSection({ type, id }: { type: PostType; id: number }) {
-  const nonMemberId = useMemo(
-    () => localStorage.getItem('nonMemberId') || uuidv4(),
-    [],
+  const { nonMemberId, authorizationHeader } = useNonMemberId();
+  const { data: post } = useFindArticle(
+    id,
+    {
+      nonMemberId: nonMemberId,
+    },
+    {
+      axios: {
+        headers: authorizationHeader,
+      },
+    },
   );
-  const { data: post } = useFindArticle(id, {
-    nonMemberId: nonMemberId,
-  });
   if (!post) return null;
 
   return (
