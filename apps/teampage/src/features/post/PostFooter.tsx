@@ -2,17 +2,15 @@
 import { Text } from '@/shared/component/Text';
 import {
   CommentResponse,
-  getFindArticleQueryKey,
   useAddReaction,
   useCreateComment,
 } from '@uoslife/api';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Comment } from './Comment';
 import { useToast } from '@/shared/component/toast';
-import { v4 as uuidv4 } from 'uuid';
-import { useQueryClient } from '@tanstack/react-query';
+import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 
 type PostFooterProps = {
   likeCount: number;
@@ -27,20 +25,17 @@ export const PostFooter = ({
   isLike,
   postId,
 }: PostFooterProps) => {
-  const nonMemberId = useMemo<string>(() => {
-    if (localStorage.getItem('nonMemberId')) {
-      return localStorage.getItem('nonMemberId') || '';
-    }
-    const uuid = uuidv4();
-    localStorage.setItem('nonMemberId', uuid);
-    return uuid;
-  }, []);
-  const queryClient = useQueryClient();
+  const [freshComments, setFreshComments] = useState(comments);
   const { toast } = useToast();
   const [like, setLike] = useState(isLike);
+  const [commentText, setCommentText] = useState('');
   const [optimisticLikeCount, setOptimisticLikeCount] = useState(likeCount);
+  const { nonMemberId, authorizationHeader } = useNonMemberId();
 
   const { mutate: addReaction } = useAddReaction({
+    axios: {
+      headers: authorizationHeader,
+    },
     mutation: {
       onMutate: async () => {
         setLike(true);
@@ -56,23 +51,22 @@ export const PostFooter = ({
     },
   });
   const { mutate: addComment } = useCreateComment({
+    axios: {
+      headers: authorizationHeader,
+    },
     mutation: {
       onMutate: async () => {
         setCommentText('');
       },
-      onSuccess: () => {
-        queryClient.resetQueries({
-          queryKey: getFindArticleQueryKey(postId, {
-            nonMemberId: nonMemberId,
-          }),
-        });
+      onSuccess: ({ data: newComments }: { data: CommentResponse[] }) => {
+        setFreshComments(newComments);
       },
       onError: () => {
         toast('댓글 작성 중 오류가 발생했습니다.', 2000);
       },
     },
   });
-  const [commentText, setCommentText] = useState('');
+
   return (
     <>
       <div className="flex gap-8 items-center">
@@ -85,7 +79,7 @@ export const PostFooter = ({
           onClick={() => {
             addReaction({
               articleId: postId,
-              data: { nonMemberId: nonMemberId || '' },
+              data: { nonMemberId: nonMemberId },
             });
           }}
           disabled={like}
@@ -139,7 +133,7 @@ export const PostFooter = ({
       <div className="flex flex-col gap-9 items-start justify-start w-full">
         <div className="flex flex-col gap-4 items-start justify-start w-[880px]">
           <Text variant="body-16-m" color="grey-900">
-            댓글 {comments.length}개
+            댓글 {freshComments.length}개
           </Text>
           <div className="flex flex-col gap-4 items-end justify-start w-full">
             <div className="relative w-full">
@@ -180,12 +174,8 @@ export const PostFooter = ({
 
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
-            {comments.map((comment) => (
-              <Comment
-                key={comment.id}
-                comment={comment}
-                nonMemberId={nonMemberId}
-              />
+            {freshComments.map((comment) => (
+              <Comment key={comment.id} comment={comment} />
             ))}
           </div>
         </div>
