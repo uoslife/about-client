@@ -17,7 +17,7 @@ export function PostSection({ type, id }: { type: PostType; id: number }) {
     nonMemberId: nonMemberId,
   });
   if (!post) return null;
-  console.log(post.data);
+
   return (
     <ErrorBoundary errorComponent={() => <ErrorFallback />}>
       <div className="flex flex-col gap-[100px] items-center justify-start w-[880px] mx-auto mt-[140px] mb-[140px]">

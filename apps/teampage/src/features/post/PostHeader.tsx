@@ -1,3 +1,4 @@
+import { useAuth } from '@/entities/auth/useAuth';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
 import { Text } from '@/shared/component/Text';
@@ -11,6 +12,7 @@ interface PostHeaderProps {
 }
 
 export const PostHeader = (props: PostHeaderProps) => {
+  const { session } = useAuth();
   const { post, type } = props;
   const { open: openConfirmModal } = useConfirmModal();
 
@@ -43,38 +45,40 @@ export const PostHeader = (props: PostHeaderProps) => {
           )}
         </div>
 
-        <div className="flex gap-2 items-center">
-          <button
-            onClick={() => {
-              sessionStorage.setItem('editPost', JSON.stringify(post));
-              window.location.href = `/write?edit=true&from=${type}`;
-            }}
-            className="cursor-pointer"
-          >
-            <Text variant="body-14-m" color="grey-500">
-              수정
-            </Text>
-          </button>
-          <div className="bg-grey-100 h-2.5 rounded w-px" />
-          <button
-            onClick={() => {
-              openConfirmModal({
-                title: '게시글을 삭제하시겠습니까?',
-                description: '삭제된 게시물은 복구할 수 없습니다.',
-                confirmText: '삭제',
-                cancelText: '취소',
-                onConfirm: () => {
-                  console.log('삭제');
-                },
-              });
-            }}
-            className="cursor-pointer"
-          >
-            <Text variant="body-14-m" color="grey-500">
-              삭제
-            </Text>
-          </button>
-        </div>
+        {session?.user?.name === post.authorName && (
+          <div className="flex gap-2 items-center">
+            <button
+              onClick={() => {
+                sessionStorage.setItem('editPost', JSON.stringify(post));
+                window.location.href = `/write?edit=true&from=${type}`;
+              }}
+              className="cursor-pointer"
+            >
+              <Text variant="body-14-m" color="grey-500">
+                수정
+              </Text>
+            </button>
+            <div className="bg-grey-100 h-2.5 rounded w-px" />
+            <button
+              onClick={() => {
+                openConfirmModal({
+                  title: '게시글을 삭제하시겠습니까?',
+                  description: '삭제된 게시물은 복구할 수 없습니다.',
+                  confirmText: '삭제',
+                  cancelText: '취소',
+                  onConfirm: () => {
+                    console.log('삭제');
+                  },
+                });
+              }}
+              className="cursor-pointer"
+            >
+              <Text variant="body-14-m" color="grey-500">
+                삭제
+              </Text>
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="bg-grey-100 h-px w-full" />
