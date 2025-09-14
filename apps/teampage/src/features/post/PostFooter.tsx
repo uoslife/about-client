@@ -1,25 +1,43 @@
 'use client';
 import { Text } from '@/shared/component/Text';
-import { CommentResponse, useAddReaction } from '@uoslife/api';
-import { useState } from 'react';
+import {
+  CommentResponse,
+  getFindArticleQueryKey,
+  useAddReaction,
+  useCreateComment,
+} from '@uoslife/api';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Comment } from './Comment';
 import { useToast } from '@/shared/component/toast';
+import { v4 as uuidv4 } from 'uuid';
+import { useQueryClient } from '@tanstack/react-query';
 
 type PostFooterProps = {
   likeCount: number;
   comments: CommentResponse[];
+  isLike: boolean;
   postId: number;
 };
 
 export const PostFooter = ({
   likeCount,
   comments,
+  isLike,
   postId,
 }: PostFooterProps) => {
+  const nonMemberId = useMemo<string>(() => {
+    if (localStorage.getItem('nonMemberId')) {
+      return localStorage.getItem('nonMemberId') || '';
+    }
+    const uuid = uuidv4();
+    localStorage.setItem('nonMemberId', uuid);
+    return uuid;
+  }, []);
+  const queryClient = useQueryClient();
   const { toast } = useToast();
-  const [like, setLike] = useState(false);
+  const [like, setLike] = useState(isLike);
   const [optimisticLikeCount, setOptimisticLikeCount] = useState(likeCount);
 
   const { mutate: addReaction } = useAddReaction({
@@ -37,6 +55,23 @@ export const PostFooter = ({
       },
     },
   });
+  const { mutate: addComment } = useCreateComment({
+    mutation: {
+      onMutate: async () => {
+        setCommentText('');
+      },
+      onSuccess: () => {
+        queryClient.resetQueries({
+          queryKey: getFindArticleQueryKey(postId, {
+            nonMemberId: nonMemberId,
+          }),
+        });
+      },
+      onError: () => {
+        toast('댓글 작성 중 오류가 발생했습니다.', 2000);
+      },
+    },
+  });
   const [commentText, setCommentText] = useState('');
   return (
     <>
@@ -48,7 +83,10 @@ export const PostFooter = ({
               : 'bg-white border-[1.6px] border-solid border-[#e9e9ee]'
           }`}
           onClick={() => {
-            addReaction({ articleId: postId, data: { nonMemberId: 'jbcho' } });
+            addReaction({
+              articleId: postId,
+              data: { nonMemberId: nonMemberId || '' },
+            });
           }}
           disabled={like}
         >
@@ -117,7 +155,14 @@ export const PostFooter = ({
             </div>
             <button
               onClick={() => {
-                alert('댓글 남기기');
+                addComment({
+                  articleId: postId,
+                  data: {
+                    content: commentText,
+                    nonMemberId: nonMemberId,
+                    nonMemberNickName: 'test',
+                  },
+                });
               }}
               className={`box-border flex gap-2.5 h-12 items-center justify-center px-5 py-1 rounded-[12px] transition-all duration-200 ${
                 commentText.length >= 5
@@ -136,7 +181,11 @@ export const PostFooter = ({
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
             {comments.map((comment) => (
-              <Comment key={comment.id} comment={comment} />
+              <Comment
+                key={comment.id}
+                comment={comment}
+                nonMemberId={nonMemberId}
+              />
             ))}
           </div>
         </div>

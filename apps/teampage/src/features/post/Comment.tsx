@@ -1,23 +1,53 @@
 import { Text } from '@/shared/component/Text';
-import { CommentResponse } from '@uoslife/api';
+import { useToast } from '@/shared/component/toast';
+import {
+  CommentResponse,
+  useDeleteComment,
+  useUpdateComment,
+} from '@uoslife/api';
 import Image from 'next/image';
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 
 type CommentProps = {
   comment: CommentResponse;
+  nonMemberId: string;
 };
 
-export const Comment = ({ comment }: CommentProps) => {
+export const Comment = ({ comment, nonMemberId }: CommentProps) => {
+  const { toast } = useToast();
   const [editText, setEditText] = useState(comment.content);
   const [isEditing, setIsEditing] = useState(false);
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
+
+  const { mutate: deleteComment } = useDeleteComment({
+    mutation: {
+      onMutate: async () => {
+        setIsEditing(false);
+      },
+      onError: () => {
+        toast('삭제 중 오류가 발생했습니다.', 2000);
+        setIsEditing(false);
+      },
+      onSuccess: () => {
+        toast('삭제되었습니다.', 2000);
+      },
+    },
+  });
+
+  const { mutate: updateComment } = useUpdateComment({
+    mutation: {
+      onMutate: async () => {
+        setIsEditing(false);
+      },
+      onError: () => {
+        toast('수정 중 오류가 발생했습니다.', 2000);
+        setIsEditing(false);
+      },
+      onSuccess: () => {
+        toast('수정되었습니다.', 2000);
+      },
+    },
+  });
 
   return (
     <div className="bg-grey-50 flex flex-col gap-3 items-start justify-start px-8 py-7 rounded-[20px] w-[880px]">
@@ -25,7 +55,7 @@ export const Comment = ({ comment }: CommentProps) => {
         <div className="flex gap-3 items-center">
           <div className="flex gap-2 items-center">
             <Image
-              src={comment.profileImageUrl}
+              src={comment.isMember ? '/img/member.png' : '/img/non_member.png'}
               alt={`${comment.nickname} 프로필`}
               width={28}
               height={28}
@@ -36,10 +66,14 @@ export const Comment = ({ comment }: CommentProps) => {
             </Text>
           </div>
           <Text variant="body-16-m" color="grey-500">
-            {formatDate(comment.createdAt)}
+            {new Date(comment.createdAt).toLocaleDateString('ko-KR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           </Text>
         </div>
-        {comment.isMember && (
+        {comment.nonMemberId === nonMemberId && (
           <div className="flex gap-3 items-center">
             {isEditing ? (
               <button
@@ -53,22 +87,28 @@ export const Comment = ({ comment }: CommentProps) => {
                 </Text>
               </button>
             ) : (
-              <button
-                onClick={() => {
-                  setIsEditing(true);
-                }}
-                className="cursor-pointer"
-              >
-                <Text variant="body-14-m" color="grey-500">
-                  수정
-                </Text>
-              </button>
+              comment.isMember && (
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                  className="cursor-pointer"
+                >
+                  <Text variant="body-14-m" color="grey-500">
+                    수정
+                  </Text>
+                </button>
+              )
             )}
             <div className="bg-grey-200 h-2 rounded w-px" />
             {isEditing ? (
               <button
                 onClick={() => {
-                  confirm('등록하시겠습니까?');
+                  updateComment({
+                    articleId: comment.articleId,
+                    commentId: comment.id,
+                    data: { content: editText },
+                  });
                 }}
                 className={isEditing ? 'cursor-pointer' : 'cursor-not-allowed'}
               >
@@ -80,16 +120,21 @@ export const Comment = ({ comment }: CommentProps) => {
                 </Text>
               </button>
             ) : (
-              <button
-                onClick={() => {
-                  confirm('삭제하시겠습니까?');
-                }}
-                className="cursor-pointer"
-              >
-                <Text variant="body-14-m" color="grey-500">
-                  삭제
-                </Text>
-              </button>
+              comment.isMember && (
+                <button
+                  onClick={() => {
+                    deleteComment({
+                      articleId: comment.articleId,
+                      commentId: comment.id,
+                    });
+                  }}
+                  className="cursor-pointer"
+                >
+                  <Text variant="body-14-m" color="grey-500">
+                    삭제
+                  </Text>
+                </button>
+              )
             )}
           </div>
         )}
