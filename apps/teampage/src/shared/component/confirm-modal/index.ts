@@ -1,6 +1,3 @@
 export { ConfirmModal } from './ConfirmModal';
-export {
-  ConfirmModalProvider,
-  useConfirmModalContext,
-} from './ConfirmModalContext';
+export { ConfirmModalProvider } from './ConfirmModalContext';
 export { useConfirmModal } from './useConfirmModal';
