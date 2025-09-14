@@ -165,13 +165,14 @@ function CurriculumCard({
 }) {
   return (
     <div className="flex flex-col gap-9 w-[540px] flex-shrink-0">
-      <Image
-        src={imageUrl}
-        alt={title}
-        width={540}
-        height={582}
-        className="rounded-[36px] object-cover"
-      />
+      <div className="relative w-[540px] h-[405px]">
+        <Image
+          src={imageUrl}
+          alt={title}
+          fill
+          className="rounded-[36px] object-cover"
+        />
+      </div>
       <div className="flex flex-col gap-3">
         <Text variant="title-28-b">{title}</Text>
         <Text variant="body-18-m" color="grey-700">

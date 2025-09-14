@@ -74,7 +74,7 @@ export function MomentsMainSection() {
         onPageChange={setPage}
         className="my-10"
       />
-      <WritingButton from="moments" className="fixed bottom-6 right-8" />
+      <WritingButton from="MOMENTS" className="fixed bottom-6 right-8" />
     </ArticleMainSectionContainer>
   );
 }

@@ -8,6 +8,7 @@ import { SearchField } from '@/shared/component/search-field';
 import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
+import { CategoryEnum } from '../write-page/WritePage';
 
 const DUMMY_CONTENT: Content[] = [
   {
@@ -67,7 +68,12 @@ const DUMMY_CONTENT: Content[] = [
   },
 ];
 
-const CATEGORYS = ['전체', '취업/인턴', '대외활동'] as const;
+const CategoryKorean = {
+  [CategoryEnum.EMPLOYMENT]: '채용',
+  [CategoryEnum.EXTERNAL_ACTIVITY]: '대외활동',
+};
+
+export const CATEGORYS = ['전체', ...Object.values(CategoryKorean)] as const;
 
 export function CareerMainSection() {
   const [page, setPage] = useState(1);
@@ -82,7 +88,7 @@ export function CareerMainSection() {
         onPageChange={setPage}
         className="my-10"
       />
-      <WritingButton from="career" className="fixed bottom-6 right-8" />
+      <WritingButton from="CAREER" className="fixed bottom-6 right-8" />
     </ArticleMainSectionContainer>
   );
 }
