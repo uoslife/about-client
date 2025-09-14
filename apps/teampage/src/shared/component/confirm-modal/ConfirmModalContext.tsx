@@ -1,5 +1,12 @@
 'use client';
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useCallback,
+  useMemo,
+} from 'react';
 import { ConfirmModal } from './ConfirmModal';
 
 interface ConfirmModalState {
@@ -12,15 +19,21 @@ interface ConfirmModalState {
   onConfirm?: () => void;
 }
 
-interface ConfirmModalContextType {
-  showConfirmModal: (options: Omit<ConfirmModalState, 'isVisible'>) => void;
-  hideConfirmModal: () => void;
+interface ConfirmModalStateContextType {
   state: ConfirmModalState;
 }
 
-const ConfirmModalContext = createContext<ConfirmModalContextType | undefined>(
-  undefined,
-);
+interface ConfirmModalActionsContextType {
+  showConfirmModal: (options: Omit<ConfirmModalState, 'isVisible'>) => void;
+  hideConfirmModal: () => void;
+}
+
+const ConfirmModalStateContext = createContext<
+  ConfirmModalStateContextType | undefined
+>(undefined);
+const ConfirmModalActionsContext = createContext<
+  ConfirmModalActionsContextType | undefined
+>(undefined);
 
 interface ConfirmModalProviderProps {
   children: ReactNode;
@@ -39,45 +52,70 @@ export const ConfirmModalProvider: React.FC<ConfirmModalProviderProps> = ({
     onConfirm: undefined,
   });
 
-  const showConfirmModal = (options: Omit<ConfirmModalState, 'isVisible'>) => {
-    setState({
-      ...options,
-      isVisible: true,
-    });
-  };
+  const showConfirmModal = useCallback(
+    (options: Omit<ConfirmModalState, 'isVisible'>) => {
+      setState({
+        ...options,
+        isVisible: true,
+      });
+    },
+    [],
+  );
 
-  const hideConfirmModal = () => {
+  const hideConfirmModal = useCallback(() => {
     setState((prev) => ({
       ...prev,
       isVisible: false,
     }));
-  };
+  }, []);
+
+  const stateValue = useMemo(
+    () => ({
+      state,
+    }),
+    [state],
+  );
+
+  const actionsValue = useMemo(
+    () => ({
+      showConfirmModal,
+      hideConfirmModal,
+    }),
+    [showConfirmModal, hideConfirmModal],
+  );
 
   return (
-    <ConfirmModalContext.Provider
-      value={{
-        showConfirmModal,
-        hideConfirmModal,
-        state,
-      }}
-    >
-      {children}
-    </ConfirmModalContext.Provider>
+    <ConfirmModalStateContext.Provider value={stateValue}>
+      <ConfirmModalActionsContext.Provider value={actionsValue}>
+        {children}
+      </ConfirmModalActionsContext.Provider>
+    </ConfirmModalStateContext.Provider>
   );
 };
 
-export const useConfirmModalContext = () => {
-  const context = useContext(ConfirmModalContext);
+export const useConfirmModalState = () => {
+  const context = useContext(ConfirmModalStateContext);
   if (context === undefined) {
     throw new Error(
-      'useConfirmModalContext must be used within a ConfirmModalProvider',
+      'useConfirmModalState must be used within a ConfirmModalProvider',
+    );
+  }
+  return context;
+};
+
+export const useConfirmModalActions = () => {
+  const context = useContext(ConfirmModalActionsContext);
+  if (context === undefined) {
+    throw new Error(
+      'useConfirmModalActions must be used within a ConfirmModalProvider',
     );
   }
   return context;
 };
 
 export const ConfirmModalRenderer = () => {
-  const { state, hideConfirmModal } = useConfirmModalContext();
+  const { state } = useConfirmModalState();
+  const { hideConfirmModal } = useConfirmModalActions();
   return (
     <ConfirmModal
       isVisible={state.isVisible}

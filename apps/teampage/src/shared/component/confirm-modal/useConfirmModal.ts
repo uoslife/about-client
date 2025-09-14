@@ -1,8 +1,11 @@
-import { useConfirmModalContext } from './ConfirmModalContext';
+import {
+  useConfirmModalActions,
+  useConfirmModalState,
+} from './ConfirmModalContext';
 
 export const useConfirmModal = () => {
-  const { showConfirmModal, hideConfirmModal, state } =
-    useConfirmModalContext();
+  const { showConfirmModal, hideConfirmModal } = useConfirmModalActions();
+  const { state } = useConfirmModalState();
 
   const open = (options: {
     title: string;
