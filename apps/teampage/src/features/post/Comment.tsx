@@ -1,7 +1,11 @@
+import { useAuth } from '@/entities/auth/useAuth';
+import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
+import { useQueryClient } from '@tanstack/react-query';
 import {
   CommentResponse,
+  getFindArticleQueryKey,
   useDeleteComment,
   useUpdateComment,
 } from '@uoslife/api';
@@ -11,15 +15,19 @@ import TextareaAutosize from 'react-textarea-autosize';
 
 type CommentProps = {
   comment: CommentResponse;
-  nonMemberId: string;
 };
 
-export const Comment = ({ comment, nonMemberId }: CommentProps) => {
+export const Comment = ({ comment }: CommentProps) => {
+  const { session } = useAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [editText, setEditText] = useState(comment.content);
   const [isEditing, setIsEditing] = useState(false);
-
+  const { nonMemberId, authorizationHeader } = useNonMemberId();
   const { mutate: deleteComment } = useDeleteComment({
+    axios: {
+      headers: authorizationHeader,
+    },
     mutation: {
       onMutate: async () => {
         setIsEditing(false);
@@ -30,11 +38,19 @@ export const Comment = ({ comment, nonMemberId }: CommentProps) => {
       },
       onSuccess: () => {
         toast('삭제되었습니다.', 2000);
+        queryClient.resetQueries({
+          queryKey: getFindArticleQueryKey(comment.articleId, {
+            nonMemberId: nonMemberId,
+          }),
+        });
       },
     },
   });
 
   const { mutate: updateComment } = useUpdateComment({
+    axios: {
+      headers: authorizationHeader,
+    },
     mutation: {
       onMutate: async () => {
         setIsEditing(false);
@@ -45,6 +61,11 @@ export const Comment = ({ comment, nonMemberId }: CommentProps) => {
       },
       onSuccess: () => {
         toast('수정되었습니다.', 2000);
+        queryClient.resetQueries({
+          queryKey: getFindArticleQueryKey(comment.articleId, {
+            nonMemberId: nonMemberId,
+          }),
+        });
       },
     },
   });
@@ -73,71 +94,74 @@ export const Comment = ({ comment, nonMemberId }: CommentProps) => {
             })}
           </Text>
         </div>
-        {comment.nonMemberId === nonMemberId && (
-          <div className="flex gap-3 items-center">
-            {isEditing ? (
-              <button
-                onClick={() => {
-                  setIsEditing(false);
-                }}
-                className="cursor-pointer"
-              >
-                <Text variant="body-14-m" color="grey-500">
-                  취소
-                </Text>
-              </button>
-            ) : (
-              comment.isMember && (
+        {comment.nonMemberId === nonMemberId ||
+          (comment.isMember && comment.nickname === session?.user?.name && (
+            <div className="flex gap-3 items-center">
+              {isEditing ? (
                 <button
                   onClick={() => {
-                    setIsEditing(true);
+                    setIsEditing(false);
                   }}
                   className="cursor-pointer"
                 >
                   <Text variant="body-14-m" color="grey-500">
-                    수정
+                    취소
                   </Text>
                 </button>
-              )
-            )}
-            <div className="bg-grey-200 h-2 rounded w-px" />
-            {isEditing ? (
-              <button
-                onClick={() => {
-                  updateComment({
-                    articleId: comment.articleId,
-                    commentId: comment.id,
-                    data: { content: editText },
-                  });
-                }}
-                className={isEditing ? 'cursor-pointer' : 'cursor-not-allowed'}
-              >
-                <Text
-                  variant="body-14-m"
-                  color={editText.length >= 5 ? 'primary-ui' : 'grey-500'}
-                >
-                  등록
-                </Text>
-              </button>
-            ) : (
-              comment.isMember && (
+              ) : (
+                comment.isMember && (
+                  <button
+                    onClick={() => {
+                      setIsEditing(true);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Text variant="body-14-m" color="grey-500">
+                      수정
+                    </Text>
+                  </button>
+                )
+              )}
+              <div className="bg-grey-200 h-2 rounded w-px" />
+              {isEditing ? (
                 <button
                   onClick={() => {
-                    deleteComment({
+                    updateComment({
                       articleId: comment.articleId,
                       commentId: comment.id,
+                      data: { content: editText },
                     });
                   }}
-                  className="cursor-pointer"
+                  className={
+                    isEditing ? 'cursor-pointer' : 'cursor-not-allowed'
+                  }
                 >
-                  <Text variant="body-14-m" color="grey-500">
-                    삭제
+                  <Text
+                    variant="body-14-m"
+                    color={editText.length >= 5 ? 'primary-ui' : 'grey-500'}
+                  >
+                    등록
                   </Text>
                 </button>
-              )
-            )}
-          </div>
-        )}
+              ) : (
+                comment.isMember && (
+                  <button
+                    onClick={() => {
+                      deleteComment({
+                        articleId: comment.articleId,
+                        commentId: comment.id,
+                      });
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <Text variant="body-14-m" color="grey-500">
+                      삭제
+                    </Text>
+                  </button>
+                )
+              )}
+            </div>
+          ))}
       </div>
       {isEditing ? (
         <TextareaAutosize

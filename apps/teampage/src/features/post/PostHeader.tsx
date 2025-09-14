@@ -2,7 +2,8 @@ import { useAuth } from '@/entities/auth/useAuth';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
 import { Text } from '@/shared/component/Text';
-import { ArticleDetailResponse } from '@uoslife/api';
+import { useToast } from '@/shared/component/toast';
+import { ArticleDetailResponse, useDeleteArticle } from '@uoslife/api';
 
 export type PostType = 'tech' | 'career' | 'moments';
 
@@ -12,9 +13,21 @@ interface PostHeaderProps {
 }
 
 export const PostHeader = (props: PostHeaderProps) => {
+  const { toast } = useToast();
   const { session } = useAuth();
   const { post, type } = props;
   const { open: openConfirmModal } = useConfirmModal();
+
+  const { mutate: deleteArticle } = useDeleteArticle({
+    mutation: {
+      onSuccess: () => {
+        // /tech로 라우팅
+      },
+      onError: () => {
+        toast('삭제 중 오류가 발생했습니다.', 2000);
+      },
+    },
+  });
 
   return (
     <div className="flex flex-col gap-7 items-start justify-start w-full">
@@ -67,7 +80,7 @@ export const PostHeader = (props: PostHeaderProps) => {
                   confirmText: '삭제',
                   cancelText: '취소',
                   onConfirm: () => {
-                    console.log('삭제');
+                    deleteArticle();
                   },
                 });
               }}

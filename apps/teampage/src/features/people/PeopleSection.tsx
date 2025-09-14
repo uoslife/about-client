@@ -26,7 +26,7 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
   );
 
   const filteredPeopleData = useMemo(() => {
-    return peopleData
+    const filtered = peopleData
       .filter(
         (person) =>
           selectedGeneration === -1 ||
@@ -40,6 +40,28 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
           person.generation.toLowerCase().includes(searchQuery.toLowerCase()) ||
           person.position.toLowerCase().includes(searchQuery.toLowerCase()),
       );
+
+    return filtered.sort((a, b) => {
+      if (selectedGeneration === -1) {
+        const generationA = Number(a.generation.slice(0, -1));
+        const generationB = Number(b.generation.slice(0, -1));
+        if (generationA !== generationB) {
+          return generationB - generationA;
+        }
+        return a.name.localeCompare(b.name, 'ko');
+      } else {
+        const positionOrder = { 대표: 0, 부대표: 1 };
+        const orderA =
+          positionOrder[a.position as keyof typeof positionOrder] ?? 2;
+        const orderB =
+          positionOrder[b.position as keyof typeof positionOrder] ?? 2;
+
+        if (orderA !== orderB) {
+          return orderA - orderB;
+        }
+        return a.name.localeCompare(b.name, 'ko');
+      }
+    });
   }, [peopleData, selectedGeneration, searchQuery, generations]);
 
   return (
@@ -49,11 +71,18 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
         description="서로 다른 열정을 모아, 하나의 가능성을 만드는 시대생팀을 소개합니다."
       />
       <div className="flex items-center justify-center py-[100px]">
-        <div className="w-[1120px] flex flex-col gap-10">
+        <div className="w-[1120px] flex flex-col gap-10 justify-center">
           <PeopleHeader generations={generations} />
-          <div className="flex gap-5 flex-wrap">
+          <div className="flex flex-wrap justify-center gap-5">
             {filteredPeopleData.map((person, index) => (
               <PeopleCard key={`${person.name}-${index}`} person={person} />
+            ))}
+            {[...Array(3 - (filteredPeopleData.length % 3))].map((_, i) => (
+              <div
+                key={`dummy-${i}`}
+                className="w-[calc((100%/3)-20px)] invisible"
+                aria-hidden="true"
+              />
             ))}
             {filteredPeopleData.length === 0 && (
               <NoQueryResultFallback message="검색 결과가 없습니다." />
