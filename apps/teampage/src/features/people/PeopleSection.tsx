@@ -1,25 +1,46 @@
 'use client';
 import PeopleCard from './PeopleCard';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { PeopleContext, PeopleProvider } from './PeopleProvider';
 import { PeopleData } from '@features/notion/NotionType';
 import { SearchField } from '@/shared/component/search-field';
 import { Dropdown } from '@/shared/component/dropdown';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
+import { NoQueryResultFallback } from '@/shared/component/NoQueryResultFallback';
+
+const sortGenerationWithNumber = (a: string, b: string) => {
+  return Number(a.slice(0, -1)) - Number(b.slice(0, -1));
+};
 
 const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
   const { selectedGeneration, searchQuery } = useContext(PeopleContext)!;
 
-  const sortGenerationWithNumber = (a: string, b: string) => {
-    return Number(a.slice(0, -1)) - Number(b.slice(0, -1));
-  };
+  const generations = useMemo(
+    () => [
+      '전체 기수',
+      ...Array.from(new Set(peopleData.map((person) => person.generation)))
+        .sort(sortGenerationWithNumber)
+        .reverse(),
+    ],
+    [peopleData],
+  );
 
-  const generations = [
-    '전체 기수',
-    ...Array.from(new Set(peopleData.map((person) => person.generation)))
-      .sort(sortGenerationWithNumber)
-      .reverse(),
-  ];
+  const filteredPeopleData = useMemo(() => {
+    return peopleData
+      .filter(
+        (person) =>
+          selectedGeneration === -1 ||
+          person.generation === generations[selectedGeneration],
+      )
+      .filter(
+        (person) =>
+          person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          person.major.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          person.career?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          person.generation.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          person.position.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+  }, [peopleData, selectedGeneration, searchQuery, generations]);
 
   return (
     <main className="flex flex-col">
@@ -31,18 +52,12 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
         <div className="w-[1120px] flex flex-col gap-10">
           <PeopleHeader generations={generations} />
           <div className="flex gap-5 flex-wrap">
-            {peopleData
-              .filter(
-                (person) =>
-                  selectedGeneration === -1 ||
-                  person.generation === generations[selectedGeneration],
-              )
-              .filter((person) =>
-                person.name.toLowerCase().includes(searchQuery.toLowerCase()),
-              )
-              .map((person, index) => (
-                <PeopleCard key={`${person.name}-${index}`} person={person} />
-              ))}
+            {filteredPeopleData.map((person, index) => (
+              <PeopleCard key={`${person.name}-${index}`} person={person} />
+            ))}
+            {filteredPeopleData.length === 0 && (
+              <NoQueryResultFallback message="검색 결과가 없습니다." />
+            )}
           </div>
         </div>
       </div>
