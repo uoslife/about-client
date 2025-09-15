@@ -1,11 +1,13 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { WritingButton } from '@/shared/component/buttons';
 import { Card, CardSkeletonList } from '@/shared/component/card';
 import { Pagination } from '@/shared/component/pagination';
 import { SearchField } from '@/shared/component/search-field';
 import { Text } from '@/shared/component/Text';
 import { SpaceIdEnum } from '@/shared/const/category';
+import { useDebounce } from '@/shared/hooks/useDebounce';
 import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
@@ -25,18 +27,21 @@ export function MomentsMainSection() {
 
 function TopBar() {
   const { dispatch } = useArticle();
+  const [keyword, setKeyword] = useState('');
+  const debouncedKeyword = useDebounce(keyword, 300);
+
+  useEffect(() => {
+    dispatch({ type: 'SET_KEYWORD', payload: debouncedKeyword });
+  }, [debouncedKeyword, dispatch]);
+
   return (
     <div className="flex justify-between items-center">
       <SearchField
         size="small"
         placeholder="제목을 입력해주세요"
+        value={keyword}
         onChange={(e) => {
-          if (e.target.value === '') {
-            dispatch({ type: 'SET_KEYWORD', payload: e.target.value });
-            return;
-          }
-
-          dispatch({ type: 'SET_KEYWORD', payload: e.target.value });
+          setKeyword(e.target.value);
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
