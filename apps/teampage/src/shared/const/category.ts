@@ -43,6 +43,20 @@ export const CategoryKoreanWithAll = Object.assign(CategoryKorean, {
   [CategoryAllEnum.ALL]: '전체',
 });
 
+export const CAREER_CATEGORIES = [
+  CategoryAllEnum.ALL,
+  CategoryEnum.EMPLOYMENT,
+  CategoryEnum.EXTERNAL_ACTIVITY,
+] as const;
+
+export const TECH_CATEGORIES = [
+  CategoryAllEnum.ALL,
+  CategoryEnum.PM,
+  CategoryEnum.MARKETING,
+  CategoryEnum.DESIGN,
+  CategoryEnum.DEVELOP,
+] as const;
+
 export enum SortEnum {
   LATEST = 'LATEST',
   POPULAR = 'POPULAR',

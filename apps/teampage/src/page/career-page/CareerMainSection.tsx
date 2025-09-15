@@ -1,8 +1,5 @@
 'use client';
 
-import type { ArticleListItem } from '@uoslife/api';
-import { useSearchArticlesInfinite } from '@uoslife/api';
-import { useState } from 'react';
 import { WritingButton } from '@/shared/component/buttons';
 import { Card, CardSkeletonList } from '@/shared/component/card';
 import { Pagination } from '@/shared/component/pagination';
@@ -10,106 +7,40 @@ import { SearchField } from '@/shared/component/search-field';
 import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
 import {
-  CategoryAllEnum,
-  CategoryEnum,
+  CAREER_CATEGORIES,
   CategoryKoreanWithAll,
-  type CategoryTypeWithALL,
   SortKorean,
-  type SortType,
   SpaceIdEnum,
 } from '@/shared/const/category';
 import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
-
-export const CATEGORYS = [
-  CategoryAllEnum.ALL,
-  CategoryEnum.EMPLOYMENT,
-  CategoryEnum.EXTERNAL_ACTIVITY,
-] as const;
+import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
 
 export function CareerMainSection() {
-  const [page, setPage] = useState(0);
-  const [sort, setSort] = useState<SortType>('LATEST');
-  const [category, setCategory] = useState<CategoryTypeWithALL>('ALL');
-  const [keyword, setKeyword] = useState('');
-  // const { session } = useAuth();
-  const { data, isLoading } = useSearchArticlesInfinite(
-    {
-      spaceId: SpaceIdEnum.TECH,
-      page: Math.max(page - 1, 0),
-
-      size: 10,
-      category: category === 'ALL' ? undefined : category,
-      sortBy: sort === 'POPULAR' ? 'VIEW_COUNT' : 'CREATED_AT',
-      sortOrder: 'DESC',
-      keyword: keyword || undefined,
-    },
-    {
-      query: {
-        getNextPageParam: (lastPage) => {
-          if (!lastPage.data.last) {
-            return (lastPage.data.number ?? 0) + 1;
-          }
-          return undefined;
-        },
-      },
-    },
-  );
-
-  const articles = data?.pages.flatMap((page) => page.data.content ?? []) ?? [];
-  const totalPages = data?.pages[0]?.data.totalPages ?? 0;
-
   return (
-    <ArticleMainSectionContainer>
-      <TopBar
-        sort={sort}
-        setSort={setSort}
-        category={category}
-        setCategory={setCategory}
-        setKeyword={setKeyword}
-      />
-      {isLoading ? (
-        <CardSkeletonList.B />
-      ) : articles.length > 0 ? (
-        <ArticleList articles={articles} />
-      ) : (
-        <ArticleListEmptyContainer />
-      )}
-      <Pagination
-        totalPages={totalPages}
-        currentPage={page}
-        onPageChange={setPage}
-        className="my-10"
-      />
-      <WritingButton from="CAREER" className="fixed bottom-6 right-8" />
-    </ArticleMainSectionContainer>
+    <ArticleProvider spaceId={SpaceIdEnum.CAREER}>
+      <ArticleMainSectionContainer>
+        <TopBar />
+        <ArticleList />
+        <CareerPagination />
+        <WritingButton from="CAREER" className="fixed bottom-6 right-8" />
+      </ArticleMainSectionContainer>
+    </ArticleProvider>
   );
 }
 
-type TopBarProps = {
-  sort: SortType;
-  setSort: (sort: SortType) => void;
-  category: CategoryTypeWithALL;
-  setCategory: (category: CategoryTypeWithALL) => void;
-  setKeyword: (keyword: string) => void;
-};
+function TopBar() {
+  const { state, dispatch } = useArticle();
 
-function TopBar({
-  sort,
-  setSort,
-  category,
-  setCategory,
-  setKeyword,
-}: TopBarProps) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-4">
         <div className="flex flex-row gap-2 items-center ">
-          {CATEGORYS.map((cat) => (
+          {CAREER_CATEGORIES.map((cat) => (
             <TabButton
               key={cat}
-              clicked={category === cat}
-              onClick={() => setCategory(cat)}
+              clicked={state.category === cat}
+              onClick={() => dispatch({ type: 'SET_CATEGORY', payload: cat })}
             >
               {CategoryKoreanWithAll[cat]}
             </TabButton>
@@ -119,8 +50,12 @@ function TopBar({
           size="small"
           placeholder="제목을 입력해주세요"
           onChange={(e) => {
-            if (e.target.value === '') setKeyword('');
-            setKeyword(e.target.value);
+            if (e.target.value === '') {
+              dispatch({ type: 'SET_KEYWORD', payload: e.target.value });
+              return;
+            }
+
+            dispatch({ type: 'SET_KEYWORD', payload: e.target.value });
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -132,7 +67,7 @@ function TopBar({
       <div className="group relative">
         <div className="flex items-center gap-1.5 py-2 px-5 cursor-default">
           <Text variant="body-18-m" color="grey-900">
-            {SortKorean[sort]}
+            {SortKorean[state.sort]}
           </Text>
           <svg
             width="16"
@@ -157,7 +92,9 @@ function TopBar({
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('LATEST')}
+                onClick={() =>
+                  dispatch({ type: 'SET_SORT', payload: 'LATEST' })
+                }
               >
                 {SortKorean.LATEST}
               </Text>
@@ -168,7 +105,9 @@ function TopBar({
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('POPULAR')}
+                onClick={() =>
+                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' })
+                }
               >
                 {SortKorean.POPULAR}
               </Text>
@@ -180,11 +119,12 @@ function TopBar({
   );
 }
 
-type ArticleListProps = {
-  articles: ArticleListItem[];
-};
+function ArticleList() {
+  const { articles, isLoading, error } = useArticle();
 
-function ArticleList({ articles }: ArticleListProps) {
+  if (isLoading) return <CardSkeletonList.B />;
+  if (error) return <ArticleListEmptyContainer />;
+
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
       {articles.map((content) => (
@@ -195,5 +135,18 @@ function ArticleList({ articles }: ArticleListProps) {
         />
       ))}
     </div>
+  );
+}
+
+function CareerPagination() {
+  const { totalPages, state, dispatch } = useArticle();
+
+  return (
+    <Pagination
+      totalPages={totalPages}
+      currentPage={state.page}
+      onPageChange={(page) => dispatch({ type: 'SET_PAGE', payload: page })}
+      className="my-10"
+    />
   );
 }
