@@ -65,7 +65,7 @@ async function TechArticleList() {
           !c.thumbnailUrl ? { ...c, thumbnailUrl: 'svg/roomae_03.svg' } : c,
         )
         .map((data) => (
-          <Card.A link={'/tech/0'} key={data.title} content={data} />
+          <Card.A link={`/tech/${data.id}`} key={data.title} content={data} />
         ))}
     </div>
   );
