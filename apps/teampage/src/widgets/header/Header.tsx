@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
 import { Text } from '@/shared/component/Text';
+import { twMerge } from "tailwind-merge"
 
 const Route = {
   HOME: {
@@ -51,7 +52,11 @@ export default function Header() {
 
   return (
     <header
-      className="sticky top-0 z-30 h-[60px] backdrop-blur-[25px] backdrop-filter bg-[rgba(255,255,255,0.8)] flex flex-row items-center justify-between px-[60px] w-full"
+      className={twMerge(
+        "w-full h-[64px] sticky top-0 z-50",
+        "flex flex-row gap-8",
+        "box-border content-stretch items-center justify-between px-10 py-4 bg-white shadow-[0px_1px_0px_0px_rgba(18,18,18,0.1)]"
+      )}
       data-name="GNB"
     >
       <Link href="/">
@@ -62,19 +67,21 @@ export default function Header() {
           width={80}
         />
       </Link>
-      <div className="absolute box-border content-stretch flex flex-row gap-4 items-center justify-start left-1/2 p-0 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="flex flex-row gap-4 items-center justify-start">
         {Object.values(Route).map((route) => renderLink(route))}
       </div>
       <div className="box-border content-stretch flex flex-row gap-4 items-center justify-center p-0 relative shrink-0">
         <div className="box-border content-stretch flex flex-row gap-[15px] items-center justify-start p-0 relative shrink-0">
           <div className="box-border content-stretch flex flex-row gap-4 items-center justify-start p-0 relative shrink-0">
-            <Image
-              src="/svg/search.svg"
-              alt="search icon"
-              width={44}
-              height={44}
-              className="hover:bg-gray-100 rounded-xl"
-            />
+            <a>
+              <Image
+                src="/svg/kakao.svg"
+                alt="search icon"
+                width={44}
+                height={44}
+                className="hover:bg-gray-100 rounded-xl"
+              />
+            </a>
             <a
               href="https://instagram.com/uoslife_official"
               target="_blank"
@@ -103,7 +110,8 @@ export default function Header() {
             </a>
           </div>
         </div>
-        {status === 'unauthenticated' ? (
+        {/* 비회원 혹은 인증 내역을 얻기 전 */}
+        {status === undefined || status === 'unauthenticated'  && (
           <div className="flex justify-center items-center gap-7">
             <div className="bg-[#72727C] h-[20px] w-[1px]" />
             <button
@@ -116,7 +124,9 @@ export default function Header() {
               </p>
             </button>
           </div>
-        ) : (
+        )}
+        {/* 인증된 사용자의 경우 */}
+        {status === 'authenticated' && (
           <button
             type="button"
             className="flex justify-center items-center gap-7 cursor-pointer"

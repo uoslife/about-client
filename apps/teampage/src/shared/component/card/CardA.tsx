@@ -14,7 +14,7 @@ export function CardA({ content, className, link }: CardProps) {
     title,
     category,
     summary,
-    viewCount,
+    // viewCount,
     thumbnailUrl,
     createdAt,
   } = content;
@@ -79,7 +79,7 @@ export function CardA({ content, className, link }: CardProps) {
                     day: 'numeric',
                   })}
                 </Text>
-                {viewCount && (
+                {/* {viewCount && (
                   <Text
                     variant="body-16-m"
                     color="grey-600"
@@ -87,7 +87,7 @@ export function CardA({ content, className, link }: CardProps) {
                   >
                     조회수 {viewCount.toLocaleString()}
                   </Text>
-                )}
+                )} */}
               </div>
             </div>
           </>

@@ -1,28 +1,40 @@
 'use client';
-import { type CommentResponse, useAddReaction } from '@uoslife/api';
+import {
+  type CommentResponse,
+  useAddReaction,
+  useCreateComment,
+} from '@uoslife/api';
 import Image from 'next/image';
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
+import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
-import { Comment } from './Comment';
 
 type PostFooterProps = {
   likeCount: number;
   comments: CommentResponse[];
+  isLike: boolean;
   postId: number;
 };
 
 export const PostFooter = ({
   likeCount,
   comments,
+  isLike,
   postId,
 }: PostFooterProps) => {
+  const [freshComments, setFreshComments] = useState(comments);
   const { toast } = useToast();
-  const [like, setLike] = useState(false);
+  const [like, setLike] = useState(isLike);
+  const [commentText, setCommentText] = useState('');
   const [optimisticLikeCount, setOptimisticLikeCount] = useState(likeCount);
+  const { nonMemberId, authorizationHeader } = useNonMemberId();
 
   const { mutate: addReaction } = useAddReaction({
+    axios: {
+      headers: authorizationHeader,
+    },
     mutation: {
       onMutate: async () => {
         setLike(true);
@@ -37,7 +49,23 @@ export const PostFooter = ({
       },
     },
   });
-  const [commentText, setCommentText] = useState('');
+  const { mutate: addComment } = useCreateComment({
+    axios: {
+      headers: authorizationHeader,
+    },
+    mutation: {
+      onMutate: async () => {
+        setCommentText('');
+      },
+      onSuccess: ({ data: newComments }: { data: CommentResponse[] }) => {
+        setFreshComments(newComments);
+      },
+      onError: () => {
+        toast('댓글 작성 중 오류가 발생했습니다.', 2000);
+      },
+    },
+  });
+
   return (
     <>
       <div className="flex gap-8 items-center">
@@ -48,7 +76,10 @@ export const PostFooter = ({
               : 'bg-white border-[1.6px] border-solid border-[#e9e9ee]'
           }`}
           onClick={() => {
-            addReaction({ articleId: postId, data: { nonMemberId: 'jbcho' } });
+            addReaction({
+              articleId: postId,
+              data: { nonMemberId: nonMemberId },
+            });
           }}
           disabled={like}
         >
@@ -101,7 +132,7 @@ export const PostFooter = ({
       <div className="flex flex-col gap-9 items-start justify-start w-full">
         <div className="flex flex-col gap-4 items-start justify-start w-[880px]">
           <Text variant="body-16-m" color="grey-900">
-            댓글 {comments.length}개
+            댓글 {freshComments.length}개
           </Text>
           <div className="flex flex-col gap-4 items-end justify-start w-full">
             <div className="relative w-full">
@@ -117,7 +148,14 @@ export const PostFooter = ({
             </div>
             <button
               onClick={() => {
-                alert('댓글 남기기');
+                addComment({
+                  articleId: postId,
+                  data: {
+                    content: commentText,
+                    nonMemberId: nonMemberId,
+                    nonMemberNickName: 'test',
+                  },
+                });
               }}
               className={`box-border flex gap-2.5 h-12 items-center justify-center px-5 py-1 rounded-[12px] transition-all duration-200 ${
                 commentText.length >= 5
@@ -135,7 +173,7 @@ export const PostFooter = ({
 
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
-            {comments.map((comment) => (
+            {freshComments.map((comment) => (
               <Comment key={comment.id} comment={comment} />
             ))}
           </div>

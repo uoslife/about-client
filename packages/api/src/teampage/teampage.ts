@@ -679,7 +679,7 @@ export const createComment = (
   articleId: number,
   commentCreateRequest: CommentCreateRequest,
   options?: AxiosRequestConfig,
-): Promise<AxiosResponse<CommentResponse>> => {
+): Promise<AxiosResponse<CommentResponse[]>> => {
   return axios.post(
     `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
     commentCreateRequest,

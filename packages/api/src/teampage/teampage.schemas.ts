@@ -95,6 +95,10 @@ export interface ReactionRequest {
   nonMemberId?: string;
 }
 
+export interface ReactionResponse {
+  isLike: boolean;
+}
+
 export interface ErrorResponse {
   code: string;
   status: number;
@@ -111,10 +115,6 @@ export interface FieldError {
   field: string;
   value?: FieldErrorValue;
   reason: string;
-}
-
-export interface ReactionResponse {
-  isLike: boolean;
 }
 
 export interface CommentCreateRequest {
@@ -149,8 +149,8 @@ export interface CommentUpdateRequest {
 }
 
 export interface PageArticleListItem {
-  totalElements?: number;
   totalPages?: number;
+  totalElements?: number;
   pageable?: PageableObject;
   numberOfElements?: number;
   size?: number;
@@ -209,7 +209,7 @@ export type SearchArticlesParams = {
   keyword?: string;
   /**
    * 페이지 번호
-   * @minimum 1
+   * @minimum 0
    */
   page: number;
   /**
