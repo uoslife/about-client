@@ -1,9 +1,12 @@
+import { useUser } from '@/entities/api/useUser';
 import { useAuth } from '@/entities/auth/useAuth';
+import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
 import { ArticleDetailResponse, useDeleteArticle } from '@uoslife/api';
+import { useRouter } from 'next/navigation';
 
 export type PostType = 'tech' | 'career' | 'moments';
 
@@ -13,19 +16,25 @@ interface PostHeaderProps {
 }
 
 export const PostHeader = (props: PostHeaderProps) => {
+  const { authorizationHeader } = useNonMemberId();
+  const { role } = useUser();
   const { toast } = useToast();
   const { session } = useAuth();
   const { post, type } = props;
   const { open: openConfirmModal } = useConfirmModal();
+  const router = useRouter();
 
   const { mutate: deleteArticle } = useDeleteArticle({
     mutation: {
       onSuccess: () => {
-        // /tech로 라우팅
+        router.push(`/${type}`);
       },
       onError: () => {
         toast('삭제 중 오류가 발생했습니다.', 2000);
       },
+    },
+    axios: {
+      headers: authorizationHeader,
     },
   });
 
@@ -58,7 +67,7 @@ export const PostHeader = (props: PostHeaderProps) => {
           )}
         </div>
 
-        {session?.user?.name === post.authorName && (
+        {(session?.user?.name === post.authorName || role === 'ADMIN') && (
           <div className="flex gap-2 items-center">
             <button
               onClick={() => {
@@ -80,7 +89,7 @@ export const PostHeader = (props: PostHeaderProps) => {
                   confirmText: '삭제',
                   cancelText: '취소',
                   onConfirm: () => {
-                    deleteArticle();
+                    deleteArticle({ articleId: post.id });
                   },
                 });
               }}
