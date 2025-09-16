@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { CategoryKorean } from '../../const/category';
 import { Divider } from '../Divider';
 import { Tag } from '../Tag';
 import { Text } from '../Text';
@@ -34,7 +35,7 @@ export function CardB({ content, className, link }: CardProps) {
           <div className="flex flex-col gap-3 w-full">
             {category && (
               <Tag color="white" className="self-start">
-                {category}
+                {CategoryKorean[category]}
               </Tag>
             )}
             <div className="flex flex-col gap-2 w-full">

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { CategoryKorean } from '@/shared/const/category';
 import { HoverScaleAnimation } from '../animation/HoverScaleAnimation';
 import { Divider } from '../Divider';
 import { Tag } from '../Tag';
@@ -39,7 +40,7 @@ export function CardA({ content, className, link }: CardProps) {
             </div>
             {category && (
               <Tag color={'blur'} className="absolute top-5 left-5 opacity-80">
-                {category}
+                {CategoryKorean[category]}
               </Tag>
             )}
             <div className="bg-grey-50 box-border flex flex-col rounded-b-3xl h-[240px] p-8 items-start justify-between w-full">
