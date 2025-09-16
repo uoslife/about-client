@@ -3,8 +3,8 @@ import { useAuth } from '@entities/auth/useAuth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
+import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
-import { twMerge } from "tailwind-merge"
 
 const Route = {
   HOME: {
@@ -53,9 +53,9 @@ export default function Header() {
   return (
     <header
       className={twMerge(
-        "w-full h-[64px] sticky top-0 z-50",
-        "flex flex-row gap-8",
-        "box-border content-stretch items-center justify-between px-10 py-4 bg-white shadow-[0px_1px_0px_0px_rgba(18,18,18,0.1)]"
+        'w-full h-[64px] sticky top-0 z-50',
+        'flex flex-row gap-8',
+        'box-border content-stretch items-center justify-between px-10 py-4 bg-white shadow-[0px_1px_0px_0px_rgba(18,18,18,0.1)]',
       )}
       data-name="GNB"
     >
@@ -111,31 +111,36 @@ export default function Header() {
           </div>
         </div>
         {/* 비회원 혹은 인증 내역을 얻기 전 */}
-        {status === undefined || status === 'unauthenticated'  && (
-          <div className="flex justify-center items-center gap-7">
-            <div className="bg-[#72727C] h-[20px] w-[1px]" />
-            <button
-              type="button"
-              onClick={() => signIn('keycloak')}
-              className="flex justify-center items-center px-5 py-[5px] rounded-[8px] border border-[#0F6EFB] bg-[#0F6EFB33] hover:bg-[#0F6EFB] hover:text-white text-[#0F6EFB]"
-            >
-              <p className="text-center text-[18px] font-bold whitespace-pre">
-                Login
-              </p>
-            </button>
-          </div>
-        )}
+        {status === undefined ||
+          (status === 'unauthenticated' && (
+            <div className="flex justify-center items-center gap-7">
+              <div className="bg-[#72727C] h-[20px] w-[1px]" />
+              <button
+                type="button"
+                onClick={() => signIn('keycloak')}
+                className="flex justify-center items-center px-5 py-[5px] rounded-[8px] border border-[#0F6EFB] bg-[#0F6EFB33] hover:bg-[#0F6EFB] hover:text-white text-[#0F6EFB]"
+              >
+                <p className="text-center text-[18px] font-bold whitespace-pre">
+                  Login
+                </p>
+              </button>
+            </div>
+          ))}
         {/* 인증된 사용자의 경우 */}
         {status === 'authenticated' && (
-          <button
-            type="button"
-            className="flex justify-center items-center gap-7 cursor-pointer"
-            onClick={() => signOut()}
-          >
-            <p className="text-[18px] font-bold whitespace-pre">
+          <div className="flex flex-row items-center justify-center gap-[6px]">
+            <Text variant="body-18-b" color="grey-700">
               {session?.user?.name}
-            </p>
-          </button>
+            </Text>
+            <button type="button" onClick={() => signOut()}>
+              <Image
+                src="/svg/logout.svg"
+                alt="logout icon"
+                width={24}
+                height={24}
+              />
+            </button>
+          </div>
         )}
       </div>
     </header>
