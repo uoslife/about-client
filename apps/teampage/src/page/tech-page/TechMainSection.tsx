@@ -129,6 +129,8 @@ function ArticleList() {
   if (isLoading) return <CardSkeletonList.B />;
   if (error) return <ArticleListEmptyContainer />;
 
+  if (articles.length === 0) return <ArticleListEmptyContainer />;
+
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
       {articles.map((content) => (
