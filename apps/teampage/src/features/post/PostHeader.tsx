@@ -57,7 +57,7 @@ export const PostHeader = (props: PostHeaderProps) => {
           <Text variant="body-18-m" color="grey-500">
             {new Date(post.createdAt).toLocaleDateString('ko-KR')}
           </Text>
-          {(type === 'tech' || type === 'career') && (
+          {type === 'tech' && (
             <>
               <div className="bg-grey-400 h-2.5 w-px" />
               <Text variant="body-18-m" color="grey-500">

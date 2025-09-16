@@ -14,6 +14,7 @@ import { useToast } from '@/shared/component/toast';
 import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { useQueryClient } from '@tanstack/react-query';
 import { generateNonMemberNickName } from '@/shared/utils/generateNonMemberNickname';
+import { usePathname } from 'next/navigation';
 
 type PostFooterProps = {
   likeCount: number;
@@ -22,6 +23,9 @@ type PostFooterProps = {
 };
 
 export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
+  const pathname = usePathname();
+  const routeType = pathname.split('/')[1];
+
   const queryClient = useQueryClient();
   const { nonMemberId, authorizationHeader } = useNonMemberId();
   const { data: comments } = useFindComment(postId, {
@@ -116,25 +120,27 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
           </Text>
         </button>
 
-        <button
-          onClick={() => {
-            toast('URL 링크가 복사되었습니다.', 1000);
-            navigator.clipboard.writeText(window.location.href);
-          }}
-          className="flex gap-2 items-center cursor-pointer"
-        >
-          <div className="w-6 h-6 flex items-center justify-center">
-            <Image
-              src={'/svg/share.svg'}
-              alt="공유하기"
-              width={24}
-              height={24}
-            />
-          </div>
-          <Text variant="body-18-m" color="grey-800">
-            공유하기
-          </Text>
-        </button>
+        {routeType !== 'career' && (
+          <button
+            onClick={() => {
+              toast('URL 링크가 복사되었습니다.', 1000);
+              navigator.clipboard.writeText(window.location.href);
+            }}
+            className="flex gap-2 items-center cursor-pointer"
+          >
+            <div className="w-6 h-6 flex items-center justify-center">
+              <Image
+                src={'/svg/share.svg'}
+                alt="공유하기"
+                width={24}
+                height={24}
+              />
+            </div>
+            <Text variant="body-18-m" color="grey-800">
+              공유하기
+            </Text>
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col gap-9 items-start justify-start w-full">
