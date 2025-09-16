@@ -7,6 +7,7 @@ import { PostFooter } from './PostFooter';
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary';
 import { ErrorFallback } from '@/shared/component/ErrorFallback';
 import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
+import { PrevNext } from './PrevNext';
 
 export function PostSection({ type, id }: { type: PostType; id: number }) {
   const { nonMemberId, authorizationHeader } = useNonMemberId();
@@ -46,6 +47,11 @@ export function PostSection({ type, id }: { type: PostType; id: number }) {
           postId={post.data.id}
           likeCount={post.data.likeCount}
           isLike={post.data.isLike}
+        />
+        <PrevNext
+          prevArticle={post.data.prevArticle}
+          nextArticle={post.data.nextArticle}
+          currentType={type}
         />
       </div>
     </ErrorBoundary>
