@@ -9,7 +9,8 @@
   },
   "dependencies": {
     "@tanstack/react-query": "catalog:",
-    "axios": "^1.12.1"
+    "axios": "^1.12.1",
+    "next-auth": "^4.24.11"
   },
   "devDependencies": {
     "orval": "catalog:",

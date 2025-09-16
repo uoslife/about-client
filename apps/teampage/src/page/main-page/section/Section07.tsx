@@ -47,7 +47,7 @@ async function TechArticleList() {
     sortBy: 'CREATED_AT',
     sortOrder: 'DESC',
   });
-  const techArticleContents = data.data.content;
+  const techArticleContents = data.content;
 
   if (!techArticleContents)
     return (

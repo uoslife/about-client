@@ -93,8 +93,8 @@ export function ArticleProvider({ children, spaceId }: ArticleProviderProps) {
     {
       query: {
         getNextPageParam: (lastPage) => {
-          if (!lastPage.data.last) {
-            return (lastPage.data.number ?? 0) + 1;
+          if (!lastPage.last) {
+            return (lastPage.number ?? 0) + 1;
           }
           return undefined;
         },
@@ -107,8 +107,8 @@ export function ArticleProvider({ children, spaceId }: ArticleProviderProps) {
     () => ({
       state,
       dispatch,
-      articles: data?.pages.flatMap((page) => page.data.content ?? []) ?? [],
-      totalPages: data?.pages[0]?.data.totalPages ?? 0,
+      articles: data?.pages.flatMap((page) => page.content ?? []) ?? [],
+      totalPages: data?.pages[0]?.totalPages ?? 0,
       isLoading,
       error,
     }),

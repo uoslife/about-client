@@ -21,6 +21,10 @@ export default defineConfig({
           usePrefetch: true,
         },
         useDates: true,
+        mutator: {
+          path: './api-instance.ts',
+          name: 'apiInstance',
+        },
       },
       urlEncodeParameters: true,
     },
