@@ -13,15 +13,12 @@ import { Comment } from './Comment';
 import { useToast } from '@/shared/component/toast';
 import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { useQueryClient } from '@tanstack/react-query';
+import { generateNonMemberNickName } from '@/shared/utils/generateNonMemberNickname';
 
 type PostFooterProps = {
   likeCount: number;
   isLike: boolean;
   postId: number;
-};
-
-const generateNonMemberNickName = () => {
-  return `non_member_${Math.random().toString(36).substring(2, 15)}`;
 };
 
 export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
