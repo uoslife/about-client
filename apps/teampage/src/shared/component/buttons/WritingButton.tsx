@@ -2,8 +2,8 @@
 
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import type { SpaceType } from '@/page/write-page/WritePage';
 import { Text } from '@/shared/component/Text';
+import type { SpaceType } from '@/shared/const/category';
 
 const PlusIcon = () => (
   <svg

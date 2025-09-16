@@ -26,7 +26,7 @@ export function CardASkeleton({ className }: { className?: string }) {
   );
 }
 
-export function CardBSkeleton({ className }: CardBSkeletonProps) {
+export function CardBSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={`bg-grey-50 flex gap-10 items-start justify-start p-6 rounded-[24px] w-full ${className || ''}`}
