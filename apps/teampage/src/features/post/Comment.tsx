@@ -1,4 +1,4 @@
-import { useAuth } from '@/entities/auth/useAuth';
+import { useUser } from '@/entities/api/useUser';
 import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
@@ -18,12 +18,12 @@ type CommentProps = {
 };
 
 export const Comment = ({ comment }: CommentProps) => {
-  const { session } = useAuth();
+  const { role } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [editText, setEditText] = useState(comment.content);
   const [isEditing, setIsEditing] = useState(false);
-  const { nonMemberId, authorizationHeader } = useNonMemberId();
+  const { authorizationHeader } = useNonMemberId();
   const { mutate: deleteComment } = useDeleteComment({
     axios: {
       headers: authorizationHeader,
@@ -96,74 +96,69 @@ export const Comment = ({ comment }: CommentProps) => {
             })}
           </Text>
         </div>
-        {comment.nonMemberId === nonMemberId ||
-          (comment.isMember && comment.nickname === session?.user?.name && (
-            <div className="flex gap-3 items-center">
-              {isEditing ? (
+        {(comment.isMine || role === 'ADMIN') && (
+          <div className="flex gap-3 items-center">
+            {isEditing ? (
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                }}
+                className="cursor-pointer"
+              >
+                <Text variant="body-14-m" color="grey-500">
+                  취소
+                </Text>
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+                className="cursor-pointer"
+              >
+                <Text variant="body-14-m" color="grey-500">
+                  수정
+                </Text>
+              </button>
+            )}
+            <div className="bg-grey-200 h-2 rounded w-px" />
+            {isEditing ? (
+              <button
+                onClick={() => {
+                  updateComment({
+                    articleId: comment.articleId,
+                    commentId: comment.id,
+                    data: { content: editText },
+                  });
+                }}
+                className={isEditing ? 'cursor-pointer' : 'cursor-not-allowed'}
+              >
+                <Text
+                  variant="body-14-m"
+                  color={editText.length >= 5 ? 'primary-ui' : 'grey-500'}
+                >
+                  등록
+                </Text>
+              </button>
+            ) : (
+              (role === 'ADMIN' || comment.isMine) && (
                 <button
                   onClick={() => {
-                    setIsEditing(false);
+                    deleteComment({
+                      articleId: comment.articleId,
+                      commentId: comment.id,
+                    });
                   }}
                   className="cursor-pointer"
                 >
                   <Text variant="body-14-m" color="grey-500">
-                    취소
+                    삭제
                   </Text>
                 </button>
-              ) : (
-                comment.isMember && (
-                  <button
-                    onClick={() => {
-                      setIsEditing(true);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Text variant="body-14-m" color="grey-500">
-                      수정
-                    </Text>
-                  </button>
-                )
-              )}
-              <div className="bg-grey-200 h-2 rounded w-px" />
-              {isEditing ? (
-                <button
-                  onClick={() => {
-                    updateComment({
-                      articleId: comment.articleId,
-                      commentId: comment.id,
-                      data: { content: editText },
-                    });
-                  }}
-                  className={
-                    isEditing ? 'cursor-pointer' : 'cursor-not-allowed'
-                  }
-                >
-                  <Text
-                    variant="body-14-m"
-                    color={editText.length >= 5 ? 'primary-ui' : 'grey-500'}
-                  >
-                    등록
-                  </Text>
-                </button>
-              ) : (
-                comment.isMember && (
-                  <button
-                    onClick={() => {
-                      deleteComment({
-                        articleId: comment.articleId,
-                        commentId: comment.id,
-                      });
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <Text variant="body-14-m" color="grey-500">
-                      삭제
-                    </Text>
-                  </button>
-                )
-              )}
-            </div>
-          ))}
+              )
+            )}
+          </div>
+        )}
       </div>
       {isEditing ? (
         <TextareaAutosize
