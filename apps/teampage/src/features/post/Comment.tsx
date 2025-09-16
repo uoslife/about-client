@@ -5,7 +5,7 @@ import { useToast } from '@/shared/component/toast';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   CommentResponse,
-  getFindArticleQueryKey,
+  getFindCommentQueryKey,
   useDeleteComment,
   useUpdateComment,
 } from '@uoslife/api';
@@ -38,10 +38,11 @@ export const Comment = ({ comment }: CommentProps) => {
       },
       onSuccess: () => {
         toast('삭제되었습니다.', 2000);
-        queryClient.resetQueries({
-          queryKey: getFindArticleQueryKey(comment.articleId, {
-            nonMemberId: nonMemberId,
-          }),
+        queryClient.invalidateQueries({
+          queryKey: [
+            ...getFindCommentQueryKey(comment.articleId),
+            authorizationHeader,
+          ],
         });
       },
     },
@@ -61,10 +62,11 @@ export const Comment = ({ comment }: CommentProps) => {
       },
       onSuccess: () => {
         toast('수정되었습니다.', 2000);
-        queryClient.resetQueries({
-          queryKey: getFindArticleQueryKey(comment.articleId, {
-            nonMemberId: nonMemberId,
-          }),
+        queryClient.invalidateQueries({
+          queryKey: [
+            ...getFindCommentQueryKey(comment.articleId),
+            authorizationHeader,
+          ],
         });
       },
     },
@@ -76,7 +78,7 @@ export const Comment = ({ comment }: CommentProps) => {
         <div className="flex gap-3 items-center">
           <div className="flex gap-2 items-center">
             <Image
-              src={comment.isMember ? '/img/member.png' : '/img/non_member.png'}
+              src={comment.isMine ? '/img/member.png' : '/img/non_member.png'}
               alt={`${comment.nickname} 프로필`}
               width={28}
               height={28}
