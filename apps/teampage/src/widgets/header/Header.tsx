@@ -73,7 +73,11 @@ export default function Header() {
       <div className="box-border content-stretch flex flex-row gap-4 items-center justify-center p-0 relative shrink-0">
         <div className="box-border content-stretch flex flex-row gap-[15px] items-center justify-start p-0 relative shrink-0">
           <div className="box-border content-stretch flex flex-row gap-4 items-center justify-start p-0 relative shrink-0">
-            <a>
+            <Link
+              href="http://pf.kakao.com/_gMEHK"
+              target="_blank"
+              rel="noopener"
+            >
               <Image
                 src="/svg/kakao.svg"
                 alt="search icon"
@@ -81,8 +85,8 @@ export default function Header() {
                 height={44}
                 className="hover:bg-gray-100 rounded-xl"
               />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://instagram.com/uoslife_official"
               target="_blank"
               rel="noopener"
@@ -94,8 +98,8 @@ export default function Header() {
                 width={44}
                 height={44}
               />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://github.com/uoslife"
               target="_blank"
               rel="noopener"
@@ -107,7 +111,7 @@ export default function Header() {
                 width={44}
                 height={44}
               />
-            </a>
+            </Link>
           </div>
         </div>
         {/* 비회원 혹은 인증 내역을 얻기 전 */}
