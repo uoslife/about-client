@@ -17,9 +17,14 @@ export default defineConfig({
         enumGenerationType: 'union',
         query: {
           useSuspenseQuery: true,
+          useInfinite: true,
           usePrefetch: true,
         },
         useDates: true,
+        mutator: {
+          path: './api-instance.ts',
+          name: 'apiInstance',
+        },
       },
       urlEncodeParameters: true,
     },

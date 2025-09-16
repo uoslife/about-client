@@ -5,16 +5,25 @@
  * Uoslife Teampage API Swagger
  * OpenAPI spec version: 1.0.0
  */
-import { useMutation, useQuery, useSuspenseQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useSuspenseQuery,
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -22,9 +31,6 @@ import type {
   UseSuspenseQueryOptions,
   UseSuspenseQueryResult,
 } from '@tanstack/react-query';
-
-import axios from 'axios';
-import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import type {
   ArticleDetailResponse,
@@ -47,14 +53,25 @@ import type {
   UploadThumbnailImageParams,
 } from './teampage.schemas';
 
+import { apiInstance } from '../../api-instance';
+import type { ErrorType, BodyType } from '../../api-instance';
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
+
 export const searchArticles = (
   params: SearchArticlesParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<PageArticleListItem>> => {
-  return axios.get(`https://apis.uoslife.team/articles`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<PageArticleListItem>(
+    {
+      url: `https://apis.uoslife.team/articles`,
+      method: 'GET',
+      params,
+      signal,
+    },
+    options,
+  );
 };
 
 export const getSearchArticlesQueryKey = (params?: SearchArticlesParams) => {
@@ -64,25 +81,192 @@ export const getSearchArticlesQueryKey = (params?: SearchArticlesParams) => {
   ] as const;
 };
 
+export const getSearchArticlesInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = ErrorType<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
+    signal,
+  }) => searchArticles(params, requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof searchArticles>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type SearchArticlesInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof searchArticles>>
+>;
+export type SearchArticlesInfiniteQueryError = ErrorType<unknown>;
+
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = ErrorType<unknown>,
+>(
+  params: SearchArticlesParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = ErrorType<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof searchArticles>>,
+          TError,
+          Awaited<ReturnType<typeof searchArticles>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = ErrorType<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useSearchArticlesInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof searchArticles>>>,
+  TError = ErrorType<unknown>,
+>(
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getSearchArticlesInfiniteQueryOptions(params, options);
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchSearchArticlesInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof searchArticles>>,
+  TError = ErrorType<unknown>,
+>(
+  queryClient: QueryClient,
+  params: SearchArticlesParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof searchArticles>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getSearchArticlesInfiniteQueryOptions(params, options);
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+};
+
 export const getSearchArticlesQueryOptions = <
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
     signal,
-  }) => searchArticles(params, { signal, ...axiosOptions });
+  }) => searchArticles(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof searchArticles>>,
@@ -94,11 +278,11 @@ export const getSearchArticlesQueryOptions = <
 export type SearchArticlesQueryResult = NonNullable<
   Awaited<ReturnType<typeof searchArticles>>
 >;
-export type SearchArticlesQueryError = AxiosError<unknown>;
+export type SearchArticlesQueryError = ErrorType<unknown>;
 
 export function useSearchArticles<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options: {
@@ -113,7 +297,7 @@ export function useSearchArticles<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -121,7 +305,7 @@ export function useSearchArticles<
 };
 export function useSearchArticles<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
@@ -136,7 +320,7 @@ export function useSearchArticles<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -144,14 +328,14 @@ export function useSearchArticles<
 };
 export function useSearchArticles<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -160,14 +344,14 @@ export function useSearchArticles<
 
 export function useSearchArticles<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -187,7 +371,7 @@ export function useSearchArticles<
 
 export const prefetchSearchArticlesQuery = async <
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   queryClient: QueryClient,
   params: SearchArticlesParams,
@@ -195,7 +379,7 @@ export const prefetchSearchArticlesQuery = async <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof searchArticles>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ): Promise<QueryClient> => {
   const queryOptions = getSearchArticlesQueryOptions(params, options);
@@ -207,7 +391,7 @@ export const prefetchSearchArticlesQuery = async <
 
 export const getSearchArticlesSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
@@ -218,16 +402,16 @@ export const getSearchArticlesSuspenseQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getSearchArticlesQueryKey(params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof searchArticles>>> = ({
     signal,
-  }) => searchArticles(params, { signal, ...axiosOptions });
+  }) => searchArticles(params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof searchArticles>>,
@@ -239,11 +423,11 @@ export const getSearchArticlesSuspenseQueryOptions = <
 export type SearchArticlesSuspenseQueryResult = NonNullable<
   Awaited<ReturnType<typeof searchArticles>>
 >;
-export type SearchArticlesSuspenseQueryError = AxiosError<unknown>;
+export type SearchArticlesSuspenseQueryError = ErrorType<unknown>;
 
 export function useSearchArticlesSuspense<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options: {
@@ -254,7 +438,7 @@ export function useSearchArticlesSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -262,7 +446,7 @@ export function useSearchArticlesSuspense<
 };
 export function useSearchArticlesSuspense<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
@@ -273,7 +457,7 @@ export function useSearchArticlesSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -281,7 +465,7 @@ export function useSearchArticlesSuspense<
 };
 export function useSearchArticlesSuspense<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
@@ -292,7 +476,7 @@ export function useSearchArticlesSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -301,7 +485,7 @@ export function useSearchArticlesSuspense<
 
 export function useSearchArticlesSuspense<
   TData = Awaited<ReturnType<typeof searchArticles>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   params: SearchArticlesParams,
   options?: {
@@ -312,7 +496,7 @@ export function useSearchArticlesSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -333,49 +517,55 @@ export function useSearchArticlesSuspense<
 }
 
 export const createArticle = (
-  createArticleRequest: CreateArticleRequest,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<ArticleDetailResponse>> => {
-  return axios.post(
-    `https://apis.uoslife.team/articles`,
-    createArticleRequest,
+  createArticleRequest: BodyType<CreateArticleRequest>,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<ArticleDetailResponse>(
+    {
+      url: `https://apis.uoslife.team/articles`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: createArticleRequest,
+      signal,
+    },
     options,
   );
 };
 
 export const getCreateArticleMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createArticle>>,
     TError,
-    { data: CreateArticleRequest },
+    { data: BodyType<CreateArticleRequest> },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createArticle>>,
   TError,
-  { data: CreateArticleRequest },
+  { data: BodyType<CreateArticleRequest> },
   TContext
 > => {
   const mutationKey = ['createArticle'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createArticle>>,
-    { data: CreateArticleRequest }
+    { data: BodyType<CreateArticleRequest> }
   > = (props) => {
     const { data } = props ?? {};
 
-    return createArticle(data, axiosOptions);
+    return createArticle(data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -384,27 +574,27 @@ export const getCreateArticleMutationOptions = <
 export type CreateArticleMutationResult = NonNullable<
   Awaited<ReturnType<typeof createArticle>>
 >;
-export type CreateArticleMutationBody = CreateArticleRequest;
-export type CreateArticleMutationError = AxiosError<unknown>;
+export type CreateArticleMutationBody = BodyType<CreateArticleRequest>;
+export type CreateArticleMutationError = ErrorType<unknown>;
 
 export const useCreateArticle = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createArticle>>,
       TError,
-      { data: CreateArticleRequest },
+      { data: BodyType<CreateArticleRequest> },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
   Awaited<ReturnType<typeof createArticle>>,
   TError,
-  { data: CreateArticleRequest },
+  { data: BodyType<CreateArticleRequest> },
   TContext
 > => {
   const mutationOptions = getCreateArticleMutationOptions(options);
@@ -414,18 +604,24 @@ export const useCreateArticle = <
 
 export const addReaction = (
   articleId: number,
-  reactionRequest: ReactionRequest,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<ReactionResponse>> => {
-  return axios.post(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/likes`,
-    reactionRequest,
+  reactionRequest: BodyType<ReactionRequest>,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<ReactionResponse>(
+    {
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/likes`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: reactionRequest,
+      signal,
+    },
     options,
   );
 };
 
 export const getAddReactionMutationOptions = <
-  TError = AxiosError<
+  TError = ErrorType<
     ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
   >,
   TContext = unknown,
@@ -433,32 +629,32 @@ export const getAddReactionMutationOptions = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof addReaction>>,
     TError,
-    { articleId: number; data: ReactionRequest },
+    { articleId: number; data: BodyType<ReactionRequest> },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof addReaction>>,
   TError,
-  { articleId: number; data: ReactionRequest },
+  { articleId: number; data: BodyType<ReactionRequest> },
   TContext
 > => {
   const mutationKey = ['addReaction'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof addReaction>>,
-    { articleId: number; data: ReactionRequest }
+    { articleId: number; data: BodyType<ReactionRequest> }
   > = (props) => {
     const { articleId, data } = props ?? {};
 
-    return addReaction(articleId, data, axiosOptions);
+    return addReaction(articleId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -467,13 +663,13 @@ export const getAddReactionMutationOptions = <
 export type AddReactionMutationResult = NonNullable<
   Awaited<ReturnType<typeof addReaction>>
 >;
-export type AddReactionMutationBody = ReactionRequest;
-export type AddReactionMutationError = AxiosError<
+export type AddReactionMutationBody = BodyType<ReactionRequest>;
+export type AddReactionMutationError = ErrorType<
   ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
 >;
 
 export const useAddReaction = <
-  TError = AxiosError<
+  TError = ErrorType<
     ErrorResponse | ErrorResponse | ErrorResponse | ErrorResponse
   >,
   TContext = unknown,
@@ -482,16 +678,16 @@ export const useAddReaction = <
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof addReaction>>,
       TError,
-      { articleId: number; data: ReactionRequest },
+      { articleId: number; data: BodyType<ReactionRequest> },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
   Awaited<ReturnType<typeof addReaction>>,
   TError,
-  { articleId: number; data: ReactionRequest },
+  { articleId: number; data: BodyType<ReactionRequest> },
   TContext
 > => {
   const mutationOptions = getAddReactionMutationOptions(options);
@@ -501,10 +697,15 @@ export const useAddReaction = <
 
 export const findComment = (
   articleId: number,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<CommentResponse[]>> => {
-  return axios.get(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<CommentResponse[]>(
+    {
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
+      method: 'GET',
+      signal,
+    },
     options,
   );
 };
@@ -513,25 +714,197 @@ export const getFindCommentQueryKey = (articleId?: number) => {
   return [`https://apis.uoslife.team/articles/${articleId}/comments`] as const;
 };
 
+export const getFindCommentInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof findComment>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findComment>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getFindCommentQueryKey(articleId);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findComment>>> = ({
+    signal,
+  }) => findComment(articleId, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!articleId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof findComment>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindCommentInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findComment>>
+>;
+export type FindCommentInfiniteQueryError = ErrorType<unknown>;
+
+export function useFindCommentInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findComment>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findComment>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findComment>>,
+          TError,
+          Awaited<ReturnType<typeof findComment>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindCommentInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findComment>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findComment>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findComment>>,
+          TError,
+          Awaited<ReturnType<typeof findComment>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindCommentInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findComment>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findComment>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useFindCommentInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findComment>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findComment>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindCommentInfiniteQueryOptions(articleId, options);
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchFindCommentInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof findComment>>,
+  TError = ErrorType<unknown>,
+>(
+  queryClient: QueryClient,
+  articleId: number,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findComment>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getFindCommentInfiniteQueryOptions(articleId, options);
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+};
+
 export const getFindCommentQueryOptions = <
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findComment>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getFindCommentQueryKey(articleId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof findComment>>> = ({
     signal,
-  }) => findComment(articleId, { signal, ...axiosOptions });
+  }) => findComment(articleId, requestOptions, signal);
 
   return {
     queryKey,
@@ -548,11 +921,11 @@ export const getFindCommentQueryOptions = <
 export type FindCommentQueryResult = NonNullable<
   Awaited<ReturnType<typeof findComment>>
 >;
-export type FindCommentQueryError = AxiosError<unknown>;
+export type FindCommentQueryError = ErrorType<unknown>;
 
 export function useFindComment<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options: {
@@ -567,7 +940,7 @@ export function useFindComment<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -575,7 +948,7 @@ export function useFindComment<
 };
 export function useFindComment<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
@@ -590,7 +963,7 @@ export function useFindComment<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -598,14 +971,14 @@ export function useFindComment<
 };
 export function useFindComment<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findComment>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -614,14 +987,14 @@ export function useFindComment<
 
 export function useFindComment<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findComment>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -641,7 +1014,7 @@ export function useFindComment<
 
 export const prefetchFindCommentQuery = async <
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   queryClient: QueryClient,
   articleId: number,
@@ -649,7 +1022,7 @@ export const prefetchFindCommentQuery = async <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findComment>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ): Promise<QueryClient> => {
   const queryOptions = getFindCommentQueryOptions(articleId, options);
@@ -661,7 +1034,7 @@ export const prefetchFindCommentQuery = async <
 
 export const getFindCommentSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
@@ -672,16 +1045,16 @@ export const getFindCommentSuspenseQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getFindCommentQueryKey(articleId);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof findComment>>> = ({
     signal,
-  }) => findComment(articleId, { signal, ...axiosOptions });
+  }) => findComment(articleId, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof findComment>>,
@@ -693,11 +1066,11 @@ export const getFindCommentSuspenseQueryOptions = <
 export type FindCommentSuspenseQueryResult = NonNullable<
   Awaited<ReturnType<typeof findComment>>
 >;
-export type FindCommentSuspenseQueryError = AxiosError<unknown>;
+export type FindCommentSuspenseQueryError = ErrorType<unknown>;
 
 export function useFindCommentSuspense<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options: {
@@ -708,7 +1081,7 @@ export function useFindCommentSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -716,7 +1089,7 @@ export function useFindCommentSuspense<
 };
 export function useFindCommentSuspense<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
@@ -727,7 +1100,7 @@ export function useFindCommentSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -735,7 +1108,7 @@ export function useFindCommentSuspense<
 };
 export function useFindCommentSuspense<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
@@ -746,7 +1119,7 @@ export function useFindCommentSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -755,7 +1128,7 @@ export function useFindCommentSuspense<
 
 export function useFindCommentSuspense<
   TData = Awaited<ReturnType<typeof findComment>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   options?: {
@@ -766,7 +1139,7 @@ export function useFindCommentSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -788,49 +1161,55 @@ export function useFindCommentSuspense<
 
 export const createComment = (
   articleId: number,
-  commentCreateRequest: CommentCreateRequest,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<CommentResponse>> => {
-  return axios.post(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
-    commentCreateRequest,
+  commentCreateRequest: BodyType<CommentCreateRequest>,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<CommentResponse>(
+    {
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: commentCreateRequest,
+      signal,
+    },
     options,
   );
 };
 
 export const getCreateCommentMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createComment>>,
     TError,
-    { articleId: number; data: CommentCreateRequest },
+    { articleId: number; data: BodyType<CommentCreateRequest> },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof createComment>>,
   TError,
-  { articleId: number; data: CommentCreateRequest },
+  { articleId: number; data: BodyType<CommentCreateRequest> },
   TContext
 > => {
   const mutationKey = ['createComment'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof createComment>>,
-    { articleId: number; data: CommentCreateRequest }
+    { articleId: number; data: BodyType<CommentCreateRequest> }
   > = (props) => {
     const { articleId, data } = props ?? {};
 
-    return createComment(articleId, data, axiosOptions);
+    return createComment(articleId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -839,27 +1218,27 @@ export const getCreateCommentMutationOptions = <
 export type CreateCommentMutationResult = NonNullable<
   Awaited<ReturnType<typeof createComment>>
 >;
-export type CreateCommentMutationBody = CommentCreateRequest;
-export type CreateCommentMutationError = AxiosError<unknown>;
+export type CreateCommentMutationBody = BodyType<CommentCreateRequest>;
+export type CreateCommentMutationError = ErrorType<unknown>;
 
 export const useCreateComment = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof createComment>>,
       TError,
-      { articleId: number; data: CommentCreateRequest },
+      { articleId: number; data: BodyType<CommentCreateRequest> },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
   Awaited<ReturnType<typeof createComment>>,
   TError,
-  { articleId: number; data: CommentCreateRequest },
+  { articleId: number; data: BodyType<CommentCreateRequest> },
   TContext
 > => {
   const mutationOptions = getCreateCommentMutationOptions(options);
@@ -868,53 +1247,66 @@ export const useCreateComment = <
 };
 
 export const uploadThumbnailImage = (
-  uploadThumbnailImageBody: UploadThumbnailImageBody,
+  uploadThumbnailImageBody: BodyType<UploadThumbnailImageBody>,
   params: UploadThumbnailImageParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<ImageUploadResponse>> => {
-  return axios.post(
-    `https://apis.uoslife.team/articles/uploadThumbnailImage`,
-    uploadThumbnailImageBody,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<ImageUploadResponse>(
     {
-      ...options,
-      params: { ...params, ...options?.params },
+      url: `https://apis.uoslife.team/articles/uploadThumbnailImage`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: uploadThumbnailImageBody,
+      params,
+      signal,
     },
+    options,
   );
 };
 
 export const getUploadThumbnailImageMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof uploadThumbnailImage>>,
     TError,
-    { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+    {
+      data: BodyType<UploadThumbnailImageBody>;
+      params: UploadThumbnailImageParams;
+    },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof uploadThumbnailImage>>,
   TError,
-  { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+  {
+    data: BodyType<UploadThumbnailImageBody>;
+    params: UploadThumbnailImageParams;
+  },
   TContext
 > => {
   const mutationKey = ['uploadThumbnailImage'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof uploadThumbnailImage>>,
-    { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams }
+    {
+      data: BodyType<UploadThumbnailImageBody>;
+      params: UploadThumbnailImageParams;
+    }
   > = (props) => {
     const { data, params } = props ?? {};
 
-    return uploadThumbnailImage(data, params, axiosOptions);
+    return uploadThumbnailImage(data, params, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -923,27 +1315,34 @@ export const getUploadThumbnailImageMutationOptions = <
 export type UploadThumbnailImageMutationResult = NonNullable<
   Awaited<ReturnType<typeof uploadThumbnailImage>>
 >;
-export type UploadThumbnailImageMutationBody = UploadThumbnailImageBody;
-export type UploadThumbnailImageMutationError = AxiosError<unknown>;
+export type UploadThumbnailImageMutationBody =
+  BodyType<UploadThumbnailImageBody>;
+export type UploadThumbnailImageMutationError = ErrorType<unknown>;
 
 export const useUploadThumbnailImage = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof uploadThumbnailImage>>,
       TError,
-      { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+      {
+        data: BodyType<UploadThumbnailImageBody>;
+        params: UploadThumbnailImageParams;
+      },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
   Awaited<ReturnType<typeof uploadThumbnailImage>>,
   TError,
-  { data: UploadThumbnailImageBody; params: UploadThumbnailImageParams },
+  {
+    data: BodyType<UploadThumbnailImageBody>;
+    params: UploadThumbnailImageParams;
+  },
   TContext
 > => {
   const mutationOptions = getUploadThumbnailImageMutationOptions(options);
@@ -952,53 +1351,57 @@ export const useUploadThumbnailImage = <
 };
 
 export const uploadImage = (
-  uploadImageBody: UploadImageBody,
+  uploadImageBody: BodyType<UploadImageBody>,
   params: UploadImageParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<ImageUploadResponse>> => {
-  return axios.post(
-    `https://apis.uoslife.team/articles/uploadImage`,
-    uploadImageBody,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<ImageUploadResponse>(
     {
-      ...options,
-      params: { ...params, ...options?.params },
+      url: `https://apis.uoslife.team/articles/uploadImage`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      data: uploadImageBody,
+      params,
+      signal,
     },
+    options,
   );
 };
 
 export const getUploadImageMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof uploadImage>>,
     TError,
-    { data: UploadImageBody; params: UploadImageParams },
+    { data: BodyType<UploadImageBody>; params: UploadImageParams },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof uploadImage>>,
   TError,
-  { data: UploadImageBody; params: UploadImageParams },
+  { data: BodyType<UploadImageBody>; params: UploadImageParams },
   TContext
 > => {
   const mutationKey = ['uploadImage'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof uploadImage>>,
-    { data: UploadImageBody; params: UploadImageParams }
+    { data: BodyType<UploadImageBody>; params: UploadImageParams }
   > = (props) => {
     const { data, params } = props ?? {};
 
-    return uploadImage(data, params, axiosOptions);
+    return uploadImage(data, params, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -1007,27 +1410,24 @@ export const getUploadImageMutationOptions = <
 export type UploadImageMutationResult = NonNullable<
   Awaited<ReturnType<typeof uploadImage>>
 >;
-export type UploadImageMutationBody = UploadImageBody;
-export type UploadImageMutationError = AxiosError<unknown>;
+export type UploadImageMutationBody = BodyType<UploadImageBody>;
+export type UploadImageMutationError = ErrorType<unknown>;
 
-export const useUploadImage = <
-  TError = AxiosError<unknown>,
-  TContext = unknown,
->(
+export const useUploadImage = <TError = ErrorType<unknown>, TContext = unknown>(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof uploadImage>>,
       TError,
-      { data: UploadImageBody; params: UploadImageParams },
+      { data: BodyType<UploadImageBody>; params: UploadImageParams },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
   Awaited<ReturnType<typeof uploadImage>>,
   TError,
-  { data: UploadImageBody; params: UploadImageParams },
+  { data: BodyType<UploadImageBody>; params: UploadImageParams },
   TContext
 > => {
   const mutationOptions = getUploadImageMutationOptions(options);
@@ -1038,14 +1438,17 @@ export const useUploadImage = <
 export const findArticle = (
   articleId: number,
   params?: FindArticleParams,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<ArticleDetailResponse>> => {
-  return axios.get(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<ArticleDetailResponse>(
     {
-      ...options,
-      params: { ...params, ...options?.params },
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+      method: 'GET',
+      params,
+      signal,
     },
+    options,
   );
 };
 
@@ -1059,9 +1462,196 @@ export const getFindArticleQueryKey = (
   ] as const;
 };
 
+export const getFindArticleInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
+    signal,
+  }) => findArticle(articleId, params, requestOptions, signal);
+
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!articleId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof findArticle>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type FindArticleInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof findArticle>>
+>;
+export type FindArticleInfiniteQueryError = ErrorType<unknown>;
+
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  params: undefined | FindArticleParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof findArticle>>,
+          TError,
+          Awaited<ReturnType<typeof findArticle>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useFindArticleInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof findArticle>>>,
+  TError = ErrorType<unknown>,
+>(
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getFindArticleInfiniteQueryOptions(
+    articleId,
+    params,
+    options,
+  );
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchFindArticleInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof findArticle>>,
+  TError = ErrorType<unknown>,
+>(
+  queryClient: QueryClient,
+  articleId: number,
+  params?: FindArticleParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof findArticle>>,
+        TError,
+        TData
+      >
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getFindArticleInfiniteQueryOptions(
+    articleId,
+    params,
+    options,
+  );
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+};
+
 export const getFindArticleQueryOptions = <
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1069,17 +1659,17 @@ export const getFindArticleQueryOptions = <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
     signal,
-  }) => findArticle(articleId, params, { signal, ...axiosOptions });
+  }) => findArticle(articleId, params, requestOptions, signal);
 
   return {
     queryKey,
@@ -1096,11 +1686,11 @@ export const getFindArticleQueryOptions = <
 export type FindArticleQueryResult = NonNullable<
   Awaited<ReturnType<typeof findArticle>>
 >;
-export type FindArticleQueryError = AxiosError<unknown>;
+export type FindArticleQueryError = ErrorType<unknown>;
 
 export function useFindArticle<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params: undefined | FindArticleParams,
@@ -1116,7 +1706,7 @@ export function useFindArticle<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -1124,7 +1714,7 @@ export function useFindArticle<
 };
 export function useFindArticle<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1140,7 +1730,7 @@ export function useFindArticle<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -1148,7 +1738,7 @@ export function useFindArticle<
 };
 export function useFindArticle<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1156,7 +1746,7 @@ export function useFindArticle<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -1165,7 +1755,7 @@ export function useFindArticle<
 
 export function useFindArticle<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1173,7 +1763,7 @@ export function useFindArticle<
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -1193,7 +1783,7 @@ export function useFindArticle<
 
 export const prefetchFindArticleQuery = async <
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   queryClient: QueryClient,
   articleId: number,
@@ -1202,7 +1792,7 @@ export const prefetchFindArticleQuery = async <
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof findArticle>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ): Promise<QueryClient> => {
   const queryOptions = getFindArticleQueryOptions(articleId, params, options);
@@ -1214,7 +1804,7 @@ export const prefetchFindArticleQuery = async <
 
 export const getFindArticleSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1226,17 +1816,17 @@ export const getFindArticleSuspenseQueryOptions = <
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey =
     queryOptions?.queryKey ?? getFindArticleQueryKey(articleId, params);
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof findArticle>>> = ({
     signal,
-  }) => findArticle(articleId, params, { signal, ...axiosOptions });
+  }) => findArticle(articleId, params, requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof findArticle>>,
@@ -1248,11 +1838,11 @@ export const getFindArticleSuspenseQueryOptions = <
 export type FindArticleSuspenseQueryResult = NonNullable<
   Awaited<ReturnType<typeof findArticle>>
 >;
-export type FindArticleSuspenseQueryError = AxiosError<unknown>;
+export type FindArticleSuspenseQueryError = ErrorType<unknown>;
 
 export function useFindArticleSuspense<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params: undefined | FindArticleParams,
@@ -1264,7 +1854,7 @@ export function useFindArticleSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -1272,7 +1862,7 @@ export function useFindArticleSuspense<
 };
 export function useFindArticleSuspense<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1284,7 +1874,7 @@ export function useFindArticleSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -1292,7 +1882,7 @@ export function useFindArticleSuspense<
 };
 export function useFindArticleSuspense<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1304,7 +1894,7 @@ export function useFindArticleSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -1313,7 +1903,7 @@ export function useFindArticleSuspense<
 
 export function useFindArticleSuspense<
   TData = Awaited<ReturnType<typeof findArticle>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   articleId: number,
   params?: FindArticleParams,
@@ -1325,7 +1915,7 @@ export function useFindArticleSuspense<
         TData
       >
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -1351,16 +1941,19 @@ export function useFindArticleSuspense<
 
 export const deleteArticle = (
   articleId: number,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<null>> => {
-  return axios.delete(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+  options?: SecondParameter<typeof apiInstance>,
+) => {
+  return apiInstance<null>(
+    {
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+      method: 'DELETE',
+    },
     options,
   );
 };
 
 export const getDeleteArticleMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -1369,7 +1962,7 @@ export const getDeleteArticleMutationOptions = <
     { articleId: number },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteArticle>>,
   TError,
@@ -1377,13 +1970,13 @@ export const getDeleteArticleMutationOptions = <
   TContext
 > => {
   const mutationKey = ['deleteArticle'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteArticle>>,
@@ -1391,7 +1984,7 @@ export const getDeleteArticleMutationOptions = <
   > = (props) => {
     const { articleId } = props ?? {};
 
-    return deleteArticle(articleId, axiosOptions);
+    return deleteArticle(articleId, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -1401,10 +1994,10 @@ export type DeleteArticleMutationResult = NonNullable<
   Awaited<ReturnType<typeof deleteArticle>>
 >;
 
-export type DeleteArticleMutationError = AxiosError<unknown>;
+export type DeleteArticleMutationError = ErrorType<unknown>;
 
 export const useDeleteArticle = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
@@ -1414,7 +2007,7 @@ export const useDeleteArticle = <
       { articleId: number },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -1430,49 +2023,53 @@ export const useDeleteArticle = <
 
 export const updateArticle = (
   articleId: number,
-  updateArticleRequest: UpdateArticleRequest,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<ArticleDetailResponse>> => {
-  return axios.patch(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
-    updateArticleRequest,
+  updateArticleRequest: BodyType<UpdateArticleRequest>,
+  options?: SecondParameter<typeof apiInstance>,
+) => {
+  return apiInstance<ArticleDetailResponse>(
+    {
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: updateArticleRequest,
+    },
     options,
   );
 };
 
 export const getUpdateArticleMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateArticle>>,
     TError,
-    { articleId: number; data: UpdateArticleRequest },
+    { articleId: number; data: BodyType<UpdateArticleRequest> },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateArticle>>,
   TError,
-  { articleId: number; data: UpdateArticleRequest },
+  { articleId: number; data: BodyType<UpdateArticleRequest> },
   TContext
 > => {
   const mutationKey = ['updateArticle'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateArticle>>,
-    { articleId: number; data: UpdateArticleRequest }
+    { articleId: number; data: BodyType<UpdateArticleRequest> }
   > = (props) => {
     const { articleId, data } = props ?? {};
 
-    return updateArticle(articleId, data, axiosOptions);
+    return updateArticle(articleId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -1481,27 +2078,27 @@ export const getUpdateArticleMutationOptions = <
 export type UpdateArticleMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateArticle>>
 >;
-export type UpdateArticleMutationBody = UpdateArticleRequest;
-export type UpdateArticleMutationError = AxiosError<unknown>;
+export type UpdateArticleMutationBody = BodyType<UpdateArticleRequest>;
+export type UpdateArticleMutationError = ErrorType<unknown>;
 
 export const useUpdateArticle = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateArticle>>,
       TError,
-      { articleId: number; data: UpdateArticleRequest },
+      { articleId: number; data: BodyType<UpdateArticleRequest> },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
   Awaited<ReturnType<typeof updateArticle>>,
   TError,
-  { articleId: number; data: UpdateArticleRequest },
+  { articleId: number; data: BodyType<UpdateArticleRequest> },
   TContext
 > => {
   const mutationOptions = getUpdateArticleMutationOptions(options);
@@ -1512,16 +2109,19 @@ export const useUpdateArticle = <
 export const deleteComment = (
   articleId: number,
   commentId: number,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<null>> => {
-  return axios.delete(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
+  options?: SecondParameter<typeof apiInstance>,
+) => {
+  return apiInstance<null>(
+    {
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
+      method: 'DELETE',
+    },
     options,
   );
 };
 
 export const getDeleteCommentMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
@@ -1530,7 +2130,7 @@ export const getDeleteCommentMutationOptions = <
     { articleId: number; commentId: number },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof deleteComment>>,
   TError,
@@ -1538,13 +2138,13 @@ export const getDeleteCommentMutationOptions = <
   TContext
 > => {
   const mutationKey = ['deleteComment'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof deleteComment>>,
@@ -1552,7 +2152,7 @@ export const getDeleteCommentMutationOptions = <
   > = (props) => {
     const { articleId, commentId } = props ?? {};
 
-    return deleteComment(articleId, commentId, axiosOptions);
+    return deleteComment(articleId, commentId, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -1562,10 +2162,10 @@ export type DeleteCommentMutationResult = NonNullable<
   Awaited<ReturnType<typeof deleteComment>>
 >;
 
-export type DeleteCommentMutationError = AxiosError<unknown>;
+export type DeleteCommentMutationError = ErrorType<unknown>;
 
 export const useDeleteComment = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
@@ -1575,7 +2175,7 @@ export const useDeleteComment = <
       { articleId: number; commentId: number },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
@@ -1592,49 +2192,65 @@ export const useDeleteComment = <
 export const updateComment = (
   articleId: number,
   commentId: number,
-  commentUpdateRequest: CommentUpdateRequest,
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<CommentResponse>> => {
-  return axios.patch(
-    `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
-    commentUpdateRequest,
+  commentUpdateRequest: BodyType<CommentUpdateRequest>,
+  options?: SecondParameter<typeof apiInstance>,
+) => {
+  return apiInstance<CommentResponse>(
+    {
+      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      data: commentUpdateRequest,
+    },
     options,
   );
 };
 
 export const getUpdateCommentMutationOptions = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof updateComment>>,
     TError,
-    { articleId: number; commentId: number; data: CommentUpdateRequest },
+    {
+      articleId: number;
+      commentId: number;
+      data: BodyType<CommentUpdateRequest>;
+    },
     TContext
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }): UseMutationOptions<
   Awaited<ReturnType<typeof updateComment>>,
   TError,
-  { articleId: number; commentId: number; data: CommentUpdateRequest },
+  {
+    articleId: number;
+    commentId: number;
+    data: BodyType<CommentUpdateRequest>;
+  },
   TContext
 > => {
   const mutationKey = ['updateComment'];
-  const { mutation: mutationOptions, axios: axiosOptions } = options
+  const { mutation: mutationOptions, request: requestOptions } = options
     ? options.mutation &&
       'mutationKey' in options.mutation &&
       options.mutation.mutationKey
       ? options
       : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey }, axios: undefined };
+    : { mutation: { mutationKey }, request: undefined };
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof updateComment>>,
-    { articleId: number; commentId: number; data: CommentUpdateRequest }
+    {
+      articleId: number;
+      commentId: number;
+      data: BodyType<CommentUpdateRequest>;
+    }
   > = (props) => {
     const { articleId, commentId, data } = props ?? {};
 
-    return updateComment(articleId, commentId, data, axiosOptions);
+    return updateComment(articleId, commentId, data, requestOptions);
   };
 
   return { mutationFn, ...mutationOptions };
@@ -1643,27 +2259,35 @@ export const getUpdateCommentMutationOptions = <
 export type UpdateCommentMutationResult = NonNullable<
   Awaited<ReturnType<typeof updateComment>>
 >;
-export type UpdateCommentMutationBody = CommentUpdateRequest;
-export type UpdateCommentMutationError = AxiosError<unknown>;
+export type UpdateCommentMutationBody = BodyType<CommentUpdateRequest>;
+export type UpdateCommentMutationError = ErrorType<unknown>;
 
 export const useUpdateComment = <
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
   TContext = unknown,
 >(
   options?: {
     mutation?: UseMutationOptions<
       Awaited<ReturnType<typeof updateComment>>,
       TError,
-      { articleId: number; commentId: number; data: CommentUpdateRequest },
+      {
+        articleId: number;
+        commentId: number;
+        data: BodyType<CommentUpdateRequest>;
+      },
       TContext
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseMutationResult<
   Awaited<ReturnType<typeof updateComment>>,
   TError,
-  { articleId: number; commentId: number; data: CommentUpdateRequest },
+  {
+    articleId: number;
+    commentId: number;
+    data: BodyType<CommentUpdateRequest>;
+  },
   TContext
 > => {
   const mutationOptions = getUpdateCommentMutationOptions(options);
@@ -1672,30 +2296,166 @@ export const useUpdateComment = <
 };
 
 export const me = (
-  options?: AxiosRequestConfig,
-): Promise<AxiosResponse<MyInfoResponse>> => {
-  return axios.get(`https://apis.uoslife.team/auth/me`, options);
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  return apiInstance<MyInfoResponse>(
+    { url: `https://apis.uoslife.team/auth/me`, method: 'GET', signal },
+    options,
+  );
 };
 
 export const getMeQueryKey = () => {
   return [`https://apis.uoslife.team/auth/me`] as const;
 };
 
-export const getMeQueryOptions = <
-  TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+export const getMeInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: Partial<
-    UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getMeQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof me>>> = ({ signal }) =>
-    me({ signal, ...axiosOptions });
+    me(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof me>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type MeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof me>>>;
+export type MeInfiniteQueryError = ErrorType<unknown>;
+
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof me>>,
+          TError,
+          Awaited<ReturnType<typeof me>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof me>>,
+          TError,
+          Awaited<ReturnType<typeof me>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useMeInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof me>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getMeInfiniteQueryOptions(options);
+
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchMeInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof me>>,
+  TError = ErrorType<unknown>,
+>(
+  queryClient: QueryClient,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getMeInfiniteQueryOptions(options);
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+};
+
+export const getMeQueryOptions = <
+  TData = Awaited<ReturnType<typeof me>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
+  >;
+  request?: SecondParameter<typeof apiInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getMeQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof me>>> = ({ signal }) =>
+    me(requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof me>>,
@@ -1705,11 +2465,11 @@ export const getMeQueryOptions = <
 };
 
 export type MeQueryResult = NonNullable<Awaited<ReturnType<typeof me>>>;
-export type MeQueryError = AxiosError<unknown>;
+export type MeQueryError = ErrorType<unknown>;
 
 export function useMe<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options: {
     query: Partial<
@@ -1723,7 +2483,7 @@ export function useMe<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & {
@@ -1731,7 +2491,7 @@ export function useMe<
 };
 export function useMe<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options?: {
     query?: Partial<
@@ -1745,7 +2505,7 @@ export function useMe<
         >,
         'initialData'
       >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -1753,13 +2513,13 @@ export function useMe<
 };
 export function useMe<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -1768,13 +2528,13 @@ export function useMe<
 
 export function useMe<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & {
@@ -1794,14 +2554,14 @@ export function useMe<
 
 export const prefetchMeQuery = async <
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   queryClient: QueryClient,
   options?: {
     query?: Partial<
       UseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
 ): Promise<QueryClient> => {
   const queryOptions = getMeQueryOptions(options);
@@ -1813,19 +2573,19 @@ export const prefetchMeQuery = async <
 
 export const getMeSuspenseQueryOptions = <
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(options?: {
   query?: Partial<
     UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
   >;
-  axios?: AxiosRequestConfig;
+  request?: SecondParameter<typeof apiInstance>;
 }) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
+  const { query: queryOptions, request: requestOptions } = options ?? {};
 
   const queryKey = queryOptions?.queryKey ?? getMeQueryKey();
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof me>>> = ({ signal }) =>
-    me({ signal, ...axiosOptions });
+    me(requestOptions, signal);
 
   return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
     Awaited<ReturnType<typeof me>>,
@@ -1835,17 +2595,17 @@ export const getMeSuspenseQueryOptions = <
 };
 
 export type MeSuspenseQueryResult = NonNullable<Awaited<ReturnType<typeof me>>>;
-export type MeSuspenseQueryError = AxiosError<unknown>;
+export type MeSuspenseQueryError = ErrorType<unknown>;
 
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options: {
     query: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -1853,13 +2613,13 @@ export function useMeSuspense<
 };
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -1867,13 +2627,13 @@ export function useMeSuspense<
 };
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {
@@ -1882,13 +2642,13 @@ export function useMeSuspense<
 
 export function useMeSuspense<
   TData = Awaited<ReturnType<typeof me>>,
-  TError = AxiosError<unknown>,
+  TError = ErrorType<unknown>,
 >(
   options?: {
     query?: Partial<
       UseSuspenseQueryOptions<Awaited<ReturnType<typeof me>>, TError, TData>
     >;
-    axios?: AxiosRequestConfig;
+    request?: SecondParameter<typeof apiInstance>;
   },
   queryClient?: QueryClient,
 ): UseSuspenseQueryResult<TData, TError> & {

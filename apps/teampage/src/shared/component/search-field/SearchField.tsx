@@ -1,14 +1,14 @@
 'use client';
 
 import Image from 'next/image';
-import type { InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, KeyboardEventHandler } from 'react';
 import { useState } from 'react';
 
 interface SearchFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   size?: 'large' | 'small';
   onClear?: () => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>;
 }
 
 export function SearchField({

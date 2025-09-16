@@ -1,10 +1,9 @@
-'use client';
-
 import { Text } from '@shared/component/Text';
+import { searchArticles } from '@uoslife/api';
 import Image from 'next/image';
 import Link from 'next/link';
-import { TECH_CONTENT_MOCK } from '@/page/tech-page/TechMainSection';
 import { Card } from '@/shared/component/card';
+import { SpaceIdEnum } from '@/shared/const/category';
 
 export function Section07() {
   return (
@@ -21,11 +20,7 @@ export function Section07() {
           경험과 기술 인사이트를 만나보세요.
         </Text>
       </div>
-      <div className="grid grid-cols-2 gap-8">
-        {TECH_CONTENT_MOCK.map((data) => (
-          <Card.A link={'/tech/0'} key={data.title} content={data} />
-        ))}
-      </div>
+      <TechArticleList />
       <Link
         href="/tech"
         className="flex flex-row gap-3 pl-4 pr-4 py-2 rounded-xl bg-primary-lighter-alt"
@@ -40,6 +35,38 @@ export function Section07() {
           width={8}
         />
       </Link>
+    </div>
+  );
+}
+
+async function TechArticleList() {
+  const data = await searchArticles({
+    spaceId: SpaceIdEnum.TECH,
+    page: 0,
+    size: 10,
+    sortBy: 'CREATED_AT',
+    sortOrder: 'DESC',
+  });
+  const techArticleContents = data.content;
+
+  if (!techArticleContents)
+    return (
+      <div className="flex items-center justify-center py-14">
+        <Text variant="title-24-m" color="grey-700">
+          게시글을 조회할 수 없어요.
+        </Text>
+      </div>
+    );
+
+  return (
+    <div className="grid grid-cols-2 gap-8 max-w-pc w-full">
+      {techArticleContents
+        .map((c) =>
+          !c.thumbnailUrl ? { ...c, thumbnailUrl: 'svg/roomae_03.svg' } : c,
+        )
+        .map((data) => (
+          <Card.A link={`/tech/${data.id}`} key={data.title} content={data} />
+        ))}
     </div>
   );
 }

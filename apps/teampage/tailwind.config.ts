@@ -55,6 +55,15 @@ const config: Config = {
         'body-14-sb': ['14px', { lineHeight: '1.6', fontWeight: '600' }],
         'body-14-m': ['14px', { lineHeight: '1.6', fontWeight: '500' }],
       },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-400px 0' },
+          '100%': { backgroundPosition: '400px 0' },
+        },
+      },
+      animation: {
+        shimmer: 'shimmer 2s linear infinite',
+      },
     },
   },
   plugins: [require('@tailwindcss/typography')],

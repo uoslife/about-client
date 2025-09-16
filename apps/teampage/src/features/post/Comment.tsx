@@ -1,10 +1,6 @@
-import { useUser } from '@/entities/api/useUser';
-import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
-import { Text } from '@/shared/component/Text';
-import { useToast } from '@/shared/component/toast';
 import { useQueryClient } from '@tanstack/react-query';
 import {
-  CommentResponse,
+  type CommentResponse,
   getFindCommentQueryKey,
   useDeleteComment,
   useUpdateComment,
@@ -12,6 +8,10 @@ import {
 import Image from 'next/image';
 import { useState } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
+import { useUser } from '@/entities/api/useUser';
+import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
+import { Text } from '@/shared/component/Text';
+import { useToast } from '@/shared/component/toast';
 
 type CommentProps = {
   comment: CommentResponse;
@@ -25,9 +25,6 @@ export const Comment = ({ comment }: CommentProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const { authorizationHeader } = useNonMemberId();
   const { mutate: deleteComment } = useDeleteComment({
-    axios: {
-      headers: authorizationHeader,
-    },
     mutation: {
       onMutate: async () => {
         setIsEditing(false);
@@ -49,9 +46,6 @@ export const Comment = ({ comment }: CommentProps) => {
   });
 
   const { mutate: updateComment } = useUpdateComment({
-    axios: {
-      headers: authorizationHeader,
-    },
     mutation: {
       onMutate: async () => {
         setIsEditing(false);
@@ -100,6 +94,7 @@ export const Comment = ({ comment }: CommentProps) => {
           <div className="flex gap-3 items-center">
             {isEditing ? (
               <button
+                type="button"
                 onClick={() => {
                   setIsEditing(false);
                 }}
@@ -111,6 +106,7 @@ export const Comment = ({ comment }: CommentProps) => {
               </button>
             ) : (
               <button
+                type="button"
                 onClick={() => {
                   setIsEditing(true);
                 }}
@@ -124,6 +120,7 @@ export const Comment = ({ comment }: CommentProps) => {
             <div className="bg-grey-200 h-2 rounded w-px" />
             {isEditing ? (
               <button
+                type="button"
                 onClick={() => {
                   updateComment({
                     articleId: comment.articleId,
@@ -143,6 +140,7 @@ export const Comment = ({ comment }: CommentProps) => {
             ) : (
               (role === 'ADMIN' || comment.isMine) && (
                 <button
+                  type="button"
                   onClick={() => {
                     deleteComment({
                       articleId: comment.articleId,
