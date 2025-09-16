@@ -14,6 +14,7 @@ import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
 import { generateNonMemberNickName } from '@/shared/utils/generateNonMemberNickname';
+import { Comment } from './Comment';
 
 type PostFooterProps = {
   likeCount: number;
@@ -28,9 +29,6 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
   const queryClient = useQueryClient();
   const { nonMemberId, authorizationHeader } = useNonMemberId();
   const { data: comments } = useFindComment(postId, {
-    axios: {
-      headers: authorizationHeader,
-    },
     query: {
       queryKey: [...getFindCommentQueryKey(postId), authorizationHeader],
     },
@@ -41,9 +39,6 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
   const [optimisticLikeCount, setOptimisticLikeCount] = useState(likeCount);
 
   const { mutate: addReaction } = useAddReaction({
-    axios: {
-      headers: authorizationHeader,
-    },
     mutation: {
       onMutate: async () => {
         setLike(true);
@@ -59,9 +54,6 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
     },
   });
   const { mutate: addComment } = useCreateComment({
-    axios: {
-      headers: authorizationHeader,
-    },
     mutation: {
       onMutate: async () => {
         setCommentText('');
@@ -81,6 +73,7 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
     <>
       <div className="flex gap-8 items-center">
         <button
+          type="button"
           className={`flex gap-2 items-center px-5 py-3 box-border rounded-[40px] transition-all duration-200 ${
             like
               ? 'bg-[#222227] border-[1.6px] border-solid border-[#222227]'
@@ -121,6 +114,7 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
 
         {routeType !== 'career' && (
           <button
+            type="button"
             onClick={() => {
               toast('URL 링크가 복사되었습니다.', 1000);
               navigator.clipboard.writeText(window.location.href);
@@ -145,7 +139,7 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
       <div className="flex flex-col gap-9 items-start justify-start w-full">
         <div className="flex flex-col gap-4 items-start justify-start w-[880px]">
           <Text variant="body-16-m" color="grey-900">
-            댓글 {comments?.data.length ?? 0}개
+            댓글 {comments?.length ?? 0}개
           </Text>
           <div className="flex flex-col gap-4 items-end justify-start w-full">
             <div className="relative w-full">
@@ -160,6 +154,7 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
               />
             </div>
             <button
+              type="button"
               onClick={() => {
                 addComment({
                   articleId: postId,
@@ -186,7 +181,7 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
 
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
-            {comments?.data.map((comment) => (
+            {comments?.map((comment) => (
               <Comment key={comment.id} comment={comment} />
             ))}
           </div>
