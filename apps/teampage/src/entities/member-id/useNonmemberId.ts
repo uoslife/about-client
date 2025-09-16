@@ -1,3 +1,4 @@
+'use client';
 import { useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useAuth } from '../auth/useAuth';
@@ -7,6 +8,9 @@ const NON_MEMBER_ID_KEY = 'NON_MEMBER_ID';
 export const useNonMemberId = () => {
   const { session } = useAuth();
   const nonMemberId = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
     if (session?.accessToken) {
       return undefined;
     }

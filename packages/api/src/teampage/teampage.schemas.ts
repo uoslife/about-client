@@ -56,7 +56,6 @@ export interface ArticleDetailResponse {
   createdAt: string;
   prevArticle?: ArticleListItem;
   nextArticle?: ArticleListItem;
-  comments: CommentResponse[];
 }
 
 export interface ArticleListItem {
@@ -79,24 +78,8 @@ export interface ArticleListItem {
   createdAt: string;
 }
 
-export interface CommentResponse {
-  id: number;
-  articleId: number;
-  isMember: boolean;
-  memberId?: string;
-  nonMemberId?: string;
-  nickname: string;
-  profileImageUrl: string;
-  content: string;
-  createdAt: Date;
-}
-
 export interface ReactionRequest {
   nonMemberId?: string;
-}
-
-export interface ReactionResponse {
-  isLike: boolean;
 }
 
 export interface ErrorResponse {
@@ -117,10 +100,26 @@ export interface FieldError {
   reason: string;
 }
 
+export interface ReactionResponse {
+  isLike: boolean;
+}
+
 export interface CommentCreateRequest {
   nonMemberId?: string;
   nonMemberNickName?: string;
   content: string;
+}
+
+export interface CommentResponse {
+  id: number;
+  articleId: number;
+  isMember: boolean;
+  isMine?: boolean;
+  memberId?: string;
+  nonMemberId?: string;
+  nickname: string;
+  content: string;
+  createdAt: Date;
 }
 
 export interface ImageUploadResponse {
@@ -148,9 +147,25 @@ export interface CommentUpdateRequest {
   content: string;
 }
 
+export type MyInfoResponseRole =
+  | 'GUEST'
+  | 'ASSOCIATE_MEMBER'
+  | 'FULL_MEMBER'
+  | 'ADMIN';
+export interface MyInfoResponse {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  role: MyInfoResponseRole;
+  phoneNumber?: string;
+  generation?: string;
+}
+
 export interface PageArticleListItem {
-  totalPages?: number;
   totalElements?: number;
+  totalPages?: number;
   pageable?: PageableObject;
   numberOfElements?: number;
   size?: number;
@@ -163,17 +178,17 @@ export interface PageArticleListItem {
 }
 
 export interface PageableObject {
+  unpaged?: boolean;
   paged?: boolean;
   pageNumber?: number;
   pageSize?: number;
-  unpaged?: boolean;
   offset?: number;
   sort?: SortObject;
 }
 
 export interface SortObject {
-  sorted?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
   empty?: boolean;
 }
 
@@ -241,5 +256,3 @@ export type UploadImageBody = {
 export type FindArticleParams = {
   nonMemberId?: string;
 };
-
-export type Me200 = { [key: string]: { [key: string]: unknown } };
