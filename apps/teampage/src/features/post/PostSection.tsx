@@ -45,7 +45,6 @@ export function PostSection({ type, id }: { type: PostType; id: number }) {
         <PostFooter
           postId={post.data.id}
           likeCount={post.data.likeCount}
-          comments={post.data.comments}
           isLike={post.data.isLike}
         />
       </div>
