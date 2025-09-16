@@ -25,7 +25,7 @@ export function TechMainSection() {
         <TopBar />
         <ArticleList />
         <TechPagination />
-        <WritingButton from="CAREER" className="fixed bottom-6 right-8" />
+        <WritingButton from="TECH" className="fixed bottom-6 right-8" />
       </ArticleMainSectionContainer>
     </ArticleProvider>
   );

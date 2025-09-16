@@ -19,7 +19,7 @@ export function MomentsMainSection() {
         <TopBar />
         <ArticleList />
         <MomentsPagination />
-        <WritingButton from="CAREER" className="fixed bottom-6 right-8" />
+        <WritingButton from="MOMENTS" className="fixed bottom-6 right-8" />
       </ArticleMainSectionContainer>
     </ArticleProvider>
   );
