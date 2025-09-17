@@ -56,8 +56,8 @@ export default function Header() {
         'w-full h-[64px] sticky top-0 z-50 px-10 py-4',
         'grid grid-cols-3',        
         'items-center content-center',
-        'justify-items-stretch',      
-        'box-border bg-white shadow-[0px_1px_0px_0px_rgba(18,18,18,0.1)]',
+        'justify-items-stretch',
+        'bg-white',
       )}
       data-name="GNB"
     >
