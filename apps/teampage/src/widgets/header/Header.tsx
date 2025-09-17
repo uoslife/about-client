@@ -53,9 +53,11 @@ export default function Header() {
   return (
     <header
       className={twMerge(
-        'w-full h-[64px] sticky top-0 z-50',
-        'flex flex-row gap-8',
-        'box-border content-stretch items-center justify-between px-10 py-4 bg-white shadow-[0px_1px_0px_0px_rgba(18,18,18,0.1)]',
+        'w-full h-[64px] sticky top-0 z-50 px-10 py-4',
+        'grid grid-cols-3',        
+        'items-center content-center',
+        'justify-items-stretch',      
+        'box-border bg-white shadow-[0px_1px_0px_0px_rgba(18,18,18,0.1)]',
       )}
       data-name="GNB"
     >
@@ -67,10 +69,10 @@ export default function Header() {
           width={80}
         />
       </Link>
-      <div className="flex flex-row gap-4 items-center justify-start">
+      <div className="flex flex-row gap-4 items-center justify-center">
         {Object.values(Route).map((route) => renderLink(route))}
       </div>
-      <div className="box-border content-stretch flex flex-row gap-4 items-center justify-center p-0 relative shrink-0">
+      <div className="box-border content-stretch flex flex-row gap-4 items-center justify-end p-0 relative shrink-0">
         <div className="box-border content-stretch flex flex-row gap-[15px] items-center justify-start p-0 relative shrink-0">
           <div className="box-border content-stretch flex flex-row gap-4 items-center justify-start p-0 relative shrink-0">
             <Link
