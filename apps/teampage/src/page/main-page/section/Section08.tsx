@@ -2,10 +2,10 @@
 
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
 import { TabButton } from '@/shared/component/TabButton';
 import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnimation';
 import { Divider } from '../../../shared/component/Divider';
+import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
 
 const CATEGORY = ['Alumni', 'Leader', 'Active Member'] as const;
 type CategoryType = (typeof CATEGORY)[number];
@@ -43,68 +43,17 @@ export function Section08() {
 }
 
 function InterviewCarousel() {
-  const [category, setCategory] = useState<CategoryType>('Alumni');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const {
+    category,
+    currentIndex,
+    scrollRef,
+    itemRefs,
+    handleTabClick,
+    handlePrevClick,
+    handleNextClick,
+  } = useHorizontalScroll<CategoryType>({ data: INTERVIEW_DATA });
 
-  const handleTabClick = (cat: CategoryType) => {
-    const targetIndex = INTERVIEW_DATA.findIndex(
-      (data) => data.category === cat,
-    );
-    if (targetIndex !== -1) {
-      itemRefs.current[targetIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-        block: 'nearest',
-      });
-    }
-  };
 
-  const handlePrevClick = () => {
-    const prevIndex = Math.max(currentIndex - 1, 0);
-    itemRefs.current[prevIndex]?.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-      block: 'nearest',
-    });
-  };
-
-  const handleNextClick = () => {
-    const nextIndex = Math.min(currentIndex + 1, INTERVIEW_DATA.length - 1);
-    itemRefs.current[nextIndex]?.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-      block: 'nearest',
-    });
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const index = itemRefs.current.indexOf(
-              entry.target as HTMLDivElement,
-            );
-            if (index !== -1) {
-              setCategory(INTERVIEW_DATA[index].category);
-              setCurrentIndex(index);
-            }
-            return;
-          }
-        }
-      },
-      {
-        root: scrollRef.current,
-        threshold: 1.0,
-      },
-    );
-
-    itemRefs.current.forEach((item) => item && observer.observe(item));
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div className="relative w-full flex flex-col gap-9 items-center justify-center">
