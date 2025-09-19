@@ -117,6 +117,8 @@ function CurriculumCard({
           src={imageUrl}
           alt={title}
           fill
+          placeholder='blur' 
+          unoptimized
           className="rounded-[36px] object-cover"
         />
       </div>
