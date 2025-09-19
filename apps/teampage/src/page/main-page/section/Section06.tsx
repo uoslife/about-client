@@ -8,6 +8,8 @@ export function Section06() {
         src="/img/section06_bg.webp"
         alt="section06 background"
         fill
+        placeholder='blur' 
+        unoptimized
         className="object-cover -z-10"
       />
       <Text variant="title-48-b" color="white" className="whitespace-pre-line">
