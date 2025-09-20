@@ -9,8 +9,9 @@ export function Section09() {
         src="/img/section09_bg.webp"
         alt="section09 background"
         fill
-        placeholder='blur' 
+        placeholder="blur"
         unoptimized
+        blurDataURL="/img/section09_bg.webp"
         className="object-cover -z-10"
       />
       <div className="flex flex-col gap-9 items-start">
