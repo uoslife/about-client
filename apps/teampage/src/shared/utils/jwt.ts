@@ -3,7 +3,6 @@ import { type JwtPayload, jwtDecode } from 'jwt-decode';
 const getTokenExpiration = (token: string): number | null => {
   try {
     const decoded = jwtDecode<JwtPayload>(token);
-    console.log(decoded);
     if (decoded.exp) {
       return decoded.exp;
     }
