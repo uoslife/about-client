@@ -8,7 +8,8 @@ export function Section06() {
         src="/img/section06_bg.webp"
         alt="section06 background"
         fill
-        placeholder='blur' 
+        placeholder="blur"
+        blurDataURL="/img/section06_bg.webp"
         unoptimized
         className="object-cover -z-10"
       />

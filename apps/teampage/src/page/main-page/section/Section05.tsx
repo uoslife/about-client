@@ -1,7 +1,7 @@
 'use client';
 
-import { Text } from '@shared/component/Text';
 import { TabButton } from '@shared/component/TabButton';
+import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnimation';
 import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
@@ -117,8 +117,9 @@ function CurriculumCard({
           src={imageUrl}
           alt={title}
           fill
-          placeholder='blur' 
+          placeholder="blur"
           unoptimized
+          blurDataURL={imageUrl}
           className="rounded-[36px] object-cover"
         />
       </div>
