@@ -1,4 +1,5 @@
 import type { NextAuthOptions } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import {
   getAccessTokenByRefreshToken,
@@ -26,21 +27,18 @@ const getAuthOptions = (): NextAuthOptions => {
       strategy: 'jwt' as const,
     },
     callbacks: {
-      async jwt({ token, account }) {
-        if (!account || !account.access_token || !account.refresh_token)
-          return token;
+      async jwt({ token: _token }) {
+        const token = _token as JWT & {
+          accessToken: string;
+          refreshToken: string;
+        };
+        const isExpired = isTokenExpired(token.accessToken);
 
-        const isExpired = isTokenExpired(account.access_token);
-
-        if (!isExpired) {
-          token.accessToken = account.access_token;
-          token.refreshToken = account.refresh_token;
-          return token;
-        }
+        if (!isExpired) return token;
 
         try {
           const newTokens = await getAccessTokenByRefreshToken(
-            account.refresh_token,
+            token.refreshToken,
           );
           token.accessToken = newTokens.accessToken;
           token.accessToken = newTokens.refreshToken;
