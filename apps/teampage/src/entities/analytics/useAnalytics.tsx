@@ -57,16 +57,20 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
       eventProperties?: ReturnType<(typeof AmplitudeEventParameterMap)[T]>,
     ) => {
       if (!isUserInitialized) return;
+
       const properties = {
         ...eventProperties,
         ...makeBaseProperty(role ?? 'GUEST'),
         event_space: 'teampage',
       };
-      amplitude.logEvent(AmlitudeEventNameMapper[eventName], properties);
+
       window.dataLayer.push({
         event: AmlitudeEventNameMapper[eventName],
         properties,
       });
+      const isProduction = process.env.NODE_ENV === 'production';
+      if (!isProduction) return;
+      amplitude.logEvent(AmlitudeEventNameMapper[eventName], properties);
     },
     [role, isUserInitialized],
   );
