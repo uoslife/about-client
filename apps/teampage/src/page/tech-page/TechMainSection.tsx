@@ -17,6 +17,7 @@ import { useDebounce } from '@/shared/hooks/useDebounce';
 import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 export function TechMainSection() {
   return (
@@ -35,6 +36,7 @@ function TopBar() {
   const { state, dispatch } = useArticle();
   const [keyword, setKeyword] = useState('');
   const debouncedKeyword = useDebounce(keyword, 300);
+  const { trackEvent } = useAnalytics();
 
   useEffect(() => {
     dispatch({ type: 'SET_KEYWORD', payload: debouncedKeyword });
@@ -96,9 +98,13 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() =>
-                  dispatch({ type: 'SET_SORT', payload: 'LATEST' })
-                }
+                onClick={() => {
+                  dispatch({ type: 'SET_SORT', payload: 'LATEST' });
+                  trackEvent('CLICK_FILTER', {
+                    tab_name: 'tech',
+                    filter_name: '최신순',
+                  });
+                }}
               >
                 {SortKorean.LATEST}
               </Text>
@@ -109,9 +115,13 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() =>
-                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' })
-                }
+                onClick={() => {
+                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' });
+                  trackEvent('CLICK_FILTER', {
+                    tab_name: 'tech',
+                    filter_name: '인기순',
+                  });
+                }}
               >
                 {SortKorean.POPULAR}
               </Text>

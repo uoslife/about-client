@@ -9,6 +9,7 @@ import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
 import {
   CAREER_CATEGORIES,
+  CategoryKorean,
   CategoryKoreanWithAll,
   SortKorean,
   SpaceIdEnum,
@@ -17,6 +18,7 @@ import { useDebounce } from '@/shared/hooks/useDebounce';
 import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 export function CareerMainSection() {
   return (
@@ -35,7 +37,7 @@ function TopBar() {
   const { state, dispatch } = useArticle();
   const [keyword, setKeyword] = useState('');
   const debouncedKeyword = useDebounce(keyword, 300);
-
+  const { trackEvent } = useAnalytics();
   useEffect(() => {
     dispatch({ type: 'SET_KEYWORD', payload: debouncedKeyword });
   }, [debouncedKeyword, dispatch]);
@@ -48,7 +50,9 @@ function TopBar() {
             <TabButton
               key={cat}
               clicked={state.category === cat}
-              onClick={() => dispatch({ type: 'SET_CATEGORY', payload: cat })}
+              onClick={() => {
+                dispatch({ type: 'SET_CATEGORY', payload: cat });
+              }}
             >
               {CategoryKoreanWithAll[cat]}
             </TabButton>
@@ -96,9 +100,13 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() =>
-                  dispatch({ type: 'SET_SORT', payload: 'LATEST' })
-                }
+                onClick={() => {
+                  dispatch({ type: 'SET_SORT', payload: 'LATEST' });
+                  trackEvent('CLICK_FILTER', {
+                    tab_name: 'career',
+                    filter_name: '최신순',
+                  });
+                }}
               >
                 {SortKorean.LATEST}
               </Text>
@@ -109,9 +117,13 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() =>
-                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' })
-                }
+                onClick={() => {
+                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' });
+                  trackEvent('CLICK_FILTER', {
+                    tab_name: 'career',
+                    filter_name: '인기순',
+                  });
+                }}
               >
                 {SortKorean.POPULAR}
               </Text>
