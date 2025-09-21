@@ -20,16 +20,16 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
   return (
     <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={true}>
-      <AnalyticsContextProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <AnalyticsContextProvider>
           <ToastProvider>
             <ConfirmModalProvider>
               {children}
               <DimRenderer />
             </ConfirmModalProvider>
           </ToastProvider>
-        </QueryClientProvider>
-      </AnalyticsContextProvider>
+        </AnalyticsContextProvider>
+      </QueryClientProvider>
     </SessionProvider>
   );
 };
