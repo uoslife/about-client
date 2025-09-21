@@ -15,9 +15,10 @@ import { useToast } from '@/shared/component/toast';
 
 type CommentProps = {
   comment: CommentResponse;
+  postAuthorId: string;
 };
 
-export const Comment = ({ comment }: CommentProps) => {
+export const Comment = ({ comment, postAuthorId }: CommentProps) => {
   const { role } = useUser();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -72,7 +73,11 @@ export const Comment = ({ comment }: CommentProps) => {
         <div className="flex gap-3 items-center">
           <div className="flex gap-2 items-center">
             <Image
-              src={comment.isMine ? '/img/member.png' : '/img/non_member.png'}
+              src={
+                comment.memberId === postAuthorId
+                  ? '/img/member.png'
+                  : '/img/non_member.png'
+              }
               alt={`${comment.nickname} 프로필`}
               width={28}
               height={28}

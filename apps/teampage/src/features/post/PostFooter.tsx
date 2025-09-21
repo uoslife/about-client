@@ -23,9 +23,15 @@ type PostFooterProps = {
   likeCount: number;
   isLike: boolean;
   postId: number;
+  postAuthorId: string;
 };
 
-export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
+export const PostFooter = ({
+  likeCount,
+  isLike,
+  postId,
+  postAuthorId,
+}: PostFooterProps) => {
   const pathname = usePathname();
   const routeType = pathname.split('/')[1];
   const { trackEvent } = useAnalytics();
@@ -204,7 +210,11 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
         <div className="flex flex-col gap-4 items-start justify-start w-full">
           <div className="flex flex-col gap-5 items-start justify-start w-full">
             {comments?.map((comment) => (
-              <Comment key={comment.id} comment={comment} />
+              <Comment
+                key={comment.id}
+                comment={comment}
+                postAuthorId={postAuthorId}
+              />
             ))}
           </div>
         </div>

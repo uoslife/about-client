@@ -39,6 +39,7 @@ export function PostSection({ type, id }: { type: PostType; id: number }) {
           postId={post.id}
           likeCount={post.likeCount}
           isLike={post.isLike}
+          postAuthorId={post.authorId}
         />
         <PrevNext
           prevArticle={post.prevArticle}
