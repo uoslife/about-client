@@ -131,6 +131,10 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
             onClick={() => {
               toast('URL 링크가 복사되었습니다.', 1000);
               navigator.clipboard.writeText(window.location.href);
+              trackEvent('CLICK_SHARE', {
+                tab_name: routeType as TabName,
+                article_id: postId.toString(),
+              });
             }}
             className="flex gap-2 items-center cursor-pointer"
           >
