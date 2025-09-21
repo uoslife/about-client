@@ -10,6 +10,7 @@ export type HomeScrollSection =
   | '6_recruit';
 export type DeviceType = 'pc' | 'mobile';
 export type FooterName = 'instagram' | 'github' | 'kakao' | 'mail';
+export type GnbIconName = 'kakao' | 'instagram' | 'github';
 export type LinkType = 'github' | 'notion' | 'linkedin' | 'tistory';
 
 export type AmplitudePropertyType = {
@@ -22,4 +23,5 @@ export type AmplitudePropertyType = {
   device: DeviceType;
   footer_name: FooterName;
   link_type: LinkType;
+  gnb_icon_name: GnbIconName;
 };
