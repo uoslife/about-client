@@ -45,7 +45,7 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
         ...eventProperties,
         ...makeBaseProperty(role ?? 'GUEST'),
       };
-      console.log('jbcho', properties);
+      console.log(eventName, properties);
       amplitude.logEvent(eventName, properties);
     },
     [role, isUserInitialized],
