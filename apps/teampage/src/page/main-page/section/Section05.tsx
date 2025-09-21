@@ -6,11 +6,15 @@ import Image from 'next/image';
 import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnimation';
 import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
 import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
+import { useEffect, useRef } from 'react';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 const CATEGORY = ['Education', 'Production', 'Networking'] as const;
 type CategoryType = (typeof CATEGORY)[number];
 
 export function Section05() {
+  const hasSwipeLastItem = useRef(false);
+  const { trackEvent } = useAnalytics();
   const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
     tab_name: 'home',
     scroll_section: '3_curriculum',
@@ -24,6 +28,17 @@ export function Section05() {
     handlePrevClick,
     handleNextClick,
   } = useHorizontalScroll<CategoryType>({ data: CURRICULUM_DATA });
+
+  useEffect(() => {
+    if (currentIndex === CURRICULUM_DATA.length - 1) {
+      !hasSwipeLastItem.current &&
+        trackEvent('SWIPE_CURRICULUM', {
+          tab_name: 'home',
+          scroll_section: '3_curriculum',
+        });
+      hasSwipeLastItem.current = true;
+    }
+  }, [currentIndex, trackEvent]);
 
   return (
     <div

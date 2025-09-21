@@ -7,6 +7,8 @@ import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnim
 import { Divider } from '../../../shared/component/Divider';
 import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
 import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
+import { useEffect, useRef } from 'react';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 const CATEGORY = ['Alumni', 'Leader', 'Active Member'] as const;
 type CategoryType = (typeof CATEGORY)[number];
@@ -15,6 +17,7 @@ export function Section08() {
     tab_name: 'home',
     scroll_section: '5_interview',
   });
+
   return (
     <div
       className="relative flex flex-col items-center justify-center bg-black gap-28 py-28"
@@ -51,6 +54,7 @@ export function Section08() {
 }
 
 function InterviewCarousel() {
+  const hasSwipeLastItem = useRef(false);
   const {
     category,
     currentIndex,
@@ -60,6 +64,18 @@ function InterviewCarousel() {
     handlePrevClick,
     handleNextClick,
   } = useHorizontalScroll<CategoryType>({ data: INTERVIEW_DATA });
+  const { trackEvent } = useAnalytics();
+
+  useEffect(() => {
+    if (currentIndex === INTERVIEW_DATA.length - 1) {
+      !hasSwipeLastItem.current &&
+        trackEvent('SWIPE_INTERVIEW', {
+          tab_name: 'home',
+          scroll_section: '5_interview',
+        });
+      hasSwipeLastItem.current = true;
+    }
+  }, [currentIndex, trackEvent]);
 
   return (
     <div className="relative w-full flex flex-col gap-9 items-center justify-center">

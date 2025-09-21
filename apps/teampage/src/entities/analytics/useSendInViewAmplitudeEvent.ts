@@ -9,6 +9,7 @@ export const useSendInViewAmplitudeEvent = <T extends AmplitudeEventName>(
   eventName: T,
   eventProperties?: ReturnType<(typeof AmplitudeEventParameterMap)[T]>,
 ) => {
+  const hasSentEvent = useRef(false);
   const ref = useRef<HTMLDivElement>(null);
 
   const { trackEvent } = useAnalytics();
@@ -18,7 +19,8 @@ export const useSendInViewAmplitudeEvent = <T extends AmplitudeEventName>(
     const intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          trackEvent(eventName, eventProperties);
+          !hasSentEvent.current && trackEvent(eventName, eventProperties);
+          hasSentEvent.current = true;
           intersectionObserver.disconnect();
         }
       });
@@ -28,7 +30,7 @@ export const useSendInViewAmplitudeEvent = <T extends AmplitudeEventName>(
     return () => {
       intersectionObserver.disconnect();
     };
-  }, [trackEvent, eventName, eventProperties]);
+  }, [trackEvent, eventName, eventProperties, hasSentEvent]);
 
   return { ref };
 };
