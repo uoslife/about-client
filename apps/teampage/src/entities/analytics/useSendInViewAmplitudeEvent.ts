@@ -14,7 +14,7 @@ export const useSendInViewAmplitudeEvent = <T extends AmplitudeEventName>(
 
   const { trackEvent } = useAnalytics();
   useEffect(() => {
-    if (!ref.current) return;
+    if (!ref.current || typeof window === 'undefined') return;
 
     const intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {

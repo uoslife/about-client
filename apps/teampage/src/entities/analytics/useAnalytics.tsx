@@ -25,7 +25,9 @@ declare global {
   }
 }
 
-window.dataLayer = window.dataLayer || [];
+if (typeof window !== 'undefined') {
+  window.dataLayer = window.dataLayer || [];
+}
 
 type AnalyticsContextProps = {
   trackEvent: <T extends AmplitudeEventName>(
@@ -64,10 +66,12 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
         event_space: 'teampage',
       };
 
-      window.dataLayer.push({
-        event: AmlitudeEventNameMapper[eventName],
-        properties,
-      });
+      if (typeof window !== 'undefined') {
+        window.dataLayer.push({
+          event: AmlitudeEventNameMapper[eventName],
+          properties,
+        });
+      }
       const isProduction = process.env.NODE_ENV === 'production';
       if (!isProduction) return;
       amplitude.logEvent(AmlitudeEventNameMapper[eventName], properties);
