@@ -36,3 +36,6 @@ yarn-error.log*
 
 # environment variables
 .env
+
+# downloaded images from Notion
+apps/teampage/public/images/people/
