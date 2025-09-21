@@ -22,6 +22,9 @@ import {
   type SpaceType,
 } from '@/shared/const/category';
 import { type CreateArticleInput, processArticle } from './processArticle';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { match } from 'ts-pattern';
+import { TabName } from '@/entities/analytics/AmplitudePropertyType';
 
 const CATEGORY_MAP: { [key: string]: string } = {
   TECH: 'UOSLIFE Tech',
@@ -29,10 +32,19 @@ const CATEGORY_MAP: { [key: string]: string } = {
   MOMENTS: 'UOSLIFE Moments',
 };
 
+const getTabName = (space: SpaceType) => {
+  return match<SpaceType, TabName>(space)
+    .with('TECH', () => 'tech')
+    .with('CAREER', () => 'career')
+    .with('MOMENTS', () => 'moments')
+    .exhaustive();
+};
+
 const TITLE_MAX_LENGTH = 56;
 const SUMMARY_MAX_LENGTH = 88;
 
 export default function WritePage() {
+  const { trackEvent } = useAnalytics();
   const session = useAuth();
   const searchParams = useSearchParams();
   const from = (searchParams.get('from') as SpaceType) || 'TECH';
@@ -173,6 +185,9 @@ export default function WritePage() {
               `Thumbnail upload failed: ${response.status} ${response.statusText}`,
             );
           }
+          trackEvent('POST_ARTICLE', {
+            tab_name: getTabName(space),
+          });
           return response.json();
         });
         alert('게시글 등록 완료.');
