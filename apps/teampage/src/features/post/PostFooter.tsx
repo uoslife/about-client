@@ -15,6 +15,9 @@ import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
 import { generateNonMemberNickName } from '@/shared/utils/generateNonMemberNickname';
 import { Comment } from './Comment';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { TabName } from '@/entities/analytics/AmplitudePropertyType';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 
 type PostFooterProps = {
   likeCount: number;
@@ -25,6 +28,11 @@ type PostFooterProps = {
 export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
   const pathname = usePathname();
   const routeType = pathname.split('/')[1];
+  const { trackEvent } = useAnalytics();
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_ARTICLE', {
+    tab_name: routeType as TabName,
+    article_id: postId.toString(),
+  });
 
   const queryClient = useQueryClient();
   const { nonMemberId, authorizationHeader } = useNonMemberId();
@@ -44,6 +52,12 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
         setLike(true);
         setOptimisticLikeCount((prev) => prev + 1);
       },
+      onSuccess: () => {
+        trackEvent('LIKE_ARTICLE', {
+          tab_name: routeType as TabName,
+          article_id: postId.toString(),
+        });
+      },
       onError: () => {
         setTimeout(() => {
           setLike(false);
@@ -62,6 +76,10 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
         queryClient.refetchQueries({
           queryKey: getFindCommentQueryKey(postId),
         });
+        trackEvent('POST_COMMENT', {
+          tab_name: routeType as TabName,
+          article_id: postId.toString(),
+        });
       },
       onError: () => {
         toast('댓글 작성 중 오류가 발생했습니다.', 2000);
@@ -71,7 +89,7 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
 
   return (
     <>
-      <div className="flex gap-8 items-center">
+      <div className="flex gap-8 items-center" ref={ref}>
         <button
           type="button"
           className={`flex gap-2 items-center px-5 py-3 box-border rounded-[40px] transition-all duration-200 ${
@@ -118,6 +136,10 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
             onClick={() => {
               toast('URL 링크가 복사되었습니다.', 1000);
               navigator.clipboard.writeText(window.location.href);
+              trackEvent('CLICK_SHARE', {
+                tab_name: routeType as TabName,
+                article_id: postId.toString(),
+              });
             }}
             className="flex gap-2 items-center cursor-pointer"
           >

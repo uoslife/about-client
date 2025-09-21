@@ -1,9 +1,13 @@
+'use client';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { Divider } from '@shared/component/Divider';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export function Footer() {
+  const { trackEvent } = useAnalytics();
+
   return (
     <div className="bg-grey-800 pb-[60px] pt-40 w-full mx-auto">
       <div className="flex flex-row gap-4 max-w-pc justify-between items-end w-full mx-auto">
@@ -24,7 +28,14 @@ export function Footer() {
           </Text>
         </div>
         <div className="flex gap-[34px] items-center">
-          <Link href="mailto:support@uoslife.team">
+          <Link
+            href="mailto:support@uoslife.team"
+            onClick={() => {
+              trackEvent('CLICK_FOOTER', {
+                footer_name: 'mail',
+              });
+            }}
+          >
             <Text variant="body-20-m" className="text-white">
               Team UOSLIFE E-Mail
             </Text>
@@ -35,10 +46,7 @@ export function Footer() {
             color="bg-grey-700"
             className="h-3"
           />
-          <Link
-            href="https://uoslife.notion.site/"
-            target="_blank"
-          >
+          <Link href="https://uoslife.notion.site/" target="_blank">
             <Text variant="body-20-m" className="text-white">
               Term of Service
             </Text>
@@ -50,6 +58,11 @@ export function Footer() {
             target="_blank"
             rel="noopener"
             className="hover:bg-grey-700 rounded-xl"
+            onClick={() => {
+              trackEvent('CLICK_FOOTER', {
+                footer_name: 'instagram',
+              });
+            }}
           >
             <Image
               src="/svg/instagram.svg"
@@ -66,6 +79,11 @@ export function Footer() {
             target="_blank"
             rel="noopener"
             className="hover:bg-grey-700 rounded-xl"
+            onClick={() => {
+              trackEvent('CLICK_FOOTER', {
+                footer_name: 'github',
+              });
+            }}
           >
             <Image
               src="/svg/github.svg"
@@ -82,6 +100,11 @@ export function Footer() {
             target="_blank"
             rel="noopener"
             className="hover:bg-grey-700 rounded-xl"
+            onClick={() => {
+              trackEvent('CLICK_FOOTER', {
+                footer_name: 'kakao',
+              });
+            }}
           >
             <Image
               src="/svg/kakao.svg"

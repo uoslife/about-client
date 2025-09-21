@@ -1,7 +1,12 @@
+'use client';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 import { CareerMainSection } from './CareerMainSection';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
-export default async function CareerPage() {
+export default function CareerPage() {
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'career',
+  });
   return (
     <div className="flex flex-col gap-16 mb-60">
       <ArticleBanner

@@ -1,9 +1,10 @@
 'use client';
+import dynamic from 'next/dynamic';
+import AnalyticsContextProvider from '@/entities/analytics/useAnalytics';
 import { SessionProvider } from 'next-auth/react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '@/shared/component/toast/ToastContext';
 import { ConfirmModalProvider } from '@/shared/component/confirm-modal/ConfirmModalContext';
-import dynamic from 'next/dynamic';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const DimRenderer = dynamic(
   () =>
@@ -20,12 +21,14 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={true}>
       <QueryClientProvider client={queryClient}>
-        <ToastProvider>
-          <ConfirmModalProvider>
-            {children}
-            <DimRenderer />
-          </ConfirmModalProvider>
-        </ToastProvider>
+        <AnalyticsContextProvider>
+          <ToastProvider>
+            <ConfirmModalProvider>
+              {children}
+              <DimRenderer />
+            </ConfirmModalProvider>
+          </ToastProvider>
+        </AnalyticsContextProvider>
       </QueryClientProvider>
     </SessionProvider>
   );

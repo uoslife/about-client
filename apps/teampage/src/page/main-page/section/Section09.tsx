@@ -1,10 +1,20 @@
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export function Section09() {
+  const { trackEvent } = useAnalytics();
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
+    tab_name: 'home',
+    scroll_section: '6_recruit',
+  });
   return (
-    <div className="relative flex flex-col justify-center px-[240px] h-[600px]">
+    <div
+      className="relative flex flex-col justify-center px-[240px] h-[600px]"
+      ref={ref}
+    >
       <Image
         src="/img/section09_bg.webp"
         alt="section09 background"
@@ -27,6 +37,9 @@ export function Section09() {
           href="https://docs.google.com/forms/d/1O61Rt-m2OOX9KbCMG-CtkGR-2ytaEgsRiXB2STQKxi4/edit"
           target="_blank"
           className="bg-white px-7 py-4 rounded-[32px]"
+          onClick={() => {
+            trackEvent('CLICK_RECRUIT_ALERT');
+          }}
         >
           <Text variant="title-24-b">모집 알림 받기</Text>
         </Link>

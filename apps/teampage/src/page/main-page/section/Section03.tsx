@@ -1,9 +1,19 @@
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 
 export function Section03() {
+  const { trackEvent } = useAnalytics();
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
+    tab_name: 'home',
+    scroll_section: '2_app_download',
+  });
   return (
-    <div className="relative flex flex-col items-center justify-center gap-40 my-32 pb-[512px]">
+    <div
+      className="relative flex flex-col items-center justify-center gap-40 my-32 pb-[512px]"
+      ref={ref}
+    >
       <div className="flex flex-col items-center text-center gap-4">
         <div className="text-4xl font-bold">
           <Text variant="title-28-b" color="grey-500">
@@ -94,6 +104,11 @@ export function Section03() {
             target="_blank"
             rel="noopener"
             className="flex flex-row gap-2 items-center justify-center rounded-xl px-4 py-2 bg-grey-800"
+            onClick={() => {
+              trackEvent('CLICK_DOWNLOAD', {
+                platform: 'ios',
+              });
+            }}
           >
             <Image
               src="/svg/ios_logo.svg"
@@ -117,6 +132,11 @@ export function Section03() {
             target="_blank"
             rel="noopener"
             className="flex flex-row gap-2 items-center justify-center rounded-xl px-4 py-2 bg-grey-800"
+            onClick={() => {
+              trackEvent('CLICK_DOWNLOAD', {
+                platform: 'android',
+              });
+            }}
           >
             <Image
               src="/svg/google_play_logo.svg"

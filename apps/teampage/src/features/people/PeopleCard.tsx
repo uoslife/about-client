@@ -1,3 +1,4 @@
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { Text } from '@/shared/component/Text';
 import Image from 'next/image';
 
@@ -19,6 +20,7 @@ interface PeopleCardProps {
 }
 
 export default function PeopleCard({ person }: PeopleCardProps) {
+  const { trackEvent } = useAnalytics();
   const openLink = (url: string) => {
     if (!url) return;
     if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -111,7 +113,12 @@ export default function PeopleCard({ person }: PeopleCardProps) {
         {person.link_others && (
           <button
             className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-            onClick={() => openLink(person.link_others!)}
+            onClick={() => {
+              openLink(person.link_others!);
+              trackEvent('CLICK_PEOPLE_LINK', {
+                link_type: 'others',
+              });
+            }}
           >
             <div className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden hover:bg-gray-200">
               <Image width={44} height={44} src={'/svg/home.svg'} alt="home" />
@@ -121,7 +128,12 @@ export default function PeopleCard({ person }: PeopleCardProps) {
         {person.link_github && (
           <button
             className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-            onClick={() => openLink(person.link_github!)}
+            onClick={() => {
+              openLink(person.link_github!);
+              trackEvent('CLICK_PEOPLE_LINK', {
+                link_type: 'github',
+              });
+            }}
           >
             <div className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden hover:bg-gray-200">
               <Image
@@ -136,7 +148,12 @@ export default function PeopleCard({ person }: PeopleCardProps) {
         {person.link_linkedin && (
           <button
             className="w-11 h-11 flex items-center justify-center text-gray-600 hover:text-[#0F6EFB] transition-colors"
-            onClick={() => openLink(person.link_linkedin!)}
+            onClick={() => {
+              openLink(person.link_linkedin!);
+              trackEvent('CLICK_PEOPLE_LINK', {
+                link_type: 'linkedin',
+              });
+            }}
           >
             <div className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden hover:bg-gray-200">
               <Image

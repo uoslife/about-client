@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCallback } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 const Route = {
   HOME: {
@@ -27,6 +28,7 @@ const Route = {
 
 export default function Header() {
   const { status, signIn, session, signOut } = useAuth();
+  const { trackEvent } = useAnalytics();
 
   const renderLink = useCallback((route: { path: string; name: string }) => {
     const isShowOurStoryMenu = route.path === Route.OUR_STORY.path;
@@ -54,7 +56,7 @@ export default function Header() {
     <header
       className={twMerge(
         'w-full h-[64px] sticky top-0 z-50 px-10 py-4',
-        'grid grid-cols-3',        
+        'grid grid-cols-3',
         'items-center content-center',
         'justify-items-stretch',
         'bg-white',
@@ -86,6 +88,11 @@ export default function Header() {
                 width={44}
                 height={44}
                 className="hover:bg-gray-100 rounded-xl"
+                onClick={() => {
+                  trackEvent('CLICK_GNB', {
+                    gnb_icon_name: 'kakao',
+                  });
+                }}
               />
             </Link>
             <Link
@@ -93,6 +100,11 @@ export default function Header() {
               target="_blank"
               rel="noopener"
               className="hover:bg-gray-100 rounded-xl"
+              onClick={() => {
+                trackEvent('CLICK_GNB', {
+                  gnb_icon_name: 'instagram',
+                });
+              }}
             >
               <Image
                 src="/svg/instagram.svg"
@@ -106,6 +118,11 @@ export default function Header() {
               target="_blank"
               rel="noopener"
               className="hover:bg-gray-100 rounded-xl"
+              onClick={() => {
+                trackEvent('CLICK_GNB', {
+                  gnb_icon_name: 'github',
+                });
+              }}
             >
               <Image
                 src="/svg/github.svg"
