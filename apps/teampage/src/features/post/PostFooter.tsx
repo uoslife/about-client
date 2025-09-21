@@ -15,6 +15,8 @@ import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
 import { generateNonMemberNickName } from '@/shared/utils/generateNonMemberNickname';
 import { Comment } from './Comment';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { TabName } from '@/entities/analytics/AmplitudePropertyType';
 
 type PostFooterProps = {
   likeCount: number;
@@ -25,6 +27,7 @@ type PostFooterProps = {
 export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
   const pathname = usePathname();
   const routeType = pathname.split('/')[1];
+  const { trackEvent } = useAnalytics();
 
   const queryClient = useQueryClient();
   const { nonMemberId, authorizationHeader } = useNonMemberId();
@@ -44,6 +47,12 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
         setLike(true);
         setOptimisticLikeCount((prev) => prev + 1);
       },
+      onSuccess: () => {
+        trackEvent('LIKE_ARTICLE', {
+          tab_name: routeType as TabName,
+          article_id: postId.toString(),
+        });
+      },
       onError: () => {
         setTimeout(() => {
           setLike(false);
@@ -61,6 +70,10 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
       onSuccess: () => {
         queryClient.refetchQueries({
           queryKey: getFindCommentQueryKey(postId),
+        });
+        trackEvent('POST_COMMENT', {
+          tab_name: routeType as TabName,
+          article_id: postId.toString(),
         });
       },
       onError: () => {
