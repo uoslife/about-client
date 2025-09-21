@@ -17,6 +17,7 @@ import { generateNonMemberNickName } from '@/shared/utils/generateNonMemberNickn
 import { Comment } from './Comment';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { TabName } from '@/entities/analytics/AmplitudePropertyType';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 
 type PostFooterProps = {
   likeCount: number;
@@ -28,6 +29,10 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
   const pathname = usePathname();
   const routeType = pathname.split('/')[1];
   const { trackEvent } = useAnalytics();
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_ARTICLE', {
+    tab_name: routeType as TabName,
+    article_id: postId.toString(),
+  });
 
   const queryClient = useQueryClient();
   const { nonMemberId, authorizationHeader } = useNonMemberId();
@@ -84,7 +89,7 @@ export const PostFooter = ({ likeCount, isLike, postId }: PostFooterProps) => {
 
   return (
     <>
-      <div className="flex gap-8 items-center">
+      <div className="flex gap-8 items-center" ref={ref}>
         <button
           type="button"
           className={`flex gap-2 items-center px-5 py-3 box-border rounded-[40px] transition-all duration-200 ${
