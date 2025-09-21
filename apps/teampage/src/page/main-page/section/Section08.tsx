@@ -6,12 +6,20 @@ import { TabButton } from '@/shared/component/TabButton';
 import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnimation';
 import { Divider } from '../../../shared/component/Divider';
 import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 
 const CATEGORY = ['Alumni', 'Leader', 'Active Member'] as const;
 type CategoryType = (typeof CATEGORY)[number];
 export function Section08() {
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
+    tab_name: 'home',
+    scroll_section: '5_interview',
+  });
   return (
-    <div className="relative flex flex-col items-center justify-center bg-black gap-28 py-28">
+    <div
+      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28"
+      ref={ref}
+    >
       <Image
         src="/img/section08_bg.webp"
         alt="section 09 background"
@@ -52,8 +60,6 @@ function InterviewCarousel() {
     handlePrevClick,
     handleNextClick,
   } = useHorizontalScroll<CategoryType>({ data: INTERVIEW_DATA });
-
-
 
   return (
     <div className="relative w-full flex flex-col gap-9 items-center justify-center">

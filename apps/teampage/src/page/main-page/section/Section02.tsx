@@ -1,9 +1,17 @@
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 
 export function Section02() {
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
+    tab_name: 'home',
+    scroll_section: '1_values',
+  });
   return (
-    <div className="relative flex flex-col items-center justify-center bg-black gap-28 py-28">
+    <div
+      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28"
+      ref={ref}
+    >
       <Image
         src="/img/section02_bg.webp"
         alt="section 02 background"

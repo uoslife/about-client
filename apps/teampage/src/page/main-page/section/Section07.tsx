@@ -4,10 +4,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Card } from '@/shared/component/card';
 import { SpaceIdEnum } from '@/shared/const/category';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 
 export function Section07() {
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
+    tab_name: 'home',
+    scroll_section: '4_tech',
+  });
   return (
-    <div className="flex flex-col items-center justify-center gap-20 my-40">
+    <div
+      className="flex flex-col items-center justify-center gap-20 my-40"
+      ref={ref}
+    >
       <div className="flex flex-col items-center text-center gap-9">
         <div className="gap-4">
           <Text variant="title-24-b" color="primary-ui">

@@ -5,11 +5,16 @@ import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnimation';
 import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 
 const CATEGORY = ['Education', 'Production', 'Networking'] as const;
 type CategoryType = (typeof CATEGORY)[number];
 
 export function Section05() {
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
+    tab_name: 'home',
+    scroll_section: '3_curriculum',
+  });
   const {
     category,
     currentIndex,
@@ -21,7 +26,10 @@ export function Section05() {
   } = useHorizontalScroll<CategoryType>({ data: CURRICULUM_DATA });
 
   return (
-    <div className="flex flex-col items-center justify-center gap-28 py-28">
+    <div
+      className="flex flex-col items-center justify-center gap-28 py-28"
+      ref={ref}
+    >
       <div className="z-10 flex flex-col items-center text-center gap-8">
         <div className="flex flex-col gap-2">
           <Text as="h2" variant="title-28-m" color="primary-ui">

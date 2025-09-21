@@ -1,12 +1,20 @@
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export function Section09() {
   const { trackEvent } = useAnalytics();
+  const { ref } = useSendInViewAmplitudeEvent('SCROLL_HOME', {
+    tab_name: 'home',
+    scroll_section: '6_recruit',
+  });
   return (
-    <div className="relative flex flex-col justify-center px-[240px] h-[600px]">
+    <div
+      className="relative flex flex-col justify-center px-[240px] h-[600px]"
+      ref={ref}
+    >
       <Image
         src="/img/section09_bg.webp"
         alt="section09 background"
