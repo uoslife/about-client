@@ -27,21 +27,37 @@ const getAuthOptions = (): NextAuthOptions => {
       strategy: 'jwt' as const,
     },
     callbacks: {
-      async jwt({ token: _token }) {
+      // https://authjs.dev/guides/refresh-token-rotation#jwt-strategy
+      async jwt({ token: _token, account }) {
         const token = _token as JWT & {
-          accessToken: string;
-          refreshToken: string;
+          accessToken?: string;
+          refreshToken?: string;
         };
+
+        // 첫 로그인하는 경우
+        if (account) {
+          const newToken = {
+            ...token,
+            accessToken: account.access_token,
+            refreshToken: account.refresh_token,
+          };
+          return newToken;
+        }
+
+        if (!token.accessToken || !token.refreshToken) return token;
+
         const isExpired = isTokenExpired(token.accessToken);
 
+        // access token이 만료되지 않은 경우
         if (!isExpired) return token;
 
+        // access token이 만료된 경우
         try {
           const newTokens = await getAccessTokenByRefreshToken(
             token.refreshToken,
           );
           token.accessToken = newTokens.accessToken;
-          token.accessToken = newTokens.refreshToken;
+          token.refreshToken = newTokens.refreshToken;
 
           return token;
         } catch (error) {
