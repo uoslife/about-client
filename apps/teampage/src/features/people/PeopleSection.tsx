@@ -7,6 +7,7 @@ import { SearchField } from '@/shared/component/search-field';
 import { Dropdown } from '@/shared/component/dropdown';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 import { NoQueryResultFallback } from '@/shared/component/NoQueryResultFallback';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
 const sortGenerationWithNumber = (a: string, b: string) => {
   return Number(a.slice(0, -1)) - Number(b.slice(0, -1));
@@ -95,6 +96,9 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
 };
 
 const PeopleSection = ({ peopleData }: { peopleData: PeopleData[] }) => {
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'people',
+  });
   return (
     <PeopleProvider>
       <PeopleSectionContent peopleData={peopleData} />

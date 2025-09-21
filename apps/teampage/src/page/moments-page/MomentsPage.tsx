@@ -1,7 +1,12 @@
+'use client';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 import { MomentsMainSection } from './MomentsMainSection';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
-export default async function MomentsPage() {
+export default function MomentsPage() {
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'moments',
+  });
   return (
     <div className="flex flex-col gap-16 mb-60">
       <ArticleBanner

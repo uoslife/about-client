@@ -1,7 +1,12 @@
+'use client';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 import { TechMainSection } from './TechMainSection';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
 export default function TechPage() {
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'tech',
+  });
   return (
     <div className="flex flex-col gap-16 mb-60">
       <ArticleBanner

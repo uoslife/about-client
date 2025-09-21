@@ -1,3 +1,5 @@
+'use client';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 import { Section01 } from './section/Section01';
 import { Section02 } from './section/Section02';
 import { Section03 } from './section/Section03';
@@ -9,7 +11,10 @@ import { Section08 } from './section/Section08';
 import { Section09 } from './section/Section09';
 import { SectionMain } from './section/SectionMain';
 
-export default async function MainPage() {
+export default function MainPage() {
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'home',
+  });
   return (
     <div className="flex flex-col items-center justify-center">
       <main>
