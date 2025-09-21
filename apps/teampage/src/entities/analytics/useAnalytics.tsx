@@ -6,7 +6,10 @@ import React, {
   useContext,
   useEffect,
 } from 'react';
-import { AmplitudeEventName } from './AmplitudeEventParameterMap';
+import {
+  AmlitudeEventNameMapper,
+  AmplitudeEventName,
+} from './AmplitudeEventParameterMap';
 import { AmplitudeEventParameterMap } from './AmplitudeEventParameterMap';
 import { makeBaseProperty } from './utils/makeBaseProperty';
 import { useUser } from '../api/useUser';
@@ -14,7 +17,7 @@ import { useUser } from '../api/useUser';
 declare global {
   interface Window {
     dataLayer: {
-      event: AmplitudeEventName;
+      event: (typeof AmlitudeEventNameMapper)[AmplitudeEventName];
       properties: ReturnType<
         (typeof AmplitudeEventParameterMap)[AmplitudeEventName]
       >;
@@ -57,10 +60,11 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
       const properties = {
         ...eventProperties,
         ...makeBaseProperty(role ?? 'GUEST'),
+        event_space: 'teampage',
       };
-      amplitude.logEvent(eventName, properties);
+      amplitude.logEvent(AmlitudeEventNameMapper[eventName], properties);
       window.dataLayer.push({
-        event: eventName,
+        event: AmlitudeEventNameMapper[eventName],
         properties,
       });
     },
