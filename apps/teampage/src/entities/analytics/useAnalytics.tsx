@@ -25,7 +25,7 @@ const AnalyticsContext = createContext<AnalyticsContextProps>(
 const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
-  const { role } = useUser();
+  const { role, isUserInitialized } = useUser();
   if (!process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY) {
     throw new Error('AMPLITUDE_API_KEY is not set');
   }
@@ -40,6 +40,7 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
       eventName: T,
       eventProperties?: ReturnType<(typeof AmplitudeEventParameterMap)[T]>,
     ) => {
+      if (!isUserInitialized) return;
       const properties = {
         ...eventProperties,
         ...makeBaseProperty(role ?? 'GUEST'),
@@ -47,7 +48,7 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
       console.log('jbcho', properties);
       amplitude.logEvent(eventName, properties);
     },
-    [role],
+    [role, isUserInitialized],
   );
 
   return (
