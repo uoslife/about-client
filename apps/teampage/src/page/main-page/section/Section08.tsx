@@ -2,10 +2,10 @@
 
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
 import { TabButton } from '@/shared/component/TabButton';
 import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnimation';
 import { Divider } from '../../../shared/component/Divider';
+import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
 
 const CATEGORY = ['Alumni', 'Leader', 'Active Member'] as const;
 type CategoryType = (typeof CATEGORY)[number];
@@ -43,68 +43,17 @@ export function Section08() {
 }
 
 function InterviewCarousel() {
-  const [category, setCategory] = useState<CategoryType>('Alumni');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const {
+    category,
+    currentIndex,
+    scrollRef,
+    itemRefs,
+    handleTabClick,
+    handlePrevClick,
+    handleNextClick,
+  } = useHorizontalScroll<CategoryType>({ data: INTERVIEW_DATA });
 
-  const handleTabClick = (cat: CategoryType) => {
-    const targetIndex = INTERVIEW_DATA.findIndex(
-      (data) => data.category === cat,
-    );
-    if (targetIndex !== -1) {
-      itemRefs.current[targetIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-        block: 'nearest',
-      });
-    }
-  };
 
-  const handlePrevClick = () => {
-    const prevIndex = Math.max(currentIndex - 1, 0);
-    itemRefs.current[prevIndex]?.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-      block: 'nearest',
-    });
-  };
-
-  const handleNextClick = () => {
-    const nextIndex = Math.min(currentIndex + 1, INTERVIEW_DATA.length - 1);
-    itemRefs.current[nextIndex]?.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-      block: 'nearest',
-    });
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const index = itemRefs.current.indexOf(
-              entry.target as HTMLDivElement,
-            );
-            if (index !== -1) {
-              setCategory(INTERVIEW_DATA[index].category);
-              setCurrentIndex(index);
-            }
-            return;
-          }
-        }
-      },
-      {
-        root: scrollRef.current,
-        threshold: 1.0,
-      },
-    );
-
-    itemRefs.current.forEach((item) => item && observer.observe(item));
-
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div className="relative w-full flex flex-col gap-9 items-center justify-center">
@@ -259,7 +208,7 @@ const INTERVIEW_DATA: {
     name: '정승원',
     position: '3기 디자인',
     description:
-      '사용자 중심의 사고를 배우며 유틸리티팀과 커뮤니티팀으로 나뉘어 인터뷰와 문제 정의를 진행했던 경험이 인상 깊었습니다. 인터뷰를 통해 본 유저의 반응은 제 자신에게 새로운 자극으로 다가왔습니다.',
+      '사용자 중심의 사고를 배우며 유틸리티팀과 커뮤니티팀으로 나뉘어 인터뷰와 문제 정의를 진행했던 경험이 인상 깊었습니다. 인터뷰로 본 유저의 반응은 제 자신에게 새로운 자극이었습니다.',
   },
   {
     imageUrl: '/svg/roomae_03.svg',
@@ -267,7 +216,7 @@ const INTERVIEW_DATA: {
     name: '이서현',
     position: '4기 대표',
     description:
-      '앱 서비스의 제작부터 팀원간 소통까지, 수많은 고민의 시간을 통해 탄생한 서비스인 시대생은 현재 수백명의 학생들에게 사용되고 있습니다. 저에게 시대생은 앱을 넘어서 시립대생활의 줄임말이 되었습니다.',
+      '앱 서비스의 제작부터 팀원간 소통까지, 수많은 고민을 통해 탄생한 서비스인 시대생은 현재 수백명의 학생들에게 사용되고 있습니다. 저에게 시대생은 앱을 넘어 시립대생활의 줄임말이 되었습니다.',
   },
   {
     imageUrl: '/svg/roomae_03.svg',
@@ -275,7 +224,7 @@ const INTERVIEW_DATA: {
     name: '조민지',
     position: '3기 부대표',
     description:
-      '가까이 있는 팀원들 간의 연결부터 크게는 서울시립대 전체의 연결을 목표로 한 모든 시대생 활동들은 저에게 새로운 도전이었던 것 같습니다. 저에게 시대생을 통한 도전과 성장의 과정은 잊지 못할 경험입니다.',
+      '가까이 있는 팀원들 간의 연결부터 크게는 서울시립대 전체의 연결을 목표로 한 모든 시대생 활동들은 저에게 새로운 도전이었습니다. 시대생을 통한 도전과 성장의 과정은 잊지 못할 경험입니다.',
   },
   {
     imageUrl: '/svg/roomae_03.svg',

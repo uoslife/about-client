@@ -3,6 +3,7 @@ import { useAuth } from '@entities/auth/useAuth';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
+import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
 
 const Route = {
@@ -51,7 +52,13 @@ export default function Header() {
 
   return (
     <header
-      className="sticky top-0 z-20 h-[60px] backdrop-blur-[25px] backdrop-filter bg-[rgba(255,255,255,0.8)] flex flex-row items-center justify-between px-[60px] w-full"
+      className={twMerge(
+        'w-full h-[64px] sticky top-0 z-50 px-10 py-4',
+        'grid grid-cols-3',        
+        'items-center content-center',
+        'justify-items-stretch',
+        'bg-white',
+      )}
       data-name="GNB"
     >
       <Link href="/">
@@ -62,20 +69,26 @@ export default function Header() {
           width={80}
         />
       </Link>
-      <div className="absolute box-border content-stretch flex flex-row gap-4 items-center justify-start left-1/2 p-0 top-1/2 -translate-x-1/2 -translate-y-1/2">
+      <div className="flex flex-row gap-4 items-center justify-center">
         {Object.values(Route).map((route) => renderLink(route))}
       </div>
-      <div className="box-border content-stretch flex flex-row gap-4 items-center justify-center p-0 relative shrink-0">
+      <div className="box-border content-stretch flex flex-row gap-4 items-center justify-end p-0 relative shrink-0">
         <div className="box-border content-stretch flex flex-row gap-[15px] items-center justify-start p-0 relative shrink-0">
           <div className="box-border content-stretch flex flex-row gap-4 items-center justify-start p-0 relative shrink-0">
-            <Image
-              src="/svg/search.svg"
-              alt="search icon"
-              width={44}
-              height={44}
-              className="hover:bg-gray-100 rounded-xl"
-            />
-            <a
+            <Link
+              href="http://pf.kakao.com/_gMEHK"
+              target="_blank"
+              rel="noopener"
+            >
+              <Image
+                src="/svg/kakao.svg"
+                alt="search icon"
+                width={44}
+                height={44}
+                className="hover:bg-gray-100 rounded-xl"
+              />
+            </Link>
+            <Link
               href="https://instagram.com/uoslife_official"
               target="_blank"
               rel="noopener"
@@ -87,8 +100,8 @@ export default function Header() {
                 width={44}
                 height={44}
               />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://github.com/uoslife"
               target="_blank"
               rel="noopener"
@@ -100,32 +113,40 @@ export default function Header() {
                 width={44}
                 height={44}
               />
-            </a>
+            </Link>
           </div>
         </div>
-        {status === 'unauthenticated' ? (
-          <div className="flex justify-center items-center gap-7">
-            <div className="bg-[#72727C] h-[20px] w-[1px]" />
-            <button
-              type="button"
-              onClick={() => signIn('keycloak')}
-              className="flex justify-center items-center px-5 py-[5px] rounded-[8px] border border-[#0F6EFB] bg-[#0F6EFB33] hover:bg-[#0F6EFB] hover:text-white text-[#0F6EFB]"
-            >
-              <p className="text-center text-[18px] font-bold whitespace-pre">
-                Login
-              </p>
+        {/* 비회원 혹은 인증 내역을 얻기 전 */}
+        {status === undefined ||
+          (status === 'unauthenticated' && (
+            <div className="flex justify-center items-center gap-7">
+              <div className="bg-[#72727C] h-[20px] w-[1px]" />
+              <button
+                type="button"
+                onClick={() => signIn('keycloak')}
+                className="flex justify-center items-center px-5 py-[5px] rounded-[8px] border border-[#0F6EFB] bg-[#0F6EFB33] hover:bg-[#0F6EFB] hover:text-white text-[#0F6EFB]"
+              >
+                <p className="text-center text-[18px] font-bold whitespace-pre">
+                  Login
+                </p>
+              </button>
+            </div>
+          ))}
+        {/* 인증된 사용자의 경우 */}
+        {status === 'authenticated' && (
+          <div className="flex flex-row items-center justify-center gap-[6px]">
+            <Text variant="body-18-b" color="grey-700">
+              {session?.user?.name}
+            </Text>
+            <button type="button" onClick={() => signOut()}>
+              <Image
+                src="/svg/logout.svg"
+                alt="logout icon"
+                width={24}
+                height={24}
+              />
             </button>
           </div>
-        ) : (
-          <button
-            type="button"
-            className="flex justify-center items-center gap-7 cursor-pointer"
-            onClick={() => signOut()}
-          >
-            <p className="text-[18px] font-bold whitespace-pre">
-              {session?.user?.name}
-            </p>
-          </button>
         )}
       </div>
     </header>

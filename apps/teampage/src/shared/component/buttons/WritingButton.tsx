@@ -3,6 +3,7 @@
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { Text } from '@/shared/component/Text';
+import type { SpaceType } from '@/shared/const/category';
 
 const PlusIcon = () => (
   <svg
@@ -21,11 +22,9 @@ const PlusIcon = () => (
   </svg>
 );
 
-export const Articles = ['tech', 'career', 'moments'] as const;
-
 type WritingButtonProps = {
   className?: string;
-  from: (typeof Articles)[number];
+  from: SpaceType;
 };
 
 export function WritingButton({

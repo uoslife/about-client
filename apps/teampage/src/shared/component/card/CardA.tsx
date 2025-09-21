@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Divider } from '../Divider';
+import { CategoryKorean } from '@/shared/const/category';
 import { HoverScaleAnimation } from '../animation/HoverScaleAnimation';
+import { Divider } from '../Divider';
 import { Tag } from '../Tag';
 import { Text } from '../Text';
 import type { CardProps } from './types';
@@ -14,7 +15,7 @@ export function CardA({ content, className, link }: CardProps) {
     title,
     category,
     summary,
-    viewCount,
+    // viewCount,
     thumbnailUrl,
     createdAt,
   } = content;
@@ -27,17 +28,19 @@ export function CardA({ content, className, link }: CardProps) {
         {(isHovered) => (
           <>
             <div className="h-[324px] flex">
-              <Image
-                src={thumbnailUrl}
-                alt={title}
-                width={768}
-                height={324}
-                className="object-cover rounded-t-3xl"
-              />
+              {thumbnailUrl && (
+                <Image
+                  src={thumbnailUrl}
+                  alt={title}
+                  width={768}
+                  height={324}
+                  className="object-cover rounded-t-3xl"
+                />
+              )}
             </div>
             {category && (
               <Tag color={'blur'} className="absolute top-5 left-5 opacity-80">
-                {category}
+                {CategoryKorean[category]}
               </Tag>
             )}
             <div className="bg-grey-50 box-border flex flex-col rounded-b-3xl h-[240px] p-8 items-start justify-between w-full">
@@ -77,7 +80,7 @@ export function CardA({ content, className, link }: CardProps) {
                     day: 'numeric',
                   })}
                 </Text>
-                {viewCount && (
+                {/* {viewCount && (
                   <Text
                     variant="body-16-m"
                     color="grey-600"
@@ -85,7 +88,7 @@ export function CardA({ content, className, link }: CardProps) {
                   >
                     조회수 {viewCount.toLocaleString()}
                   </Text>
-                )}
+                )} */}
               </div>
             </div>
           </>

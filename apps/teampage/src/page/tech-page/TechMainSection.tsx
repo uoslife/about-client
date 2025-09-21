@@ -1,58 +1,77 @@
 'use client';
-import { useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { WritingButton } from '@/shared/component/buttons';
-import { Card } from '@/shared/component/card';
-import type { Content } from '@/shared/component/card/types';
+import { Card, CardSkeletonList } from '@/shared/component/card';
 import { Pagination } from '@/shared/component/pagination';
 import { SearchField } from '@/shared/component/search-field';
 import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
+import {
+  CategoryKoreanWithAll,
+  SortKorean,
+  SpaceIdEnum,
+  TECH_CATEGORIES,
+} from '@/shared/const/category';
+import { useDebounce } from '@/shared/hooks/useDebounce';
+import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
-
-const CATEGORYS = ['전체', 'PM', '마케팅', '디자인', '개발'] as const;
+import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
 
 export function TechMainSection() {
-  const [page, setPage] = useState(1);
-
   return (
-    <ArticleMainSectionContainer>
-      <TopBar />
-      <ArticleList />
-      <Pagination
-        totalPages={1}
-        currentPage={page}
-        onPageChange={setPage}
-        className="my-10"
-      />
-      <WritingButton from="tech" className="fixed bottom-6 right-8" />
-    </ArticleMainSectionContainer>
+    <ArticleProvider spaceId={SpaceIdEnum.TECH}>
+      <ArticleMainSectionContainer>
+        <TopBar />
+        <ArticleList />
+        <TechPagination />
+        <WritingButton from="TECH" className="fixed bottom-6 right-8" />
+      </ArticleMainSectionContainer>
+    </ArticleProvider>
   );
 }
 
 function TopBar() {
-  const [sort, setSort] = useState<'최신순' | '인기순'>('최신순');
-  const [category, setCategory] = useState<(typeof CATEGORYS)[number]>('전체');
+  const { state, dispatch } = useArticle();
+  const [keyword, setKeyword] = useState('');
+  const debouncedKeyword = useDebounce(keyword, 300);
+
+  useEffect(() => {
+    dispatch({ type: 'SET_KEYWORD', payload: debouncedKeyword });
+  }, [debouncedKeyword, dispatch]);
 
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-4">
         <div className="flex flex-row gap-2 items-center ">
-          {CATEGORYS.map((cat) => (
+          {TECH_CATEGORIES.map((cat) => (
             <TabButton
               key={cat}
-              clicked={category === cat}
-              onClick={() => setCategory(cat)}
+              clicked={state.category === cat}
+              onClick={() => dispatch({ type: 'SET_CATEGORY', payload: cat })}
             >
-              {cat}
+              {CategoryKoreanWithAll[cat]}
             </TabButton>
           ))}
         </div>
-        <SearchField size="small" placeholder="제목을 입력해주세요" />
+        <SearchField
+          size="small"
+          placeholder="제목을 입력해주세요"
+          value={keyword}
+          onChange={(e) => {
+            setKeyword(e.target.value);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.currentTarget.blur();
+            }
+          }}
+        />
       </div>
       <div className="group relative">
         <div className="flex items-center gap-1.5 py-2 px-5 cursor-default">
           <Text variant="body-18-m" color="grey-900">
-            {sort}
+            {SortKorean[state.sort]}
           </Text>
           <svg
             width="16"
@@ -77,9 +96,11 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('최신순')}
+                onClick={() =>
+                  dispatch({ type: 'SET_SORT', payload: 'LATEST' })
+                }
               >
-                최신순
+                {SortKorean.LATEST}
               </Text>
             </div>
           </button>
@@ -88,9 +109,11 @@ function TopBar() {
               <Text
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
-                onClick={() => setSort('인기순')}
+                onClick={() =>
+                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' })
+                }
               >
-                인기순
+                {SortKorean.POPULAR}
               </Text>
             </div>
           </button>
@@ -101,54 +124,35 @@ function TopBar() {
 }
 
 function ArticleList() {
+  const { articles, isLoading, error } = useArticle();
+
+  if (isLoading) return <CardSkeletonList.B />;
+  if (error) return <ArticleListEmptyContainer />;
+
+  if (articles.length === 0) return <ArticleListEmptyContainer />;
+
   return (
     <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
-      {/* TODO: Change To Real Data */}
-      {TECH_CONTENT_MOCK.map((content) => (
+      {articles.map((content) => (
         <Card.B
           key={content.id}
           content={content}
-          link={`/tech/${content.id}`}
+          link={`/career/${content.id}`}
         />
       ))}
     </div>
   );
 }
 
-export const TECH_CONTENT_MOCK: Content[] = [
-  {
-    id: 1,
-    authorId: 'frontend-lead',
-    authorName: '공은배',
-    thumbnailUrl: '/img/section02_value_01.webp',
-    title: 'React 최적화, useMemo와 useCallback 제대로 사용하기',
-    summary: '불필요한 렌더링을 방지하여 성능을 개선하는 방법을 알아봅니다.',
-    category: '개발',
-    viewCount: 152,
-    createdAt: '2025-09-10T10:00:00Z',
-  },
-  {
-    id: 2,
-    authorId: 'backend-lead',
-    authorName: '정인우',
-    thumbnailUrl: '/img/section02_value_02.webp',
-    title: 'Spring Boot에서 JPA N+1 문제 해결하기',
-    summary:
-      '지연 로딩과 페치 조인을 활용하여 데이터베이스 쿼리 효율을 높이는 전략을 소개합니다.',
-    category: '개발',
-    viewCount: 230,
-    createdAt: '2025-09-09T14:00:00Z',
-  },
-  {
-    id: 3,
-    authorId: 'infra-lead',
-    authorName: '이준수',
-    thumbnailUrl: '/img/section02_value_03.webp',
-    title: 'Docker와 Github Actions로 CI/CD 파이프라인 구축하기',
-    summary:
-      '애플리케이션을 자동으로 빌드, 테스트, 배포하는 과정을 자동화하는 방법을 알아봅니다.',
-    category: '개발',
-    viewCount: 188,
-    createdAt: '2025-09-08T18:00:00Z',
-  },
-];
+function TechPagination() {
+  const { totalPages, state, dispatch } = useArticle();
+
+  return (
+    <Pagination
+      totalPages={totalPages}
+      currentPage={state.page}
+      onPageChange={(page) => dispatch({ type: 'SET_PAGE', payload: page })}
+      className="my-10"
+    />
+  );
+}

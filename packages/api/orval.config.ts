@@ -10,16 +10,21 @@ export default defineConfig({
     output: {
       baseUrl: 'https://apis.uoslife.team',
       client: 'react-query',
-      httpClient: 'fetch',
+      httpClient: 'axios',
       mode: 'split',
       target: './src/teampage',
       override: {
         enumGenerationType: 'union',
         query: {
           useSuspenseQuery: true,
+          useInfinite: true,
           usePrefetch: true,
         },
         useDates: true,
+        mutator: {
+          path: './api-instance.ts',
+          name: 'apiInstance',
+        },
       },
       urlEncodeParameters: true,
     },

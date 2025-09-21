@@ -7,8 +7,11 @@ export function Section09() {
     <div className="relative flex flex-col justify-center px-[240px] h-[600px]">
       <Image
         src="/img/section09_bg.webp"
-        alt="section06 background"
+        alt="section09 background"
         fill
+        placeholder="blur"
+        unoptimized
+        blurDataURL="/img/section09_bg.webp"
         className="object-cover -z-10"
       />
       <div className="flex flex-col gap-9 items-start">

@@ -30,43 +30,78 @@ export interface CreateArticleRequest {
 }
 
 export interface ArticleDetailResponse {
+  /** 게시글 ID */
   id: number;
+  /** 작성자 회원 ID */
   authorId: string;
+  /** 작성자 이름 */
   authorName: string;
+  /** 게시글 제목 */
   title: string;
+  /** 게시글 콘텐츠 분류 */
   category?: string;
+  /** 게시글 요약 */
   summary?: string;
+  /** 게시글 본문 */
   content?: string;
+  /** 조회수 */
   viewCount: number;
+  /** 썸네일 url */
   thumbnailUrl?: string;
+  /** 좋아요 수 */
   likeCount: number;
+  /** 좋아요 클릭 여부 */
+  isLike: boolean;
+  /** 게시글 등록일시 */
   createdAt: string;
   prevArticle?: ArticleListItem;
   nextArticle?: ArticleListItem;
-  comments: CommentResponse[];
 }
 
 export interface ArticleListItem {
+  /** 게시글 ID */
   id: number;
-  writerId: string;
-  writerName: string;
+  /** 작성자 회원 ID */
+  authorId: string;
+  /** 작성자 이름 */
+  authorName: string;
+  /** 게시글 제목 */
   title: string;
+  category?: Category;
+  /** 게시글 요약 */
   summary?: string;
+  /** 조회수 */
   viewCount: number;
+  /** 썸네일 url */
   thumbnailUrl?: string;
-  createdAt: Date;
+  /** 게시글 등록일시 */
+  createdAt: string;
 }
 
-export interface CommentResponse {
-  id: number;
-  articleId: number;
-  isMember: boolean;
-  memberId?: string;
+export interface ReactionRequest {
   nonMemberId?: string;
-  nickname: string;
-  profileImageUrl: string;
-  content: string;
-  createdAt: Date;
+}
+
+export interface ErrorResponse {
+  code: string;
+  status: number;
+  message: string;
+  method: string;
+  path: string;
+  timestamp: string;
+  errors?: FieldError[];
+}
+
+export type FieldErrorValue = { [key: string]: unknown };
+
+export interface FieldError {
+  field: string;
+  value?: FieldErrorValue;
+  reason: string;
+}
+
+export interface ReactionResponse {
+  isLike: boolean;
 }
 
 export interface CommentCreateRequest {
@@ -75,8 +110,27 @@ export interface CommentCreateRequest {
   content: string;
 }
 
+export interface CommentResponse {
+  id: number;
+  articleId: number;
+  isMember: boolean;
+  isMine?: boolean;
+  memberId?: string;
+  nonMemberId?: string;
+  nickname: string;
+  content: string;
+  createdAt: Date;
+}
+
+export interface ImageUploadResponse {
+  url: string;
+}
+
 export interface UpdateArticleRequest {
-  /** 탭에 해당하는 space id를 입력해주세요. 선택지를 모를 경우 API로 조회 */
+  /**
+   * 탭에 해당하는 space id를 입력해주세요. 선택지를 모를 경우 API로 조회
+   * @minimum 1
+   */
   spaceId: number;
   /** 게시글 제목 */
   title?: string;
@@ -93,4 +147,112 @@ export interface CommentUpdateRequest {
   content: string;
 }
 
-export type Me200 = { [key: string]: { [key: string]: unknown } };
+export type MyInfoResponseRole =
+  | 'GUEST'
+  | 'ASSOCIATE_MEMBER'
+  | 'FULL_MEMBER'
+  | 'ADMIN';
+export interface MyInfoResponse {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  role: MyInfoResponseRole;
+  phoneNumber?: string;
+  generation?: string;
+}
+
+export interface PageArticleListItem {
+  totalElements?: number;
+  totalPages?: number;
+  pageable?: PageableObject;
+  numberOfElements?: number;
+  size?: number;
+  content?: ArticleListItem[];
+  number?: number;
+  sort?: SortObject;
+  first?: boolean;
+  last?: boolean;
+  empty?: boolean;
+}
+
+export interface PageableObject {
+  unpaged?: boolean;
+  paged?: boolean;
+  pageNumber?: number;
+  pageSize?: number;
+  offset?: number;
+  sort?: SortObject;
+}
+
+export interface SortObject {
+  unsorted?: boolean;
+  sorted?: boolean;
+  empty?: boolean;
+}
+
+export type SearchArticlesParams = {
+  /**
+   * 게시글이 소속된 탭(space) ID
+   * @minimum 1
+   */
+  spaceId: number;
+  /**
+   * 게시글 콘텐츠 분류, spaceResponse에서 가능한 카테고리 확인 가능
+   */
+  category?: Category;
+  /**
+   * 정렬 기준 필드. CREATED_AT 혹은 VIEW_COUNT (25.09.08 기준)
+   */
+  sortBy: SearchArticlesSortBy;
+  /**
+   * 정렬 방향. ASC 또는 DESC
+   */
+  sortOrder: SearchArticlesSortOrder;
+  /**
+   * 등록시간 시작필터(UTC)
+   */
+  startDate?: Date;
+  /**
+   * 등록시간 종료필터(UTC)
+   */
+  endDate?: Date;
+  /**
+   * 검색어
+   */
+  keyword?: string;
+  /**
+   * 페이지 번호
+   * @minimum 0
+   */
+  page: number;
+  /**
+   * 페이지 당 게시글 수
+   * @minimum 1
+   * @maximum 10
+   */
+  size: number;
+};
+
+export type SearchArticlesSortBy = 'CREATED_AT' | 'VIEW_COUNT';
+export type SearchArticlesSortOrder = 'ASC' | 'DESC';
+export type UploadThumbnailImageParams = {
+  spaceId: number;
+};
+
+export type UploadThumbnailImageBody = {
+  file: Blob;
+};
+
+export type UploadImageParams = {
+  spaceId: number;
+};
+
+export type UploadImageBody = {
+  file: Blob;
+};
+
+export type FindArticleParams = {
+  nonMemberId?: string;
+};

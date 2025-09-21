@@ -1,73 +1,103 @@
+import { type ArticleDetailResponse, useDeleteArticle } from '@uoslife/api';
+import { useRouter } from 'next/navigation';
+import { useUser } from '@/entities/api/useUser';
+import { useAuth } from '@/entities/auth/useAuth';
+import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
 import { Text } from '@/shared/component/Text';
+import { useToast } from '@/shared/component/toast';
 
 export type PostType = 'tech' | 'career' | 'moments';
 
-type BasePostHeaderProps = {
+interface PostHeaderProps {
+  post: ArticleDetailResponse;
   type: PostType;
-  title: string;
-  authorName: string;
-  createdAt: string;
-};
+}
 
-type TechPostHeaderProps = BasePostHeaderProps & {
-  category: string;
-  viewCount: number;
-};
+export const PostHeader = (props: PostHeaderProps) => {
+  const { role } = useUser();
+  const { toast } = useToast();
+  const { session } = useAuth();
+  const { post, type } = props;
+  const { open: openConfirmModal } = useConfirmModal();
+  const router = useRouter();
 
-type CareerPostHeaderProps = BasePostHeaderProps & {
-  category: string;
-  viewCount: number;
-};
+  const { mutate: deleteArticle } = useDeleteArticle({
+    mutation: {
+      onSuccess: () => {
+        router.push(`/${type}`);
+      },
+      onError: () => {
+        toast('삭제 중 오류가 발생했습니다.', 2000);
+      },
+    },
+  });
 
-interface PostHeaderProps extends TechPostHeaderProps, CareerPostHeaderProps {}
-
-export const PostHeader = ({
-  type,
-  title,
-  category,
-  authorName,
-  createdAt,
-  viewCount,
-}: PostHeaderProps) => {
   return (
     <div className="flex flex-col gap-7 items-start justify-start w-full">
       <div className="flex flex-col gap-5 items-start justify-start w-full">
         <Text variant="title-48-b" color="grey-900" className="w-full" as="h1">
-          {title}
+          {post.title}
         </Text>
 
-        {category && <Tag color="white">{category}</Tag>}
+        {post.category && <Tag color="white">{post.category}</Tag>}
       </div>
 
       <div className="flex items-start justify-between w-full">
         <div className="flex gap-3 items-center">
           <Text variant="body-18-m" color="grey-500">
-            {authorName}
+            {post.authorName}
           </Text>
           <div className="bg-grey-400 h-2.5 w-px" />
           <Text variant="body-18-m" color="grey-500">
-            {new Date(createdAt).toLocaleDateString('ko-KR')}
+            {new Date(post.createdAt).toLocaleDateString('ko-KR')}
           </Text>
-          {(type === 'tech' || type === 'career') && (
+          {type === 'tech' && (
             <>
               <div className="bg-grey-400 h-2.5 w-px" />
               <Text variant="body-18-m" color="grey-500">
-                조회수 {viewCount.toLocaleString()}
+                조회수 {post.viewCount.toLocaleString()}
               </Text>
             </>
           )}
         </div>
 
-        <div className="flex gap-2 items-center">
-          <Text variant="body-14-m" color="grey-500">
-            수정
-          </Text>
-          <div className="bg-grey-100 h-2.5 rounded w-px" />
-          <Text variant="body-14-m" color="grey-500">
-            삭제
-          </Text>
-        </div>
+        {(session?.user?.name === post.authorName || role === 'ADMIN') && (
+          <div className="flex gap-2 items-center">
+            <button
+              type="button"
+              onClick={() => {
+                sessionStorage.setItem('editPost', JSON.stringify(post));
+                window.location.href = `/write?edit=true&from=${type}`;
+              }}
+              className="cursor-pointer"
+            >
+              <Text variant="body-14-m" color="grey-500">
+                수정
+              </Text>
+            </button>
+            <div className="bg-grey-100 h-2.5 rounded w-px" />
+            <button
+              type="button"
+              onClick={() => {
+                openConfirmModal({
+                  title: '게시글을 삭제하시겠습니까?',
+                  description: '삭제된 게시물은 복구할 수 없습니다.',
+                  confirmText: '삭제',
+                  cancelText: '취소',
+                  onConfirm: () => {
+                    deleteArticle({ articleId: post.id });
+                  },
+                });
+              }}
+              className="cursor-pointer"
+            >
+              <Text variant="body-14-m" color="grey-500">
+                삭제
+              </Text>
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="bg-grey-100 h-px w-full" />

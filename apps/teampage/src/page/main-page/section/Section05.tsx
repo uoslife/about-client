@@ -1,77 +1,24 @@
 'use client';
 
-import { Text } from '@shared/component/Text';
 import { TabButton } from '@shared/component/TabButton';
-import { useState, useRef, useEffect } from 'react';
+import { Text } from '@shared/component/Text';
 import Image from 'next/image';
 import { HoverScaleAnimation } from '@/shared/component/animation/HoverScaleAnimation';
+import { useHorizontalScroll } from '@/shared/hooks/useHorizontalSrcoll';
 
 const CATEGORY = ['Education', 'Production', 'Networking'] as const;
 type CategoryType = (typeof CATEGORY)[number];
 
 export function Section05() {
-  const [category, setCategory] = useState<CategoryType>('Education');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const handleTabClick = (cat: CategoryType) => {
-    const targetIndex = CURRICULUM_DATA.findIndex(
-      (data) => data.category === cat,
-    );
-    if (targetIndex !== -1) {
-      itemRefs.current[targetIndex]?.scrollIntoView({
-        behavior: 'smooth',
-        inline: 'center',
-        block: 'nearest',
-      });
-    }
-  };
-
-  const handlePrevClick = () => {
-    const prevIndex = Math.max(currentIndex - 1, 0);
-    itemRefs.current[prevIndex]?.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-      block: 'nearest',
-    });
-  };
-
-  const handleNextClick = () => {
-    const nextIndex = Math.min(currentIndex + 1, CURRICULUM_DATA.length - 1);
-    itemRefs.current[nextIndex]?.scrollIntoView({
-      behavior: 'smooth',
-      inline: 'center',
-      block: 'nearest',
-    });
-  };
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            const index = itemRefs.current.indexOf(
-              entry.target as HTMLDivElement,
-            );
-            if (index !== -1) {
-              setCategory(CURRICULUM_DATA[index].category);
-              setCurrentIndex(index);
-            }
-            return;
-          }
-        }
-      },
-      {
-        root: scrollRef.current,
-        threshold: 1.0,
-      },
-    );
-
-    itemRefs.current.forEach((item) => item && observer.observe(item));
-
-    return () => observer.disconnect();
-  }, []);
+  const {
+    category,
+    currentIndex,
+    scrollRef,
+    itemRefs,
+    handleTabClick,
+    handlePrevClick,
+    handleNextClick,
+  } = useHorizontalScroll<CategoryType>({ data: CURRICULUM_DATA });
 
   return (
     <div className="flex flex-col items-center justify-center gap-28 py-28">
@@ -165,13 +112,17 @@ function CurriculumCard({
 }) {
   return (
     <div className="flex flex-col gap-9 w-[540px] flex-shrink-0">
-      <Image
-        src={imageUrl}
-        alt={title}
-        width={540}
-        height={582}
-        className="rounded-[36px] object-cover"
-      />
+      <div className="relative w-[540px] h-[405px]">
+        <Image
+          src={imageUrl}
+          alt={title}
+          fill
+          placeholder="blur"
+          unoptimized
+          blurDataURL={imageUrl}
+          className="rounded-[36px] object-cover"
+        />
+      </div>
       <div className="flex flex-col gap-3">
         <Text variant="title-28-b">{title}</Text>
         <Text variant="body-18-m" color="grey-700">

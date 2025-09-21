@@ -8,7 +8,9 @@
     "generate:watch": "orval --watch"
   },
   "dependencies": {
-    "@tanstack/react-query": "catalog:"
+    "@tanstack/react-query": "catalog:",
+    "axios": "^1.12.1",
+    "next-auth": "^4.24.11"
   },
   "devDependencies": {
     "orval": "catalog:",
