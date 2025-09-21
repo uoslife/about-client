@@ -35,6 +35,7 @@ jobs:
           echo "KEYCLOAK_ISSUER=dummy" >> apps/teampage/.env
           echo "NEXTAUTH_SECRET=dummy" >> apps/teampage/.env
           echo "NEXTAUTH_URL=dummy" >> apps/teampage/.env
+          echo "NEXT_PUBLIC_AMPLITUDE_API_KEY=dummy" >> apps/teampage/.env
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
