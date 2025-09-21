@@ -11,7 +11,7 @@ export type HomeScrollSection =
 export type DeviceType = 'pc' | 'mobile';
 export type FooterName = 'instagram' | 'github' | 'kakao' | 'mail';
 export type GnbIconName = 'kakao' | 'instagram' | 'github';
-export type LinkType = 'github' | 'notion' | 'linkedin' | 'tistory';
+export type LinkType = 'github' | 'notion' | 'linkedin' | 'others';
 
 export type AmplitudePropertyType = {
   tab_name: TabName;
