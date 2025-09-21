@@ -11,6 +11,19 @@ import { AmplitudeEventParameterMap } from './AmplitudeEventParameterMap';
 import { makeBaseProperty } from './utils/makeBaseProperty';
 import { useUser } from '../api/useUser';
 
+declare global {
+  interface Window {
+    dataLayer: {
+      event: AmplitudeEventName;
+      properties: ReturnType<
+        (typeof AmplitudeEventParameterMap)[AmplitudeEventName]
+      >;
+    }[];
+  }
+}
+
+window.dataLayer = window.dataLayer || [];
+
 type AnalyticsContextProps = {
   trackEvent: <T extends AmplitudeEventName>(
     eventName: T,
@@ -45,8 +58,11 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
         ...eventProperties,
         ...makeBaseProperty(role ?? 'GUEST'),
       };
-      console.log(eventName, properties);
       amplitude.logEvent(eventName, properties);
+      window.dataLayer.push({
+        event: eventName,
+        properties,
+      });
     },
     [role, isUserInitialized],
   );
