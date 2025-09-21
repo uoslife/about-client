@@ -60,6 +60,9 @@ jobs:
           echo "KEYCLOAK_ISSUER=$KEYCLOAK_ISSUER" >> apps/teampage/.env
           echo "NEXTAUTH_SECRET=$NEXTAUTH_SECRET" >> apps/teampage/.env
           echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> apps/teampage/.env
+          echo "NEXT_PUBLIC_KEYCLOAK_CLIENT_ID=$NEXT_PUBLIC_KEYCLOAK_CLIENT_ID" >> apps/teampage/.env
+          echo "NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET=$NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET" >> apps/teampage/.env
+          echo "NEXT_PUBLIC_KEYCLOAK_ISSUER=$NEXT_PUBLIC_KEYCLOAK_ISSUER" >> apps/teampage/.env
           echo "NEXT_PUBLIC_AMPLITUDE_API_KEY=$NEXT_PUBLIC_AMPLITUDE_API_KEY" >> apps/teampage/.env
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
@@ -69,6 +72,9 @@ jobs:
           KEYCLOAK_ISSUER: ${{ secrets.KEYCLOAK_ISSUER }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: ${{ secrets.KEYCLOAK_CLIENT_ID }}
+          NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+          NEXT_PUBLIC_KEYCLOAK_ISSUER: ${{ secrets.KEYCLOAK_ISSUER }}
           NEXT_PUBLIC_AMPLITUDE_API_KEY: ${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
 
       - name: Setup Docker Buildx
