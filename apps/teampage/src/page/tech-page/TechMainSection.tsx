@@ -146,7 +146,7 @@ function ArticleList() {
         <Card.B
           key={content.id}
           content={content}
-          link={`/career/${content.id}`}
+          link={`/tech/${content.id}`}
         />
       ))}
     </div>
