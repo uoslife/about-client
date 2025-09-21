@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { WritingButton } from '@/shared/component/buttons';
 import { Card, CardSkeletonList } from '@/shared/component/card';
 import { Pagination } from '@/shared/component/pagination';
 import { SearchField } from '@/shared/component/search-field';
 import { Text } from '@/shared/component/Text';
 import { SpaceIdEnum } from '@/shared/const/category';
-import { useDebounce } from '@/shared/hooks/useDebounce';
 import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
+import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 export function MomentsMainSection() {
   return (
@@ -28,12 +28,7 @@ export function MomentsMainSection() {
 function TopBar() {
   const { dispatch } = useArticle();
   const [keyword, setKeyword] = useState('');
-  const debouncedKeyword = useDebounce(keyword, 300);
-
-  useEffect(() => {
-    dispatch({ type: 'SET_KEYWORD', payload: debouncedKeyword });
-  }, [debouncedKeyword, dispatch]);
-
+  const { trackEvent } = useAnalytics();
   return (
     <div className="flex justify-between items-center">
       <SearchField
@@ -44,8 +39,13 @@ function TopBar() {
           setKeyword(e.target.value);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Enter') {
+          if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+            dispatch({ type: 'SET_KEYWORD', payload: keyword });
             e.currentTarget.blur();
+            trackEvent('SEARCH_KEYWORD', {
+              tab_name: 'moments',
+              keyword,
+            });
           }
         }}
       />

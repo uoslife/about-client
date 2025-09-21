@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { WritingButton } from '@/shared/component/buttons';
 import { Card, CardSkeletonList } from '@/shared/component/card';
 import { Pagination } from '@/shared/component/pagination';
@@ -9,12 +9,11 @@ import { TabButton } from '@/shared/component/TabButton';
 import { Text } from '@/shared/component/Text';
 import {
   CAREER_CATEGORIES,
-  CategoryKorean,
   CategoryKoreanWithAll,
   SortKorean,
   SpaceIdEnum,
 } from '@/shared/const/category';
-import { useDebounce } from '@/shared/hooks/useDebounce';
+
 import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyContainer';
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
@@ -36,11 +35,7 @@ export function CareerMainSection() {
 function TopBar() {
   const { state, dispatch } = useArticle();
   const [keyword, setKeyword] = useState('');
-  const debouncedKeyword = useDebounce(keyword, 300);
   const { trackEvent } = useAnalytics();
-  useEffect(() => {
-    dispatch({ type: 'SET_KEYWORD', payload: debouncedKeyword });
-  }, [debouncedKeyword, dispatch]);
 
   return (
     <div className="flex justify-between items-center">
@@ -66,8 +61,13 @@ function TopBar() {
             setKeyword(e.target.value);
           }}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+              dispatch({ type: 'SET_KEYWORD', payload: keyword });
               e.currentTarget.blur();
+              trackEvent('SEARCH_KEYWORD', {
+                tab_name: 'career',
+                keyword,
+              });
             }
           }}
         />
