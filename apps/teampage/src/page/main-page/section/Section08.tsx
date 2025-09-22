@@ -201,7 +201,7 @@ const INTERVIEW_DATA: {
   description: string;
 }[] = [
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee1.png',
     category: 'Alumni',
     name: '문정민',
     position: '1기 대표',
@@ -209,7 +209,7 @@ const INTERVIEW_DATA: {
       '시대생 앱을 처음 만들고 배포하던 순간부터 지금 후배들과 이어가는 프로젝트까지 모두 저에겐 소중한 기억으로 남아 있습니다. 앞으로 더 많은 분들이 저희 팀에 조인하시길 기다리겠습니다!',
   },
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee2.png',
     category: 'Alumni',
     name: '김은서',
     position: '2기 대표',
@@ -217,7 +217,7 @@ const INTERVIEW_DATA: {
       '제가 기획한 서비스로 캠퍼스가 떠들썩하던 순간은 대학생활 중 가장 벅찬 기억이었습니다. 시대생은 무모한 도전을 가능하게 한 무대이자, PM이라는 꿈으로 이어진 출발점이 되었습니다.',
   },
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee3.png',
     category: 'Alumni',
     name: '정인우',
     position: '2기 개발',
@@ -225,7 +225,7 @@ const INTERVIEW_DATA: {
       '학생으로써, 하나의 완결된 프로덕트를 개발하고 운영하며, 개선까지 진행하는 것은 쉽게 얻을 수 있는 경험이 아니라고 생각합니다. 시대팅을 처음 개발하여 배포했던 때가 아직도 기억에 남습니다.',
   },
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee4.png',
     category: 'Alumni',
     name: '정승원',
     position: '3기 디자인',
@@ -233,23 +233,23 @@ const INTERVIEW_DATA: {
       '사용자 중심의 사고를 배우며 유틸리티팀과 커뮤니티팀으로 나뉘어 인터뷰와 문제 정의를 진행했던 경험이 인상 깊었습니다. 인터뷰로 본 유저의 반응은 제 자신에게 새로운 자극이었습니다.',
   },
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee5.png',
     category: 'Leader',
     name: '이서현',
-    position: '4기 대표',
+    position: '5기 대표',
     description:
       '앱 서비스의 제작부터 팀원간 소통까지, 수많은 고민을 통해 탄생한 서비스인 시대생은 현재 수백명의 학생들에게 사용되고 있습니다. 저에게 시대생은 앱을 넘어 시립대생활의 줄임말이 되었습니다.',
   },
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee6.png',
     category: 'Leader',
     name: '조민지',
-    position: '3기 부대표',
+    position: '5기 부대표',
     description:
       '가까이 있는 팀원들 간의 연결부터 크게는 서울시립대 전체의 연결을 목표로 한 모든 시대생 활동들은 저에게 새로운 도전이었습니다. 시대생을 통한 도전과 성장의 과정은 잊지 못할 경험입니다.',
   },
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee7.png',
     category: 'Active Member',
     name: '강용현',
     position: '5기 개발',
@@ -257,7 +257,7 @@ const INTERVIEW_DATA: {
       '활동을 하면서 "시립대생만"을 위한 서비스를 만드는 의미있는 경험을 한 것이 가장 기억에 남습니다. "Beyond connect, 시대생을 연결하다"는 말처럼 모두가 연결되는 날을 만들겠습니다.',
   },
   {
-    imageUrl: '/svg/roomae_03.svg',
+    imageUrl: '/img/interview/interviewee8.png',
     category: 'Active Member',
     name: '염원경',
     position: '4기 마케팅',
