@@ -1,5 +1,4 @@
 'use client';
-
 import { TabButton } from '@shared/component/TabButton';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';
