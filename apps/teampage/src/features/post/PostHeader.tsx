@@ -34,28 +34,45 @@ export const PostHeader = (props: PostHeaderProps) => {
   });
 
   return (
-    <div className="flex flex-col gap-7 items-start justify-start w-full">
-      <div className="flex flex-col gap-5 items-start justify-start w-full">
-        <Text variant="title-48-b" color="grey-900" className="w-full" as="h1">
+    <div className="flex flex-col gap-4 md:gap-7 items-start justify-start w-full">
+      <div className="flex flex-col gap-3 md:gap-5 items-start justify-start w-full">
+        <Text
+          variant="title-48-b"
+          color="grey-900"
+          className="w-full text-2xl md:text-5xl"
+          as="h1"
+        >
           {post.title}
         </Text>
 
         {post.category && <Tag color="white">{post.category}</Tag>}
       </div>
 
-      <div className="flex items-start justify-between w-full">
-        <div className="flex gap-3 items-center">
-          <Text variant="body-18-m" color="grey-500">
+      <div className="flex flex-col md:flex-row items-start md:justify-between w-full gap-3 md:gap-0">
+        <div className="flex flex-wrap gap-2 md:gap-3 items-center">
+          <Text
+            variant="body-18-m"
+            color="grey-500"
+            className="text-sm md:text-lg"
+          >
             {post.authorName}
           </Text>
           <div className="bg-grey-400 h-2.5 w-px" />
-          <Text variant="body-18-m" color="grey-500">
+          <Text
+            variant="body-18-m"
+            color="grey-500"
+            className="text-sm md:text-lg"
+          >
             {new Date(post.createdAt).toLocaleDateString('ko-KR')}
           </Text>
           {type === 'tech' && (
             <>
               <div className="bg-grey-400 h-2.5 w-px" />
-              <Text variant="body-18-m" color="grey-500">
+              <Text
+                variant="body-18-m"
+                color="grey-500"
+                className="text-sm md:text-lg"
+              >
                 조회수 {post.viewCount.toLocaleString()}
               </Text>
             </>
@@ -72,7 +89,11 @@ export const PostHeader = (props: PostHeaderProps) => {
               }}
               className="cursor-pointer"
             >
-              <Text variant="body-14-m" color="grey-500">
+              <Text
+                variant="body-14-m"
+                color="grey-500"
+                className="text-xs md:text-sm"
+              >
                 수정
               </Text>
             </button>
@@ -92,7 +113,11 @@ export const PostHeader = (props: PostHeaderProps) => {
               }}
               className="cursor-pointer"
             >
-              <Text variant="body-14-m" color="grey-500">
+              <Text
+                variant="body-14-m"
+                color="grey-500"
+                className="text-xs md:text-sm"
+              >
                 삭제
               </Text>
             </button>
