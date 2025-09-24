@@ -8,6 +8,7 @@ import { Dropdown } from '@/shared/component/dropdown';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 import { NoQueryResultFallback } from '@/shared/component/NoQueryResultFallback';
 import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
+import { isMobile } from '@/shared/utils/isMoblie';
 
 const sortGenerationWithNumber = (a: string, b: string) => {
   return Number(a.slice(0, -1)) - Number(b.slice(0, -1));
@@ -69,19 +70,23 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
     <main className="flex flex-col">
       <ArticleBanner
         title="People"
-        description="서로 다른 열정을 모아, 하나의 가능성을 만드는 시대생팀을 소개합니다."
+        description={
+          isMobile()
+            ? `서로 다른 열정을 모아, 하나의 가능성을\n 만드는 시대생팀을 소개합니다.`
+            : `서로 다른 열정을 모아, 하나의 가능성을 만드는 시대생팀을 소개합니다.`
+        }
       />
-      <div className="flex items-center justify-center py-[100px]">
-        <div className="w-[1120px] flex flex-col gap-10 justify-center">
+      <div className="flex items-center justify-center py-8 md:py-[100px] px-4 md:px-0">
+        <div className="w-full max-w-[1120px] flex flex-col gap-6 md:gap-10 justify-center">
           <PeopleHeader generations={generations} />
-          <div className="flex flex-wrap justify-center gap-5">
+          <div className="flex flex-col md:flex-row md:flex-wrap justify-center gap-3 md:gap-5">
             {filteredPeopleData.map((person, index) => (
               <PeopleCard key={`${person.name}-${index}`} person={person} />
             ))}
             {[...Array(3 - (filteredPeopleData.length % 3))].map((_, i) => (
               <div
                 key={`dummy-${i}`}
-                className="w-[calc((100%/3)-20px)] invisible"
+                className="hidden md:block w-[calc((100%/3)-20px)] invisible"
                 aria-hidden="true"
               />
             ))}
@@ -119,7 +124,7 @@ const PeopleHeader = ({ generations }: { generations: string[] }) => {
   const [isComposing, setIsComposing] = useState(false);
 
   return (
-    <div className="w-full flex justify-between items-center">
+    <div className="w-full flex md:flex-row justify-between items-center gap-4 md:gap-0">
       <SearchField
         size="small"
         placeholder="제목을 검색하세요."
