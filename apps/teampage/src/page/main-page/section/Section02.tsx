@@ -1,3 +1,4 @@
+'use client';
 import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 import { Text } from '@shared/component/Text';
 import Image from 'next/image';

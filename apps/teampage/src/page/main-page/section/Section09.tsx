@@ -1,3 +1,4 @@
+'use client';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { useSendInViewAmplitudeEvent } from '@/entities/analytics/useSendInViewAmplitudeEvent';
 import { Text } from '@shared/component/Text';

@@ -60,9 +60,14 @@ const config: Config = {
           '0%': { backgroundPosition: '-400px 0' },
           '100%': { backgroundPosition: '400px 0' },
         },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
       },
       animation: {
         shimmer: 'shimmer 2s linear infinite',
+        fadeIn: 'fadeIn 1s ease-in-out forwards',
       },
     },
   },

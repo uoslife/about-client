@@ -1,7 +1,12 @@
+'use client';
 import { Text } from '@shared/component/Text';
 import { Divider } from '@/shared/component/Divider';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
 export function Section01() {
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'home',
+  });
   return (
     <div
       id="section01"

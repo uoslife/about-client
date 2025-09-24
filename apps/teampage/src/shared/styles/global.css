@@ -45,12 +45,33 @@ body {
 .main_bg {
   border-radius: 60px;
   background: radial-gradient(
-      90.84% 66.16% at 50% 100%,
-      #438ffc 0%,
-      #22487e 15.38%,
-      #000 40.38%
-    ),
-    #000;
+    90.84% 66.16% at 50% 100%,
+    #438ffc 0%,
+    #22487e 15.38%,
+    transparent 40.38%
+  );
+}
+
+.main_bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #000;
+  border-radius: 60px;
+  opacity: 1;
+  animation: fadeOut 2s ease-in-out 0.5s forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 @layer utilities {
