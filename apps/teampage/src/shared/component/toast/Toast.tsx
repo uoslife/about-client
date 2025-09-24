@@ -39,7 +39,7 @@ export const Toast: React.FC<ToastProps> = ({
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed top-6 left-1/2 z-50"
+          className="fixed top-4 md:top-6 left-1/2 z-50 max-w-[calc(100vw-32px)] md:max-w-none px-4 md:px-0"
           style={{ x: '-50%' }}
           initial={{
             opacity: 0,
@@ -64,14 +64,19 @@ export const Toast: React.FC<ToastProps> = ({
           }}
         >
           <motion.div
-            className="bg-grey-900 px-5 py-3 rounded-[40px] shadow-lg"
+            className="bg-grey-900 px-4 md:px-5 py-2 md:py-3 rounded-[40px] shadow-lg"
             initial={{ boxShadow: '0 0 0 rgba(0,0,0,0)' }}
             animate={{
               boxShadow: '0 10px 25px rgba(0,0,0,0.3), 0 0 0 rgba(0,0,0,0)',
             }}
             transition={{ delay: 0.1 }}
           >
-            <Text variant="body-16-b" color="white">
+            <Text
+              variant="body-16-b"
+              color="white"
+              className="text-sm md:text-base text-center"
+              style={{ wordBreak: 'keep-all' }}
+            >
               {message}
             </Text>
           </motion.div>

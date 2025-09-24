@@ -95,10 +95,13 @@ export const PostFooter = ({
 
   return (
     <>
-      <div className="flex gap-8 items-center" ref={ref}>
+      <div
+        className="flex md:flex-row gap-4 md:gap-8 md:items-center"
+        ref={ref}
+      >
         <button
           type="button"
-          className={`flex gap-2 items-center px-5 py-3 box-border rounded-[40px] transition-all duration-200 ${
+          className={`flex gap-2 items-center px-4 md:px-5 py-2 md:py-3 box-border rounded-[40px] transition-all duration-200 ${
             like
               ? 'bg-[#222227] border-[1.6px] border-solid border-[#222227]'
               : 'bg-white border-[1.6px] border-solid border-[#e9e9ee]'
@@ -111,26 +114,26 @@ export const PostFooter = ({
           }}
           disabled={like}
         >
-          <div className="w-6 h-6 flex items-center justify-center">
+          <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
             <Image
               src={like ? '/svg/heart_fill.svg' : '/svg/heart_empty.svg'}
               alt="좋아요"
-              width={24}
-              height={24}
-              className={`${like && 'brightness-0 invert'}`}
+              width={20}
+              height={20}
+              className={`md:w-6 md:h-6 ${like && 'brightness-0 invert'}`}
             />
           </div>
           <Text
             variant="body-18-m"
             color={like ? 'white' : 'grey-700'}
-            className="font-medium"
+            className="font-medium text-sm md:text-lg"
           >
             좋아요
           </Text>
           <Text
             variant="title-24-b"
             color={like ? 'white' : 'grey-700'}
-            className="font-bold"
+            className="font-bold text-base md:text-2xl"
           >
             {optimisticLikeCount}
           </Text>
@@ -149,30 +152,39 @@ export const PostFooter = ({
             }}
             className="flex gap-2 items-center cursor-pointer"
           >
-            <div className="w-6 h-6 flex items-center justify-center">
+            <div className="w-5 h-5 md:w-6 md:h-6 flex items-center justify-center">
               <Image
                 src={'/svg/share.svg'}
                 alt="공유하기"
-                width={24}
-                height={24}
+                width={20}
+                height={20}
+                className="md:w-6 md:h-6"
               />
             </div>
-            <Text variant="body-18-m" color="grey-800">
+            <Text
+              variant="body-18-m"
+              color="grey-800"
+              className="text-sm md:text-lg"
+            >
               공유하기
             </Text>
           </button>
         )}
       </div>
 
-      <div className="flex flex-col gap-9 items-start justify-start w-full">
-        <div className="flex flex-col gap-4 items-start justify-start w-[880px]">
-          <Text variant="body-16-m" color="grey-900">
+      <div className="flex flex-col gap-6 md:gap-9 items-start justify-start w-full">
+        <div className="flex flex-col gap-4 items-start justify-start w-full">
+          <Text
+            variant="body-16-m"
+            color="grey-900"
+            className="text-sm md:text-base"
+          >
             댓글 {comments?.length ?? 0}개
           </Text>
           <div className="flex flex-col gap-4 items-end justify-start w-full">
             <div className="relative w-full">
               <TextareaAutosize
-                className={`bg-[#f7f7f9] box-border p-5 rounded-[20px] w-full resize-none border-none outline-none text-[#222227] placeholder:text-[#a2a2ae] text-[18px] font-medium leading-[1.6] ${
+                className={`bg-[#f7f7f9] box-border p-4 md:p-5 rounded-[20px] w-full resize-none border-none outline-none text-[#222227] placeholder:text-[#a2a2ae] text-sm md:text-lg font-medium leading-[1.6] ${
                   commentText.length >= 1 ? 'ring-[1.6px] ring-[#222227]' : ''
                 }`}
                 placeholder="허위사실, 욕설, 사칭 등의 댓글은 통보없이 삭제될 수 있습니다."
@@ -193,14 +205,18 @@ export const PostFooter = ({
                   },
                 });
               }}
-              className={`box-border flex gap-2.5 h-12 items-center justify-center px-5 py-1 rounded-[12px] transition-all duration-200 ${
+              className={`box-border flex gap-2.5 h-10 md:h-12 items-center justify-center px-4 md:px-5 py-1 rounded-[12px] transition-all duration-200 ${
                 commentText.length >= 1
                   ? 'bg-[#222227] cursor-pointer'
                   : 'bg-[#bfbfcb] cursor-not-allowed'
               }`}
               disabled={commentText.length < 1}
             >
-              <Text variant="body-20-m" color="white" className="font-medium">
+              <Text
+                variant="body-20-m"
+                color="white"
+                className="font-medium text-sm md:text-lg"
+              >
                 댓글 남기기
               </Text>
             </button>
@@ -208,7 +224,7 @@ export const PostFooter = ({
         </div>
 
         <div className="flex flex-col gap-4 items-start justify-start w-full">
-          <div className="flex flex-col gap-5 items-start justify-start w-full">
+          <div className="flex flex-col gap-4 md:gap-5 items-start justify-start w-full">
             {comments?.map((comment) => (
               <Comment
                 key={comment.id}
