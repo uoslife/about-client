@@ -25,6 +25,9 @@ import { type CreateArticleInput, processArticle } from './processArticle';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { match } from 'ts-pattern';
 import { TabName } from '@/entities/analytics/AmplitudePropertyType';
+import { getSearchArticlesQueryKey, useCreateArticle } from '@uoslife/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { twMerge } from 'tailwind-merge';
 
 const CATEGORY_MAP: { [key: string]: string } = {
   TECH: 'UOSLIFE Tech',
@@ -53,7 +56,7 @@ export default function WritePage() {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState<CategoryType>('DESIGN');
+  const [category, setCategory] = useState<CategoryType | null>();
   const [summary, setSummary] = useState('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
@@ -102,7 +105,9 @@ export default function WritePage() {
   }, [isEditMode]);
 
   const isDisabledSubmitButton = useMemo(() => {
-    const isEmpty = (value: string) => value?.trim() === '';
+    const isEmpty = (value?: string | null) => value?.trim() === '';
+    const isOverMaxLength = (value: string) =>
+      value?.length > SUMMARY_MAX_LENGTH;
 
     if (isEmpty(title) || isEmpty(content)) return true;
 
@@ -111,7 +116,7 @@ export default function WritePage() {
     }
 
     if (isCareer) {
-      return isEmpty(category) || isEmpty(summary);
+      return isEmpty(category) || isEmpty(summary) || isOverMaxLength(summary);
     }
 
     return isEmpty(category) || isEmpty(summary) || thumbnailFile === null;
@@ -157,9 +162,13 @@ export default function WritePage() {
     }
   };
 
+  const { mutate: createArticleMutate } = useCreateArticle();
+  const queryClient = useQueryClient();
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!session.session) return;
+    if (!session.session || !category) return;
+
     const accessToken = session.session.accessToken;
     console.log({ title, content, category, summary, thumbnailFile });
     const data: CreateArticleInput = {
@@ -172,26 +181,26 @@ export default function WritePage() {
     };
     processArticle(data, accessToken).subscribe({
       next: async (data) => {
-        fetch('https://apis.uoslife.team/articles', {
-          method: 'POST',
-          body: JSON.stringify(data),
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
+        createArticleMutate(
+          { data },
+          {
+            onSuccess: (res) => {
+              queryClient.invalidateQueries({
+                queryKey: getSearchArticlesQueryKey(),
+              });
+              trackEvent('POST_ARTICLE', {
+                tab_name: getTabName(space),
+              });
+              alert('게시글 등록이 완료되었어요.');
+              window.location.href = `/${space.toLowerCase()}/${res.id}`;
+            },
+            onError: (error) => {
+              throw new Error(
+                `Thumbnail upload failed: ${error.status} ${error.message}`,
+              );
+            },
           },
-        }).then((response) => {
-          if (!response.ok) {
-            throw new Error(
-              `Thumbnail upload failed: ${response.status} ${response.statusText}`,
-            );
-          }
-          trackEvent('POST_ARTICLE', {
-            tab_name: getTabName(space),
-          });
-          return response.json();
-        });
-        alert('게시글 등록 완료.');
-        // invalidateQuery.setQuery(data)
+        );
       },
       error: (error) => {
         console.log(error);
@@ -216,7 +225,7 @@ export default function WritePage() {
               </Text>
             )}
             <div className="group relative">
-              <div className="flex items-center gap-1.5 py-2 w-32 cursor-default">
+              <div className="flex items-center gap-1.5 py-2 w-32 cursor-pointer">
                 <Image
                   src="/svg/switch.svg"
                   alt="switch"
@@ -233,7 +242,10 @@ export default function WritePage() {
                   <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
                     <Text
                       variant="body-18-m"
-                      className="group-hover/career:text-primary-ui"
+                      className={twMerge(
+                        isCareer && 'text-primary-brand',
+                        'group-hover/career:text-primary-ui',
+                      )}
                     >
                       Career
                     </Text>
@@ -247,7 +259,10 @@ export default function WritePage() {
                   <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
                     <Text
                       variant="body-18-m"
-                      className="group-hover/career:text-primary-ui"
+                      className={twMerge(
+                        isMoments && 'text-primary-brand',
+                        'group-hover/career:text-primary-ui',
+                      )}
                     >
                       Moments
                     </Text>
@@ -261,7 +276,10 @@ export default function WritePage() {
                   <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
                     <Text
                       variant="body-18-m"
-                      className="group-hover/career:text-primary-ui"
+                      className={twMerge(
+                        !(isCareer || isMoments) && 'text-primary-brand',
+                        'group-hover/career:text-primary-ui',
+                      )}
                     >
                       Tech
                     </Text>
@@ -291,7 +309,7 @@ export default function WritePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="flex flex-col gap-4">
             <Text variant="title-24-b">카테고리</Text>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {categories.map((cat) => (
                 <TabButton
                   key={cat}
