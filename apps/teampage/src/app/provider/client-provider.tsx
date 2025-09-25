@@ -1,10 +1,12 @@
 'use client';
 import dynamic from 'next/dynamic';
 import AnalyticsContextProvider from '@/entities/analytics/useAnalytics';
-import { SessionProvider } from 'next-auth/react';
+import { SessionProvider, useSession } from 'next-auth/react';
 import { ToastProvider } from '@/shared/component/toast/ToastContext';
 import { ConfirmModalProvider } from '@/shared/component/confirm-modal/ConfirmModalContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { setAccessToken } from '@uoslife/api';
 
 const DimRenderer = dynamic(
   () =>
@@ -20,6 +22,7 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
   const queryClient = new QueryClient();
   return (
     <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={true}>
+      <SessionTokenBridge />
       <QueryClientProvider client={queryClient}>
         <AnalyticsContextProvider>
           <ToastProvider>
@@ -33,3 +36,12 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
     </SessionProvider>
   );
 };
+
+function SessionTokenBridge() {
+  const { data: session } = useSession();
+  useEffect(() => {
+    const token = (session as any)?.accessToken ?? null;
+    setAccessToken(token);
+  }, [session]);
+  return null;
+}

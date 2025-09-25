@@ -3,3 +3,4 @@
 
 // Teampage Domain
 export * from './teampage';
+export * from './authToken';
