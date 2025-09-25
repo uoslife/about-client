@@ -1,6 +1,6 @@
 'use client';
 import { Text } from '@shared/component/Text';
-import { searchArticles } from '@uoslife/api';
+import { useSearchArticlesInfinite } from '@uoslife/api';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card } from '@/shared/component/card';
@@ -48,17 +48,24 @@ export function Section07() {
   );
 }
 
-async function TechArticleList() {
-  const data = await searchArticles({
+function TechArticleList() {
+  const{ data, isLoading }=  useSearchArticlesInfinite({
     spaceId: SpaceIdEnum.TECH,
     page: 0,
     size: 10,
     sortBy: 'CREATED_AT',
     sortOrder: 'DESC',
-  });
-  const techArticleContents = data.content;
+  }, 
+    {
+      query: {
+        getNextPageParam: () => {
+          return undefined;
+        },
+      },
+    },);
+  const techArticleContents = data?.pages[0].content;
 
-  if (!techArticleContents)
+  if (isLoading || !techArticleContents)
     return (
       <div className="flex items-center justify-center py-14">
         <Text variant="title-24-m" color="grey-700">

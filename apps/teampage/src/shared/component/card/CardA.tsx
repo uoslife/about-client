@@ -48,11 +48,11 @@ export function CardA({ content, className, link }: CardProps) {
                 <Text
                   variant="title-28-b"
                   color={isHovered ? 'primary-gradiant' : 'grey-900'}
-                  className="line-clamp-2 text-ellipsis text-grey-900 w-full"
+                  className="line-clamp-2 overflow-ellipsis text-grey-900 w-full"
                 >
                   {title}
                 </Text>
-                <Text variant="body-18-m" color="grey-700" className="w-full">
+                <Text variant="body-18-m" color="grey-700" className="line-clamp-2 overflow-ellipsis w-full">
                   {summary}
                 </Text>
               </div>

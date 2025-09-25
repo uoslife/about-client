@@ -5,6 +5,7 @@ import { SessionProvider, useSession } from 'next-auth/react';
 import { ToastProvider } from '@/shared/component/toast/ToastContext';
 import { ConfirmModalProvider } from '@/shared/component/confirm-modal/ConfirmModalContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useEffect } from 'react';
 import { setAccessToken } from '@uoslife/api';
 
@@ -19,7 +20,7 @@ const DimRenderer = dynamic(
 );
 
 export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
-  const queryClient = new QueryClient();
+  const [queryClient] = useState(() => new QueryClient());
   return (
     <SessionProvider refetchInterval={5 * 60} refetchOnWindowFocus={true}>
       <SessionTokenBridge />
