@@ -119,7 +119,7 @@ export default function WritePage() {
       return isEmpty(category) || isEmpty(summary) || isOverMaxLength(summary);
     }
 
-    return isEmpty(category) || isEmpty(summary) || thumbnailFile === null;
+    return isEmpty(category) || isEmpty(summary);
   }, [title, summary, content, category, thumbnailFile, isCareer, isMoments]);
 
   const handleFileSelect = (file: File) => {
