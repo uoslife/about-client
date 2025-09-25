@@ -17,6 +17,7 @@ import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyCont
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { useAuth } from '@/entities/auth/useAuth';
 
 export function TechMainSection() {
   return (
@@ -25,7 +26,7 @@ export function TechMainSection() {
         <TopBar />
         <ArticleList />
         <TechPagination />
-        <WritingButton from="TECH" className="fixed bottom-6 right-8" />
+        <WritingButtonArea />
       </ArticleMainSectionContainer>
     </ArticleProvider>
   );
@@ -164,4 +165,12 @@ function TechPagination() {
       className="my-10"
     />
   );
+}
+
+function WritingButtonArea() {
+  const auth = useAuth();
+  if (auth.status !== 'authenticated') {
+    return null;
+  }
+  return <WritingButton from="TECH" className="fixed bottom-6 right-8" />;
 }
