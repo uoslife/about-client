@@ -34,8 +34,8 @@ export const CategoryKorean = {
   [CategoryEnum.DEVELOP]: '개발',
   [CategoryEnum.DESIGN]: '디자인',
   [CategoryEnum.MARKETING]: '마케팅',
-  [CategoryEnum.PM]: '기획',
-  [CategoryEnum.EMPLOYMENT]: '채용',
+  [CategoryEnum.PM]: 'PM',
+  [CategoryEnum.EMPLOYMENT]: '취업∙인턴',
   [CategoryEnum.EXTERNAL_ACTIVITY]: '대외활동',
 };
 

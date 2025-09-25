@@ -1,5 +1,4 @@
-'use client';
-import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
+import { Suspense } from 'react';
 import { Section01 } from './section/Section01';
 import { Section02 } from './section/Section02';
 import { Section03 } from './section/Section03';
@@ -11,23 +10,22 @@ import { Section08 } from './section/Section08';
 import { Section09 } from './section/Section09';
 import { SectionMain } from './section/SectionMain';
 
-export default function MainPage() {
-  useSendViewAmplitudeEvent('VIEW_TAB', {
-    tab_name: 'home',
-  });
+export default async function MainPage() {
   return (
     <div className="flex flex-col items-center justify-center">
       <main>
         <SectionMain />
-        <Section01 />
-        <Section02 />
-        <Section03 />
-        <Section04 />
-        <Section05 />
-        <Section06 />
-        <Section07 />
-        <Section08 />
-        <Section09 />
+        <Suspense>
+          <Section01 />
+          <Section02 />
+          <Section03 />
+          <Section04 />
+          <Section05 />
+          <Section06 />
+          <Section07 />
+          <Section08 />
+          <Section09 />
+        </Suspense>
       </main>
     </div>
   );

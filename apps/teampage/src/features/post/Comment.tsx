@@ -68,9 +68,9 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
   });
 
   return (
-    <div className="bg-grey-50 flex flex-col gap-3 items-start justify-start px-8 py-7 rounded-[20px] w-[880px]">
-      <div className="flex items-center justify-between w-full">
-        <div className="flex gap-3 items-center">
+    <div className="bg-grey-50 flex flex-col gap-3 items-start justify-start px-4 md:px-8 py-4 md:py-7 rounded-[16px] md:rounded-[20px] w-full">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between w-full gap-2 md:gap-0">
+        <div className="flex flex-col md:flex-row gap-2 md:gap-3 items-start md:items-center">
           <div className="flex gap-2 items-center">
             <Image
               src={
@@ -83,11 +83,19 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
               height={28}
               className="w-7 h-7 rounded-full object-cover"
             />
-            <Text variant="body-18-b" color="grey-900">
+            <Text
+              variant="body-18-b"
+              color="grey-900"
+              className="text-sm md:text-lg"
+            >
               {comment.nickname}
             </Text>
           </div>
-          <Text variant="body-16-m" color="grey-500">
+          <Text
+            variant="body-16-m"
+            color="grey-500"
+            className="text-xs md:text-base"
+          >
             {new Date(comment.createdAt).toLocaleDateString('ko-KR', {
               year: 'numeric',
               month: 'long',
@@ -95,8 +103,8 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
             })}
           </Text>
         </div>
-        {(comment.isMine || role === 'ADMIN') && (
-          <div className="flex gap-3 items-center">
+        {comment.isMine && (
+          <div className="flex gap-2 md:gap-3 items-center">
             {isEditing ? (
               <button
                 type="button"
@@ -105,7 +113,11 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
                 }}
                 className="cursor-pointer"
               >
-                <Text variant="body-14-m" color="grey-500">
+                <Text
+                  variant="body-14-m"
+                  color="grey-500"
+                  className="text-xs md:text-sm"
+                >
                   취소
                 </Text>
               </button>
@@ -117,7 +129,11 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
                 }}
                 className="cursor-pointer"
               >
-                <Text variant="body-14-m" color="grey-500">
+                <Text
+                  variant="body-14-m"
+                  color="grey-500"
+                  className="text-xs md:text-sm"
+                >
                   수정
                 </Text>
               </button>
@@ -138,6 +154,7 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
                 <Text
                   variant="body-14-m"
                   color={editText.length >= 5 ? 'primary-ui' : 'grey-500'}
+                  className="text-xs md:text-sm"
                 >
                   등록
                 </Text>
@@ -154,7 +171,11 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
                   }}
                   className="cursor-pointer"
                 >
-                  <Text variant="body-14-m" color="grey-500">
+                  <Text
+                    variant="body-14-m"
+                    color="grey-500"
+                    className="text-xs md:text-sm"
+                  >
                     삭제
                   </Text>
                 </button>
@@ -165,7 +186,7 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
       </div>
       {isEditing ? (
         <TextareaAutosize
-          className={`bg-[#f7f7f9] box-border p-5 rounded-[20px] w-full resize-none border-[1.6px] outline-none text-[#222227] placeholder:text-[#a2a2ae] text-[18px] font-medium leading-[1.6] ${
+          className={`bg-[#f7f7f9] box-border p-4 md:p-5 rounded-[20px] w-full resize-none border-[1.6px] outline-none text-[#222227] placeholder:text-[#a2a2ae] text-sm md:text-lg font-medium leading-[1.6] ${
             editText.length >= 5 ? 'ring-[1.6px] ring-[#222227]' : ''
           }`}
           onChange={(e) => {
@@ -174,7 +195,11 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
           value={editText}
         />
       ) : (
-        <Text variant="body-18-m" color="grey-900">
+        <Text
+          variant="body-18-m"
+          color="grey-900"
+          className="text-sm md:text-lg"
+        >
           {comment.content}
         </Text>
       )}

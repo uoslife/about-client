@@ -18,6 +18,7 @@ import { ArticleListEmptyContainer } from '@/shared/layouts/ArticleListEmptyCont
 import { ArticleMainSectionContainer } from '@/shared/layouts/ArticleMainSectionContainer';
 import { ArticleProvider, useArticle } from '@/shared/provider/ArticleProvider';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { useAuth } from '@/entities/auth/useAuth';
 
 export function CareerMainSection() {
   return (
@@ -26,7 +27,7 @@ export function CareerMainSection() {
         <TopBar />
         <ArticleList />
         <CareerPagination />
-        <WritingButton from="CAREER" className="fixed bottom-6 right-8" />
+        <WritingButtonArea />
       </ArticleMainSectionContainer>
     </ArticleProvider>
   );
@@ -63,6 +64,7 @@ function TopBar() {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
               dispatch({ type: 'SET_KEYWORD', payload: keyword });
+              dispatch({ type: 'SET_CATEGORY', payload: 'ALL' });
               e.currentTarget.blur();
               trackEvent('SEARCH_KEYWORD', {
                 tab_name: 'career',
@@ -167,4 +169,12 @@ function CareerPagination() {
       className="my-10"
     />
   );
+}
+
+function WritingButtonArea() {
+  const auth = useAuth();
+  if (auth.status !== 'authenticated') {
+    return null;
+  }
+  return <WritingButton from="CAREER" className="fixed bottom-6 right-8" />;
 }

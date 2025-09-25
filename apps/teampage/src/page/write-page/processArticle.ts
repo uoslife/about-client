@@ -215,7 +215,7 @@ export const processArticle = (
             ).pipe(
               map((serverImageUrl) => ({
                 oldString: file.oldString,
-                newUrl: serverImageUrl,
+                newUrl: `https://${serverImageUrl}`,
               })),
             ),
           );
