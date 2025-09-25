@@ -61,6 +61,8 @@ function TopBar() {
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
               dispatch({ type: 'SET_KEYWORD', payload: keyword });
+              dispatch({ type: 'SET_CATEGORY', payload: 'ALL' });
+
               e.currentTarget.blur();
               trackEvent('SEARCH_KEYWORD', {
                 tab_name: 'tech',
