@@ -103,7 +103,7 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
             })}
           </Text>
         </div>
-        {(comment.isMine || role === 'ADMIN') && (
+        {comment.isMine && (
           <div className="flex gap-2 md:gap-3 items-center">
             {isEditing ? (
               <button
