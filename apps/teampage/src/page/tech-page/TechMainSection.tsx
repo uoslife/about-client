@@ -55,6 +55,10 @@ function TopBar() {
           size="small"
           placeholder="제목을 입력해주세요"
           value={keyword}
+          onClear={() => {
+            setKeyword('');
+            dispatch({ type: 'SET_KEYWORD', payload: '' });
+          }}
           onChange={(e) => {
             setKeyword(e.target.value);
           }}
