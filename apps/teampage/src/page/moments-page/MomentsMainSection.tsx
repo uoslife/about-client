@@ -112,6 +112,7 @@ function ArticleList() {
           key={content.id}
           content={content}
           link={`/moments/${content.id}`}
+          showViewCount={false}
         />
       ))}
     </div>

@@ -10,7 +10,12 @@ import { Tag } from '../Tag';
 import { Text } from '../Text';
 import type { CardProps } from './types';
 
-export function CardB({ content, className, link }: CardProps) {
+export function CardB({
+  content,
+  className,
+  link,
+  showViewCount = true,
+}: CardProps) {
   const {
     title,
     summary,
@@ -76,19 +81,23 @@ export function CardB({ content, className, link }: CardProps) {
                 day: 'numeric',
               })}
             </Text>
-            <Divider
-              orientation="vertical"
-              thickness="px"
-              color="bg-grey-200"
-              className="h-2.5"
-            />
-            <Text
-              variant="body-16-m"
-              color="grey-600"
-              className="whitespace-pre text-right"
-            >
-              조회수 {viewCount.toLocaleString()}
-            </Text>
+            {showViewCount && (
+              <>
+                <Divider
+                  orientation="vertical"
+                  thickness="px"
+                  color="bg-grey-200"
+                  className="h-2.5"
+                />
+                <Text
+                  variant="body-16-m"
+                  color="grey-600"
+                  className="whitespace-pre text-right"
+                >
+                  조회수 {viewCount.toLocaleString()}
+                </Text>
+              </>
+            )}
           </div>
         </div>
         <div className="h-36 w-60 rounded-[12px] overflow-hidden flex-shrink-0">
