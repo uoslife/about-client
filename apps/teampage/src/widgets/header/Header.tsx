@@ -7,45 +7,55 @@ import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { useDevice } from '@/shared/provider/DeviceProvider';
+import { useUser } from '@/entities/api/useUser';
+import { MyInfoResponseRole } from '@uoslife/api';
 
-const Route = {
-  HOME: {
-    path: '/',
-    name: 'Home',
-  },
-  PEOPLE: {
-    path: '/people',
-    name: 'People',
-  },
-  TECH: {
-    path: '/tech',
-    name: 'Tech',
-  },
-  OUR_STORY: {
-    path: '/career',
-    name: 'Our Story',
-  },
-} as const;
+const getRoute = (role: MyInfoResponseRole) => {
+  return {
+    HOME: {
+      path: '/',
+      name: 'Home',
+    },
+    PEOPLE: {
+      path: '/people',
+      name: 'People',
+    },
+    TECH: {
+      path: '/tech',
+      name: 'Tech',
+    },
+    OUR_STORY: {
+      path: role === 'ASSOCIATE_MEMBER' ? '/moments' : '/career',
+      name: 'Our Story',
+    },
+  } as const;
+};
 
 export default function Header() {
+  const { role } = useUser();
+  const ROUTE = getRoute(role as MyInfoResponseRole);
   const { status, signIn, session, signOut } = useAuth();
   const { trackEvent } = useAnalytics();
   const { isMobile } = useDevice();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleCloseMenu = () => {
-    if(!isMobile) return;
+    if (!isMobile) return;
     setIsMenuOpen(false);
-  }
+  };
 
   const renderLink = useCallback((route: { path: string; name: string }) => {
-    const isShowOurStoryMenu = route.path === Route.OUR_STORY.path;
+    const isShowOurStoryMenu = route.path === ROUTE.OUR_STORY.path;
     return (
       <div
         className={`relative ${isShowOurStoryMenu ? 'group' : ''}`}
         key={route.path}
       >
-        <Link href={route.path} className="w-full group" onClick={handleCloseMenu}>
+        <Link
+          href={route.path}
+          className="w-full group"
+          onClick={handleCloseMenu}
+        >
           <div
             className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
             data-name={`GNB_Tap_${route.name}`}
@@ -68,7 +78,7 @@ export default function Header() {
         'items-center content-center',
         'justify-items-stretch',
         'bg-white',
-        'max-md:flex max-md:justify-between'
+        'max-md:flex max-md:justify-between',
       )}
       data-name="GNB"
     >
@@ -81,9 +91,9 @@ export default function Header() {
           className="w-[80px] h-[28px] max-md:w-[46px] max-md:h-[16px]"
         />
       </Link>
-       {/* 데스크탑 메뉴 */}
+      {/* 데스크탑 메뉴 */}
       <div className="hidden md:flex flex-row gap-4 items-center justify-center">
-        {Object.values(Route).map((route) => renderLink(route))}
+        {Object.values(ROUTE).map((route) => renderLink(route))}
       </div>
       {/* 우측 아이콘 + 로그인 */}
       <div className="hidden md:flex box-border content-stretch flex-row gap-4 items-center justify-end p-0 relative shrink-0">
@@ -179,9 +189,9 @@ export default function Header() {
         )}
       </div>
       {/* 모바일 햄버거 메뉴 버튼 */}
-      {isMobile && 
+      {isMobile && (
         <button>
-          <Image 
+          <Image
             src="/svg/menu.svg"
             alt="mobile header menu"
             onClick={() => setIsMenuOpen(true)}
@@ -189,12 +199,12 @@ export default function Header() {
             width={24}
           />
         </button>
-      }
+      )}
       {/* 모바일 전체화면 메뉴 */}
       <div
         className={twMerge(
-          "fixed inset-0 z-[999] bg-white flex flex-col p-6 transform transition-transform duration-500 ease-in-out",
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
+          'fixed inset-0 z-[999] bg-white flex flex-col p-6 transform transition-transform duration-500 ease-in-out',
+          isMenuOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
         {/* 상단 헤더 (로고 + 닫기버튼) */}
@@ -217,13 +227,18 @@ export default function Header() {
 
         {/* 네비게이션 메뉴 */}
         <nav className="flex flex-col items-start text-body-18-b">
-          {Object.values(Route).map((route) => renderLink(route))}
+          {Object.values(ROUTE).map((route) => renderLink(route))}
         </nav>
 
         {/* 소셜 아이콘 */}
         <div className="flex gap-4 mt-[36px]">
           <Link href="https://instagram.com/uoslife_official" target="_blank">
-            <Image src="/svg/instagram.svg" alt="instagram" width={32} height={32} />
+            <Image
+              src="/svg/instagram.svg"
+              alt="instagram"
+              width={32}
+              height={32}
+            />
           </Link>
           <Link href="https://github.com/uoslife" target="_blank">
             <Image src="/svg/github.svg" alt="github" width={32} height={32} />
