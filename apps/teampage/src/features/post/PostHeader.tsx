@@ -5,6 +5,7 @@ import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
+import { useUser } from '@/entities/api/useUser';
 
 export type PostType = 'tech' | 'career' | 'moments';
 
@@ -16,6 +17,7 @@ interface PostHeaderProps {
 export const PostHeader = (props: PostHeaderProps) => {
   const { toast } = useToast();
   const { session } = useAuth();
+  const { role } = useUser();
   const { post, type } = props;
   const { open: openConfirmModal } = useConfirmModal();
   const router = useRouter();
@@ -77,8 +79,8 @@ export const PostHeader = (props: PostHeaderProps) => {
           )}
         </div>
 
-        {session?.user?.name === post.authorName && (
-          <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center">
+          {session?.user?.name === post.authorName && (
             <button
               type="button"
               onClick={() => {
@@ -95,32 +97,35 @@ export const PostHeader = (props: PostHeaderProps) => {
                 수정
               </Text>
             </button>
-            <div className="bg-grey-100 h-2.5 rounded w-px" />
-            <button
-              type="button"
-              onClick={() => {
-                openConfirmModal({
-                  title: '게시글을 삭제하시겠습니까?',
-                  description: '삭제된 게시물은 복구할 수 없습니다.',
-                  confirmText: '삭제',
-                  cancelText: '취소',
-                  onConfirm: () => {
-                    deleteArticle({ articleId: post.id });
-                  },
-                });
-              }}
-              className="cursor-pointer"
-            >
-              <Text
-                variant="body-14-m"
-                color="grey-500"
-                className="text-xs md:text-sm"
+          )}
+          <div className="bg-grey-100 h-2.5 rounded w-px" />
+          {session?.user?.name === post.authorName ||
+            (role === 'ADMIN' && (
+              <button
+                type="button"
+                onClick={() => {
+                  openConfirmModal({
+                    title: '게시글을 삭제하시겠습니까?',
+                    description: '삭제된 게시물은 복구할 수 없습니다.',
+                    confirmText: '삭제',
+                    cancelText: '취소',
+                    onConfirm: () => {
+                      deleteArticle({ articleId: post.id });
+                    },
+                  });
+                }}
+                className="cursor-pointer"
               >
-                삭제
-              </Text>
-            </button>
-          </div>
-        )}
+                <Text
+                  variant="body-14-m"
+                  color="grey-500"
+                  className="text-xs md:text-sm"
+                >
+                  삭제
+                </Text>
+              </button>
+            ))}
+        </div>
       </div>
 
       <div className="bg-grey-100 h-px w-full" />
