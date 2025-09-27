@@ -4,6 +4,7 @@ import { Text } from '@/shared/component/Text';
 import { ArticleListItem } from '@uoslife/api';
 import Image from 'next/image';
 import { SpaceType } from '@/shared/const/category';
+import { CategoryKorean } from '../../shared/const/category';
 
 interface PrevNextProps {
   prevArticle?: ArticleListItem;
@@ -45,7 +46,7 @@ const ArticleCard = ({
                 color="grey-500"
                 className="text-xs md:text-base"
               >
-                {article.category}
+                {CategoryKorean[article.category]}
               </Text>
             </div>
           )}
