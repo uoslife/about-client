@@ -99,12 +99,13 @@ export const Markdown = ({ content }: { content: string }) => {
         ),
         img: ({ src, alt }) => (
           <div className="my-4 md:my-8 w-full">
-            <div className="relative w-full h-[200px] md:h-[400px]">
+            <div className="relative w-full">
               <Image
                 src={src || ''}
                 alt={alt || ''}
-                fill
-                className="rounded-2xl object-cover"
+                width={0}
+                height={0}
+                className="w-full h-auto rounded-2xl object-contain"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 880px, 880px"
               />
             </div>

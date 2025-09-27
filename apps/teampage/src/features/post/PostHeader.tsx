@@ -101,32 +101,31 @@ export const PostHeader = (props: PostHeaderProps) => {
             </button>
           )}
           <div className="bg-grey-100 h-2.5 rounded w-px" />
-          {session?.user?.name === post.authorName ||
-            (role === 'ADMIN' && (
-              <button
-                type="button"
-                onClick={() => {
-                  openConfirmModal({
-                    title: '게시글을 삭제하시겠습니까?',
-                    description: '삭제된 게시물은 복구할 수 없습니다.',
-                    confirmText: '삭제',
-                    cancelText: '취소',
-                    onConfirm: () => {
-                      deleteArticle({ articleId: post.id });
-                    },
-                  });
-                }}
-                className="cursor-pointer"
+          {(session?.user?.name === post.authorName || role === 'ADMIN') && (
+            <button
+              type="button"
+              onClick={() => {
+                openConfirmModal({
+                  title: '게시글을 삭제하시겠습니까?',
+                  description: '삭제된 게시물은 복구할 수 없습니다.',
+                  confirmText: '삭제',
+                  cancelText: '취소',
+                  onConfirm: () => {
+                    deleteArticle({ articleId: post.id });
+                  },
+                });
+              }}
+              className="cursor-pointer"
+            >
+              <Text
+                variant="body-14-m"
+                color="grey-500"
+                className="text-xs md:text-sm"
               >
-                <Text
-                  variant="body-14-m"
-                  color="grey-500"
-                  className="text-xs md:text-sm"
-                >
-                  삭제
-                </Text>
-              </button>
-            ))}
+                삭제
+              </Text>
+            </button>
+          )}
         </div>
       </div>
 
