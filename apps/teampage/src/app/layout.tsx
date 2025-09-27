@@ -3,6 +3,7 @@ import { Footer } from '@/widgets/footer/Footer';
 import Header from '@/widgets/header/Header';
 import { ClientProvider } from './provider/client-provider';
 import { ServerProvider } from './provider/server-provider';
+import { DeviceProvider } from '@/shared/provider/DeviceProvider'; 
 
 export const metadata: Metadata = {
   title: 'UOSLIFE',
@@ -19,11 +20,13 @@ export default function RootLayout({
       <body className="h-full">
         <ServerProvider>
           <ClientProvider>
-            <div className="min-h-full flex flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
+            <DeviceProvider>
+              <div className="min-h-full flex flex-col">
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
+            </DeviceProvider>
           </ClientProvider>
         </ServerProvider>
       </body>
