@@ -8,6 +8,7 @@ import { PostFooter } from './PostFooter';
 import { PostHeader } from './PostHeader';
 import { PrevNext } from './PrevNext';
 import { SpaceType } from '@/shared/const/category';
+import Image from 'next/image';
 
 export function PostSection({ type, id }: { type: SpaceType; id: number }) {
   const { nonMemberId } = useNonMemberId();
@@ -23,10 +24,16 @@ export function PostSection({ type, id }: { type: SpaceType; id: number }) {
           <PostHeader post={post} type={type} />
           <div className="flex flex-col gap-6 md:gap-[60px] items-start justify-start w-full">
             {post.thumbnailUrl && (
-              <div
-                className="h-[173px] md:h-[400px] rounded-2xl w-full bg-center bg-cover bg-no-repeat"
-                style={{ backgroundImage: `url('${post.thumbnailUrl}')` }}
-              />
+              <div className="relative w-full rounded-2xl overflow-hidden">
+                <Image
+                  src={post.thumbnailUrl}
+                  alt="Post thumbnail"
+                  width={880}
+                  height={173}
+                  className="w-full h-auto object-cover rounded-2xl"
+                  sizes="(max-width: 768px) 100vw, 880px"
+                />
+              </div>
             )}
 
             <div className="w-full">
