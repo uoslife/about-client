@@ -5,13 +5,14 @@ import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
+import { SpaceType } from '@/shared/const/category';
 import { useUser } from '@/entities/api/useUser';
 
 export type PostType = 'tech' | 'career' | 'moments';
 
 interface PostHeaderProps {
   post: ArticleDetailResponse;
-  type: PostType;
+  type: SpaceType;
 }
 
 export const PostHeader = (props: PostHeaderProps) => {
@@ -65,7 +66,7 @@ export const PostHeader = (props: PostHeaderProps) => {
           >
             {new Date(post.createdAt).toLocaleDateString('ko-KR')}
           </Text>
-          {type === 'tech' && (
+          {type === 'TECH' && (
             <>
               <div className="bg-grey-400 h-2.5 w-px" />
               <Text
@@ -84,6 +85,7 @@ export const PostHeader = (props: PostHeaderProps) => {
             <button
               type="button"
               onClick={() => {
+                console.log(post, type);
                 sessionStorage.setItem('editPost', JSON.stringify(post));
                 window.location.href = `/write?edit=true&from=${type}`;
               }}

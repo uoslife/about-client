@@ -49,20 +49,22 @@ export function Section07() {
 }
 
 function TechArticleList() {
-  const{ data, isLoading }=  useSearchArticlesInfinite({
-    spaceId: SpaceIdEnum.TECH,
-    page: 0,
-    size: 10,
-    sortBy: 'CREATED_AT',
-    sortOrder: 'DESC',
-  }, 
+  const { data, isLoading } = useSearchArticlesInfinite(
+    {
+      spaceId: SpaceIdEnum.TECH,
+      page: 0,
+      size: 10,
+      sortBy: 'CREATED_AT',
+      sortOrder: 'DESC',
+    },
     {
       query: {
         getNextPageParam: () => {
           return undefined;
         },
       },
-    },);
+    },
+  );
   const techArticleContents = data?.pages[0].content;
 
   if (isLoading || !techArticleContents)
@@ -78,7 +80,7 @@ function TechArticleList() {
     <div className="grid grid-cols-2 gap-8 max-w-pc w-full">
       {techArticleContents
         .map((c) =>
-          !c.thumbnailUrl ? { ...c, thumbnailUrl: 'svg/roomae_03.svg' } : c,
+          !c.thumbnailUrl ? { ...c, thumbnailUrl: '/svg/roomae_03.svg' } : c,
         )
         .map((data) => (
           <Card.A link={`/tech/${data.id}`} key={data.title} content={data} />

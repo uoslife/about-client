@@ -15,6 +15,10 @@ export type CreateArticleInput = Omit<CreateArticleRequest, 'thumbnailUrl'> & {
   thumbnailFile?: File | null;
 };
 
+const addHttpsPrifix = (url: string) => {
+  return `https://${url}`;
+};
+
 const base64ToFile = (dataUrl: string): Observable<File> => {
   try {
     // data:image/png;base64,iVBORw0KGgo... 형태에서 base64 부분만 추출
@@ -130,7 +134,7 @@ const uploadThumbnailToServer = (
       .then((result) => {
         console.log(result);
         if (result.url) {
-          observer.next(result.url);
+          observer.next(addHttpsPrifix(result.url));
           observer.complete();
         } else {
           observer.error('No thumbnail URL in response');
@@ -215,7 +219,7 @@ export const processArticle = (
             ).pipe(
               map((serverImageUrl) => ({
                 oldString: file.oldString,
-                newUrl: `https://${serverImageUrl}`,
+                newUrl: addHttpsPrifix(serverImageUrl),
               })),
             ),
           );

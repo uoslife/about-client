@@ -25,7 +25,11 @@ import { type CreateArticleInput, processArticle } from './processArticle';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { match } from 'ts-pattern';
 import { TabName } from '@/entities/analytics/AmplitudePropertyType';
-import { getSearchArticlesQueryKey, useCreateArticle } from '@uoslife/api';
+import {
+  getSearchArticlesQueryKey,
+  useCreateArticle,
+  useUpdateArticle,
+} from '@uoslife/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { twMerge } from 'tailwind-merge';
 import { RouteByAuthProvider } from '@/entities/auth/RouteByAuthContext';
@@ -62,6 +66,9 @@ export default function WritePage() {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const [articleId, setArticleId] = useState<number | null>();
 
   const isCareer = space === 'CAREER';
   const isMoments = space === 'MOMENTS';
@@ -97,6 +104,7 @@ export default function WritePage() {
         setContent(processedContent || '');
         setCategory(post.category || '');
         setSummary(post.summary || '');
+        setArticleId(post.id || '');
         if (post.thumbnailUrl) {
           setThumbnailPreview(post.thumbnailUrl);
         }
@@ -104,6 +112,23 @@ export default function WritePage() {
       }
     }
   }, [isEditMode]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isUploading) {
+        e.preventDefault();
+        alert(
+          '게시글을 업로드중이에요. 페이지를 떠나면 업로드가 초기화됩니다.',
+        );
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isUploading]);
 
   const isDisabledSubmitButton = useMemo(() => {
     const isEmpty = (value?: string | null) => value?.trim() === '';
@@ -120,7 +145,12 @@ export default function WritePage() {
       return isEmpty(category) || isEmpty(summary) || isOverMaxLength(summary);
     }
 
-    return isEmpty(category) || isEmpty(summary);
+    return (
+      isEmpty(category) ||
+      isEmpty(summary) ||
+      thumbnailFile === null ||
+      isOverMaxLength(summary)
+    );
   }, [title, summary, content, category, thumbnailFile, isCareer, isMoments]);
 
   const handleFileSelect = (file: File) => {
@@ -164,11 +194,14 @@ export default function WritePage() {
   };
 
   const { mutate: createArticleMutate } = useCreateArticle();
+  const { mutate: updateArticleMutate } = useUpdateArticle();
   const queryClient = useQueryClient();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!session.session || !category) return;
+
+    setIsUploading(true);
 
     const accessToken = session.session.accessToken;
     console.log({ title, content, category, summary, thumbnailFile });
@@ -182,6 +215,32 @@ export default function WritePage() {
     };
     processArticle(data, accessToken).subscribe({
       next: async (data) => {
+        if (isEditMode && articleId) {
+          updateArticleMutate(
+            { data, articleId },
+            {
+              onSuccess: (res) => {
+                queryClient.invalidateQueries({
+                  queryKey: getSearchArticlesQueryKey(),
+                });
+                trackEvent('POST_ARTICLE', {
+                  tab_name: getTabName(space),
+                });
+                alert('게시글 수정이 완료되었어요.');
+                window.location.href = `/${space.toLowerCase()}/${res.id}`;
+              },
+              onError: (error) => {
+                alert(
+                  `Thumbnail upload failed: ${error.status} ${error.message}`,
+                );
+              },
+              onSettled: () => {
+                setIsUploading(false);
+              },
+            },
+          );
+          return;
+        }
         createArticleMutate(
           { data },
           {
@@ -196,15 +255,20 @@ export default function WritePage() {
               window.location.href = `/${space.toLowerCase()}/${res.id}`;
             },
             onError: (error) => {
-              throw new Error(
+              alert(
                 `Thumbnail upload failed: ${error.status} ${error.message}`,
               );
+            },
+            onSettled: () => {
+              setIsUploading(false);
             },
           },
         );
       },
       error: (error) => {
         console.log(error);
+        alert('게시글 처리 중 오류가 발생했습니다.');
+        setIsUploading(false);
       },
     });
   };
@@ -414,6 +478,81 @@ export default function WritePage() {
             className="px-8 py-3 bg-grey-900 text-white rounded-full font-bold hover:bg-grey-700 transition-colors disabled:bg-grey-300 disabled:cursor-not-allowed"
           >
             게시글 등록
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          <Text variant="title-24-b">
+            썸네일 이미지{' '}
+            {isCareer && <span className="text-grey-500">(선택)</span>}
+          </Text>
+          <div
+            onDragOver={handleDragOver}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`w-full h-64 border-2 border-dashed border-grey-200 rounded-lg flex items-center justify-center relative transition-colors ${
+              isDragging ? 'border-blue-500 bg-blue-50' : ''
+            }`}
+          >
+            {thumbnailPreview ? (
+              <>
+                <Image
+                  src={thumbnailPreview}
+                  alt="Thumbnail preview"
+                  fill
+                  className="object-contain rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    setThumbnailFile(null);
+                    setThumbnailPreview(null);
+                  }}
+                  className="absolute top-2 right-2 bg-grey-600/70 text-white w-12 h-12 rounded-full text-lg"
+                >
+                  X
+                </button>
+              </>
+            ) : (
+              <label className="cursor-pointer text-grey-500 hover:text-grey-900 transition-colors flex flex-col items-center gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleThumbnailChange}
+                  className="hidden"
+                  required={!isCareer}
+                />
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <title>Upload Image</title>
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 8h.01" />
+                  <path d="M3 6a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v12a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3v-12z" />
+                  <path d="M3 16l5 -5c.928 -.893 2.072 -.893 3 0l5 5" />
+                  <path d="M14 14l1 -1c.928 -.893 2.072 -.893 3 0l2 2" />
+                </svg>
+                <span>+ 이미지 업로드 또는 드래그</span>
+              </label>
+            )}
+          </div>
+        </div>
+
+        <div className="flex justify-end mt-8">
+          <button
+            type="submit"
+            disabled={isDisabledSubmitButton || isUploading}
+            className="px-8 py-3 bg-grey-900 text-white rounded-full font-bold hover:bg-grey-700 transition-colors disabled:bg-grey-300 disabled:cursor-not-allowed"
+          >
+            {isUploading ? '업로드 중...' : '게시글 등록'}
           </button>
         </div>
       </form>

@@ -35,7 +35,7 @@ export function Section09() {
           </Text>
         </div>
         <Link
-          href="https://docs.google.com/forms/d/1O61Rt-m2OOX9KbCMG-CtkGR-2ytaEgsRiXB2STQKxi4/edit"
+          href="https://forms.gle/JntWWCzKjzRwZbaJ7"
           target="_blank"
           className="bg-white px-7 py-4 rounded-[32px]"
           onClick={() => {

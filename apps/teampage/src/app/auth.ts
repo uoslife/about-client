@@ -40,6 +40,7 @@ const getAuthOptions = (): NextAuthOptions => {
             ...token,
             accessToken: account.access_token,
             refreshToken: account.refresh_token,
+            idToken: account.id_token,
           };
           return newToken;
         }
@@ -70,6 +71,7 @@ const getAuthOptions = (): NextAuthOptions => {
           ...session,
           accessToken: token.accessToken,
           refreshToken: token.refreshToken,
+          idToken: token.idToken,
         };
       },
     },
