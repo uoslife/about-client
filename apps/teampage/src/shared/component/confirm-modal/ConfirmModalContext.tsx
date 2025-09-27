@@ -16,6 +16,7 @@ interface ConfirmModalState {
   confirmText?: string;
   cancelText?: string;
   variant?: 'default' | 'danger';
+  useCancel?: boolean;
   onConfirm?: () => void;
 }
 
@@ -49,6 +50,7 @@ export const ConfirmModalProvider: React.FC<ConfirmModalProviderProps> = ({
     confirmText: '확인',
     cancelText: '취소',
     variant: 'default',
+    useCancel: true,
     onConfirm: undefined,
   });
 
@@ -126,6 +128,7 @@ export const ConfirmModalRenderer = () => {
       confirmText={state.confirmText}
       cancelText={state.cancelText}
       variant={state.variant}
+      useCancel={state.useCancel}
     />
   );
 };

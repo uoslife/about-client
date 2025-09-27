@@ -13,6 +13,7 @@ interface ConfirmModalProps {
   confirmText?: string;
   cancelText?: string;
   variant?: 'default' | 'danger';
+  useCancel?: boolean;
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = ({
@@ -24,6 +25,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   confirmText = '확인',
   cancelText = '취소',
   variant = 'default',
+  useCancel = true,
 }) => {
   const [mounted, setMounted] = useState(false);
 
@@ -108,18 +110,20 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
               </div>
 
               <div className="flex gap-3 justify-end w-full sm:w-auto">
-                <button
-                  onClick={onClose}
-                  className="bg-[#f7f7f9] hover:bg-[#e9e9ee] transition-colors duration-200 flex items-center justify-center px-3 sm:px-5 py-0 h-11 sm:h-12 rounded-[8px] sm:rounded-[12px] flex-1 sm:flex-none sm:min-w-[80px]"
-                >
-                  <Text
-                    variant="body-20-m"
-                    color="grey-700"
-                    className="text-[16px] sm:text-[20px]"
+                {useCancel && (
+                  <button
+                    onClick={onClose}
+                    className="bg-[#f7f7f9] hover:bg-[#e9e9ee] transition-colors duration-200 flex items-center justify-center px-3 sm:px-5 py-0 h-11 sm:h-12 rounded-[8px] sm:rounded-[12px] flex-1 sm:flex-none sm:min-w-[80px]"
                   >
-                    {cancelText}
-                  </Text>
-                </button>
+                    <Text
+                      variant="body-20-m"
+                      color="grey-700"
+                      className="text-[16px] sm:text-[20px]"
+                    >
+                      {cancelText}
+                    </Text>
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     onConfirm();
