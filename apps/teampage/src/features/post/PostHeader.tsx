@@ -1,6 +1,5 @@
 import { type ArticleDetailResponse, useDeleteArticle } from '@uoslife/api';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/entities/api/useUser';
 import { useAuth } from '@/entities/auth/useAuth';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { Tag } from '@/shared/component/Tag';
@@ -15,7 +14,6 @@ interface PostHeaderProps {
 }
 
 export const PostHeader = (props: PostHeaderProps) => {
-  const { role } = useUser();
   const { toast } = useToast();
   const { session } = useAuth();
   const { post, type } = props;
@@ -79,7 +77,7 @@ export const PostHeader = (props: PostHeaderProps) => {
           )}
         </div>
 
-        {(session?.user?.name === post.authorName || role === 'ADMIN') && (
+        {session?.user?.name === post.authorName && (
           <div className="flex gap-2 items-center">
             <button
               type="button"
