@@ -25,7 +25,11 @@ import { type CreateArticleInput, processArticle } from './processArticle';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { match } from 'ts-pattern';
 import { TabName } from '@/entities/analytics/AmplitudePropertyType';
-import { getSearchArticlesQueryKey, useCreateArticle } from '@uoslife/api';
+import {
+  getSearchArticlesQueryKey,
+  useCreateArticle,
+  useUpdateArticle,
+} from '@uoslife/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { twMerge } from 'tailwind-merge';
 
@@ -62,6 +66,8 @@ export default function WritePage() {
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  const [articleId, setArticleId] = useState<number | null>();
+
   const isCareer = space === 'CAREER';
   const isMoments = space === 'MOMENTS';
 
@@ -97,6 +103,7 @@ export default function WritePage() {
         setContent(processedContent || '');
         setCategory(post.category || '');
         setSummary(post.summary || '');
+        setArticleId(post.id || '');
         if (post.thumbnailUrl) {
           setThumbnailPreview(post.thumbnailUrl);
         }
@@ -164,6 +171,7 @@ export default function WritePage() {
   };
 
   const { mutate: createArticleMutate } = useCreateArticle();
+  const { mutate: updateArticleMutate } = useUpdateArticle();
   const queryClient = useQueryClient();
 
   const handleSubmit = (e: FormEvent) => {
@@ -182,6 +190,29 @@ export default function WritePage() {
     };
     processArticle(data, accessToken).subscribe({
       next: async (data) => {
+        if (isEditMode && articleId) {
+          updateArticleMutate(
+            { data, articleId },
+            {
+              onSuccess: (res) => {
+                queryClient.invalidateQueries({
+                  queryKey: getSearchArticlesQueryKey(),
+                });
+                trackEvent('POST_ARTICLE', {
+                  tab_name: getTabName(space),
+                });
+                alert('게시글 수정이 완료되었어요.');
+                window.location.href = `/${space.toLowerCase()}/${res.id}`;
+              },
+              onError: (error) => {
+                throw new Error(
+                  `Thumbnail upload failed: ${error.status} ${error.message}`,
+                );
+              },
+            },
+          );
+          return;
+        }
         createArticleMutate(
           { data },
           {
