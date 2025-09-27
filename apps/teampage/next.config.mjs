@@ -8,6 +8,7 @@ const nextConfig = {
     return config;
   },
   images: {
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       // TODO: mock 이미지를 위한 임시 추가
       {
@@ -37,6 +38,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'notion.so',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'd544kp0ugcek4.cloudfront.net',
         port: '',
         pathname: '/**',
       },
