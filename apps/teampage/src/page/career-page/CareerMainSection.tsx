@@ -6,11 +6,9 @@ import { Card, CardSkeletonList } from '@/shared/component/card';
 import { Pagination } from '@/shared/component/pagination';
 import { SearchField } from '@/shared/component/search-field';
 import { TabButton } from '@/shared/component/TabButton';
-import { Text } from '@/shared/component/Text';
 import {
   CAREER_CATEGORIES,
   CategoryKoreanWithAll,
-  SortKorean,
   SpaceIdEnum,
 } from '@/shared/const/category';
 
@@ -81,65 +79,6 @@ function TopBar() {
           }}
         />
       </div>
-      <div className="group relative">
-        <div className="flex items-center gap-1.5 py-2 px-5 cursor-default">
-          <Text variant="body-18-m" color="grey-900">
-            {SortKorean[state.sort]}
-          </Text>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <title>Chevron Right</title>
-            <path
-              d="M4 6L8 10L12 6"
-              stroke="#A2A2AE"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-        <div className="z-10 hidden group-hover:block absolute top-full bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl left-1/2 -translate-x-1/2 w-full px-2 shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)]">
-          <button type="button" className="w-full group/career">
-            <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
-              <Text
-                variant="body-18-m"
-                className="group-hover/career:text-primary-ui"
-                onClick={() => {
-                  dispatch({ type: 'SET_SORT', payload: 'LATEST' });
-                  trackEvent('CLICK_FILTER', {
-                    tab_name: 'career',
-                    filter_name: '최신순',
-                  });
-                }}
-              >
-                {SortKorean.LATEST}
-              </Text>
-            </div>
-          </button>
-          <button type="button" className="w-full group/career">
-            <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
-              <Text
-                variant="body-18-m"
-                className="group-hover/career:text-primary-ui"
-                onClick={() => {
-                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' });
-                  trackEvent('CLICK_FILTER', {
-                    tab_name: 'career',
-                    filter_name: '인기순',
-                  });
-                }}
-              >
-                {SortKorean.POPULAR}
-              </Text>
-            </div>
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
@@ -159,6 +98,7 @@ function ArticleList() {
           key={content.id}
           content={content}
           link={`/career/${content.id}`}
+          showViewCount={false}
         />
       ))}
     </div>
