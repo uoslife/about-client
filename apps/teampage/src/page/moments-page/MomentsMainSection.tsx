@@ -87,7 +87,7 @@ function TopBar() {
                 variant="body-18-m"
                 className="group-hover/career:text-primary-ui"
               >
-                연도 전체
+                2025
               </Text>
             </div>
           </button>
