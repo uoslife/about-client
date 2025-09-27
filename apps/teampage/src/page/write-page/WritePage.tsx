@@ -251,7 +251,7 @@ export default function WritePage() {
                 tab_name: getTabName(space),
               });
               alert('게시글 등록이 완료되었어요.');
-              // window.location.href = `/${space.toLowerCase()}/${res.id}`;
+              window.location.href = `/${space.toLowerCase()}/${res.id}`;
             },
             onError: (error) => {
               alert(
