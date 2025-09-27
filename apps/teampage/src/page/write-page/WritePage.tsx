@@ -65,6 +65,7 @@ export default function WritePage() {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [articleId, setArticleId] = useState<number | null>();
 
@@ -111,6 +112,23 @@ export default function WritePage() {
       }
     }
   }, [isEditMode]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isUploading) {
+        e.preventDefault();
+        alert(
+          '게시글을 업로드중이에요. 페이지를 떠나면 업로드가 초기화됩니다.',
+        );
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isUploading]);
 
   const isDisabledSubmitButton = useMemo(() => {
     const isEmpty = (value?: string | null) => value?.trim() === '';
@@ -178,6 +196,8 @@ export default function WritePage() {
     e.preventDefault();
     if (!session.session || !category) return;
 
+    setIsUploading(true);
+
     const accessToken = session.session.accessToken;
     console.log({ title, content, category, summary, thumbnailFile });
     const data: CreateArticleInput = {
@@ -205,9 +225,12 @@ export default function WritePage() {
                 window.location.href = `/${space.toLowerCase()}/${res.id}`;
               },
               onError: (error) => {
-                throw new Error(
+                alert(
                   `Thumbnail upload failed: ${error.status} ${error.message}`,
                 );
+              },
+              onSettled: () => {
+                setIsUploading(false);
               },
             },
           );
@@ -224,18 +247,23 @@ export default function WritePage() {
                 tab_name: getTabName(space),
               });
               alert('게시글 등록이 완료되었어요.');
-              window.location.href = `/${space.toLowerCase()}/${res.id}`;
+              // window.location.href = `/${space.toLowerCase()}/${res.id}`;
             },
             onError: (error) => {
-              throw new Error(
+              alert(
                 `Thumbnail upload failed: ${error.status} ${error.message}`,
               );
+            },
+            onSettled: () => {
+              setIsUploading(false);
             },
           },
         );
       },
       error: (error) => {
         console.log(error);
+        alert('게시글 처리 중 오류가 발생했습니다.');
+        setIsUploading(false);
       },
     });
   };
@@ -437,10 +465,10 @@ export default function WritePage() {
       <div className="flex justify-end mt-8">
         <button
           type="submit"
-          disabled={isDisabledSubmitButton}
+          disabled={isDisabledSubmitButton || isUploading}
           className="px-8 py-3 bg-grey-900 text-white rounded-full font-bold hover:bg-grey-700 transition-colors disabled:bg-grey-300 disabled:cursor-not-allowed"
         >
-          게시글 등록
+          {isUploading ? '업로드 중...' : '게시글 등록'}
         </button>
       </div>
     </form>
