@@ -28,9 +28,9 @@ export const RouteByAuthProvider = ({
       'RouteByAuthContext must be used within a RouteByAuthProvider',
     );
   }
-  const { role } = useUser();
+  const { role, isUserInitialized } = useUser();
   useEffect(() => {
-    if (targetRole.includes(role as MyInfoResponseRole)) {
+    if (targetRole.includes(role as MyInfoResponseRole) || !isUserInitialized) {
       return;
     }
     open({
@@ -43,7 +43,18 @@ export const RouteByAuthProvider = ({
         window.location.href = route;
       },
     });
-  }, [role, open, route, targetRole]);
+  }, [role, open, route, targetRole, isUserInitialized]);
+
+  if (!isUserInitialized) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-4 border-primary-ui border-t-transparent rounded-full animate-spin"></div>
+          <div className="text-grey-600 text-sm">권한을 확인하는 중...</div>
+        </div>
+      </div>
+    );
+  }
   return (
     <RouteByAuthContext.Provider value={{}}>
       {children}
