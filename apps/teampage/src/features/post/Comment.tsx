@@ -103,25 +103,25 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
             })}
           </Text>
         </div>
-        {comment.isMine && (
-          <div className="flex gap-2 md:gap-3 items-center">
-            {isEditing ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setIsEditing(false);
-                }}
-                className="cursor-pointer"
+        <div className="flex gap-2 md:gap-3 items-center">
+          {isEditing ? (
+            <button
+              type="button"
+              onClick={() => {
+                setIsEditing(false);
+              }}
+              className="cursor-pointer"
+            >
+              <Text
+                variant="body-14-m"
+                color="grey-500"
+                className="text-xs md:text-sm"
               >
-                <Text
-                  variant="body-14-m"
-                  color="grey-500"
-                  className="text-xs md:text-sm"
-                >
-                  취소
-                </Text>
-              </button>
-            ) : (
+                취소
+              </Text>
+            </button>
+          ) : (
+            comment.isMine && (
               <button
                 type="button"
                 onClick={() => {
@@ -137,52 +137,52 @@ export const Comment = ({ comment, postAuthorId }: CommentProps) => {
                   수정
                 </Text>
               </button>
-            )}
-            <div className="bg-grey-200 h-2 rounded w-px" />
-            {isEditing ? (
+            )
+          )}
+          <div className="bg-grey-200 h-2 rounded w-px" />
+          {isEditing ? (
+            <button
+              type="button"
+              onClick={() => {
+                updateComment({
+                  articleId: comment.articleId,
+                  commentId: comment.id,
+                  data: { content: editText },
+                });
+              }}
+              className={isEditing ? 'cursor-pointer' : 'cursor-not-allowed'}
+            >
+              <Text
+                variant="body-14-m"
+                color={editText.length >= 5 ? 'primary-ui' : 'grey-500'}
+                className="text-xs md:text-sm"
+              >
+                등록
+              </Text>
+            </button>
+          ) : (
+            (role === 'ADMIN' || comment.isMine) && (
               <button
                 type="button"
                 onClick={() => {
-                  updateComment({
+                  deleteComment({
                     articleId: comment.articleId,
                     commentId: comment.id,
-                    data: { content: editText },
                   });
                 }}
-                className={isEditing ? 'cursor-pointer' : 'cursor-not-allowed'}
+                className="cursor-pointer"
               >
                 <Text
                   variant="body-14-m"
-                  color={editText.length >= 5 ? 'primary-ui' : 'grey-500'}
+                  color="grey-500"
                   className="text-xs md:text-sm"
                 >
-                  등록
+                  삭제
                 </Text>
               </button>
-            ) : (
-              (role === 'ADMIN' || comment.isMine) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    deleteComment({
-                      articleId: comment.articleId,
-                      commentId: comment.id,
-                    });
-                  }}
-                  className="cursor-pointer"
-                >
-                  <Text
-                    variant="body-14-m"
-                    color="grey-500"
-                    className="text-xs md:text-sm"
-                  >
-                    삭제
-                  </Text>
-                </button>
-              )
-            )}
-          </div>
-        )}
+            )
+          )}
+        </div>
       </div>
       {isEditing ? (
         <TextareaAutosize
