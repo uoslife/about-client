@@ -9,13 +9,18 @@ import { Tag } from '../Tag';
 import { Text } from '../Text';
 import type { CardProps } from './types';
 
-export function CardA({ content, className, link }: CardProps) {
+export function CardA({
+  content,
+  className,
+  link,
+  showViewCount = true,
+}: CardProps) {
   const {
     authorName,
     title,
     category,
     summary,
-    // viewCount,
+    viewCount,
     thumbnailUrl,
     createdAt,
   } = content;
@@ -52,7 +57,11 @@ export function CardA({ content, className, link }: CardProps) {
                 >
                   {title}
                 </Text>
-                <Text variant="body-18-m" color="grey-700" className="line-clamp-2 overflow-ellipsis w-full">
+                <Text
+                  variant="body-18-m"
+                  color="grey-700"
+                  className="line-clamp-2 overflow-ellipsis w-full"
+                >
                   {summary}
                 </Text>
               </div>
@@ -80,7 +89,7 @@ export function CardA({ content, className, link }: CardProps) {
                     day: 'numeric',
                   })}
                 </Text>
-                {/* {viewCount && (
+                {showViewCount && viewCount && (
                   <Text
                     variant="body-16-m"
                     color="grey-600"
@@ -88,7 +97,7 @@ export function CardA({ content, className, link }: CardProps) {
                   >
                     조회수 {viewCount.toLocaleString()}
                   </Text>
-                )} */}
+                )}
               </div>
             </div>
           </>
