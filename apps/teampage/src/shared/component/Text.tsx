@@ -4,6 +4,7 @@ export type TextVariant =
   | 'heading-220-b'
   | 'heading-100-b'
   | 'heading-80-b'
+  | 'heading-76-b'
   | 'heading-72-b'
   | 'title-60-b'
   | 'title-48-b'
@@ -52,6 +53,7 @@ const variantToClassMap: Record<TextVariant, string> = {
   'heading-220-b': 'text-heading-220-b font-bold',
   'heading-100-b': 'text-heading-100-b font-bold',
   'heading-80-b': 'text-heading-80-b font-bold',
+  'heading-76-b': 'text-heading-76-b font-bold',
   'heading-72-b': 'text-heading-72-b font-bold',
   'title-60-b': 'text-title-60-b font-bold',
   'title-48-b': 'text-title-48-b font-bold',
