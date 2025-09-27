@@ -3,11 +3,12 @@ import { useRouter } from 'next/navigation';
 import { Text } from '@/shared/component/Text';
 import { ArticleListItem } from '@uoslife/api';
 import Image from 'next/image';
+import { SpaceType } from '@/shared/const/category';
 
 interface PrevNextProps {
   prevArticle?: ArticleListItem;
   nextArticle?: ArticleListItem;
-  currentType: string; // tech, career, moments
+  currentType: SpaceType; // tech, career, moments
 }
 
 const ArticleCard = ({
@@ -15,12 +16,12 @@ const ArticleCard = ({
   type,
 }: {
   article: ArticleListItem;
-  type: string;
+  type: SpaceType;
 }) => {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push(`/${type}/${article.id}`);
+    router.push(`/${type.toLocaleLowerCase()}/${article.id}`);
   };
 
   return (
