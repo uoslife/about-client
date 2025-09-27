@@ -37,7 +37,14 @@ function TopBar() {
         placeholder="제목을 입력해주세요"
         value={keyword}
         onChange={(e) => {
+          if (e.target.value === '') {
+            dispatch({ type: 'SET_KEYWORD', payload: '' });
+          }
           setKeyword(e.target.value);
+        }}
+        onClear={() => {
+          setKeyword('');
+          dispatch({ type: 'SET_KEYWORD', payload: '' });
         }}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
