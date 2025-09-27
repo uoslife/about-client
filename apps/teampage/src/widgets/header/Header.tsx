@@ -2,10 +2,11 @@
 import { useAuth } from '@entities/auth/useAuth';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
+import { useDevice } from '@/shared/provider/DeviceProvider';
 
 const Route = {
   HOME: {
@@ -29,6 +30,13 @@ const Route = {
 export default function Header() {
   const { status, signIn, session, signOut } = useAuth();
   const { trackEvent } = useAnalytics();
+  const { isMobile } = useDevice();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleCloseMenu = () => {
+    if(!isMobile) return;
+    setIsMenuOpen(false);
+  }
 
   const renderLink = useCallback((route: { path: string; name: string }) => {
     const isShowOurStoryMenu = route.path === Route.OUR_STORY.path;
@@ -37,7 +45,7 @@ export default function Header() {
         className={`relative ${isShowOurStoryMenu ? 'group' : ''}`}
         key={route.path}
       >
-        <Link href={route.path} className="w-full group">
+        <Link href={route.path} className="w-full group" onClick={handleCloseMenu}>
           <div
             className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
             data-name={`GNB_Tap_${route.name}`}
@@ -60,6 +68,7 @@ export default function Header() {
         'items-center content-center',
         'justify-items-stretch',
         'bg-white',
+        'max-md:flex max-md:justify-between'
       )}
       data-name="GNB"
     >
@@ -69,12 +78,15 @@ export default function Header() {
           alt="uoslife logo icon"
           height={28}
           width={80}
+          className="w-[80px] h-[28px] max-md:w-[46px] max-md:h-[16px]"
         />
       </Link>
-      <div className="flex flex-row gap-4 items-center justify-center">
+       {/* 데스크탑 메뉴 */}
+      <div className="hidden md:flex flex-row gap-4 items-center justify-center">
         {Object.values(Route).map((route) => renderLink(route))}
       </div>
-      <div className="box-border content-stretch flex flex-row gap-4 items-center justify-end p-0 relative shrink-0">
+      {/* 우측 아이콘 + 로그인 */}
+      <div className="hidden md:flex box-border content-stretch flex-row gap-4 items-center justify-end p-0 relative shrink-0">
         <div className="box-border content-stretch flex flex-row gap-[15px] items-center justify-start p-0 relative shrink-0">
           <div className="box-border content-stretch flex flex-row gap-4 items-center justify-start p-0 relative shrink-0">
             <Link
@@ -152,6 +164,93 @@ export default function Header() {
         {/* 인증된 사용자의 경우 */}
         {status === 'authenticated' && (
           <div className="flex flex-row items-center justify-center gap-[6px]">
+            <Text variant="body-18-b" color="grey-700">
+              {session?.user?.name}
+            </Text>
+            <button type="button" onClick={() => signOut()}>
+              <Image
+                src="/svg/logout.svg"
+                alt="logout icon"
+                width={24}
+                height={24}
+              />
+            </button>
+          </div>
+        )}
+      </div>
+      {/* 모바일 햄버거 메뉴 버튼 */}
+      {isMobile && 
+        <button>
+          <Image 
+            src="/svg/menu.svg"
+            alt="mobile header menu"
+            onClick={() => setIsMenuOpen(true)}
+            height={24}
+            width={24}
+          />
+        </button>
+      }
+      {/* 모바일 전체화면 메뉴 */}
+      <div
+        className={twMerge(
+          "fixed inset-0 z-[999] bg-white flex flex-col p-6 transform transition-transform duration-500 ease-in-out",
+          isMenuOpen ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        {/* 상단 헤더 (로고 + 닫기버튼) */}
+        <div className="flex justify-between items-center mb-6">
+          <Image
+            src="/svg/uoslife_logo.svg"
+            alt="uoslife logo"
+            width={46}
+            height={16}
+          />
+          <button onClick={() => setIsMenuOpen(false)}>
+            <Image
+              src="/svg/close.svg"
+              alt="close menu"
+              width={24}
+              height={24}
+            />
+          </button>
+        </div>
+
+        {/* 네비게이션 메뉴 */}
+        <nav className="flex flex-col items-start text-body-18-b">
+          {Object.values(Route).map((route) => renderLink(route))}
+        </nav>
+
+        {/* 소셜 아이콘 */}
+        <div className="flex gap-4 mt-[36px]">
+          <Link href="https://instagram.com/uoslife_official" target="_blank">
+            <Image src="/svg/instagram.svg" alt="instagram" width={32} height={32} />
+          </Link>
+          <Link href="https://github.com/uoslife" target="_blank">
+            <Image src="/svg/github.svg" alt="github" width={32} height={32} />
+          </Link>
+          <Link href="http://pf.kakao.com/_gMEHK" target="_blank">
+            <Image src="/svg/kakao.svg" alt="kakao" width={32} height={32} />
+          </Link>
+        </div>
+
+        {/* 비회원 혹은 인증 내역을 얻기 전 */}
+        {status === undefined ||
+          (status === 'unauthenticated' && (
+            <div className="flex mt-[40px]">
+              <button
+                type="button"
+                onClick={() => signIn('keycloak')}
+                className="flex justify-center items-center px-5 py-[5px] rounded-[8px] border border-[#0F6EFB] bg-[#0F6EFB33] hover:bg-[#0F6EFB] hover:text-white text-[#0F6EFB]"
+              >
+                <p className="text-center text-[18px] font-bold whitespace-pre">
+                  Login
+                </p>
+              </button>
+            </div>
+          ))}
+        {/* 인증된 사용자의 경우 */}
+        {status === 'authenticated' && (
+          <div className="flex flex-row gap-[6px] mt-[40px]">
             <Text variant="body-18-b" color="grey-700">
               {session?.user?.name}
             </Text>

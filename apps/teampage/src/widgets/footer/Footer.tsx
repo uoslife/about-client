@@ -9,10 +9,10 @@ export function Footer() {
   const { trackEvent } = useAnalytics();
 
   return (
-    <div className="bg-grey-800 pb-[60px] pt-40 w-full mx-auto">
-      <div className="flex flex-row gap-4 max-w-pc justify-between items-end w-full mx-auto">
-        <div className="flex flex-col gap-4 items-start">
-          <div className="relative h-[45px] w-32">
+    <div className="bg-grey-800 pb-[60px] pt-40 w-full mx-auto max-md:py-[20px] max-md:px-[16px]">
+      <div className="flex flex-row gap-4 max-w-pc justify-between items-end w-full mx-auto max-md:flex-col max-md:items-start">
+        <div className="flex flex-col gap-4 items-start max-md:flex-row max-md:gap-2 max-md:items-center">
+          <div className="relative h-[45px] w-32 max-md:h-[22px] max-md:w-[35px]">
             <Image
               src={'/svg/uoslife_logo.svg'}
               alt="UOSLIFE Logo"
@@ -23,11 +23,11 @@ export function Footer() {
               }}
             />
           </div>
-          <Text variant="body-18-m" color="grey-300">
+          <Text variant="body-18-m" color="grey-300" className='max-md:text-[14px]'>
             UOSLIFE (시대생, 서울시립대 중앙 IT 동아리)
           </Text>
         </div>
-        <div className="flex gap-[34px] items-center">
+        <div className="flex gap-[34px] items-center max-md:gap-2">
           <Link
             href="mailto:support@uoslife.team"
             onClick={() => {
@@ -36,7 +36,7 @@ export function Footer() {
               });
             }}
           >
-            <Text variant="body-20-m" className="text-white">
+            <Text variant="body-20-m" className="text-white max-md:text-[14px]" >
               Team UOSLIFE E-Mail
             </Text>
           </Link>
@@ -47,12 +47,12 @@ export function Footer() {
             className="h-3"
           />
           <Link href="https://uoslife.notion.site/" target="_blank">
-            <Text variant="body-20-m" className="text-white">
+            <Text variant="body-20-m" className="text-white max-md:text-[14px]">
               Term of Service
             </Text>
           </Link>
         </div>
-        <div className="flex gap-5 items-center justify-center">
+        <div className="flex gap-5 items-center justify-center max-md:gap-3">
           <Link
             href="https://instagram.com/uoslife_official"
             target="_blank"
