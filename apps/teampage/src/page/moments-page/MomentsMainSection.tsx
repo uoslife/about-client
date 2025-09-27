@@ -99,7 +99,7 @@ function ArticleList() {
   if (articles.length === 0) return <ArticleListEmptyContainer />;
 
   return (
-    <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
+    <div className="grid grid-cols-2 gap-y-10 gap-x-6 max-w-pc w-full">
       {articles.map((content) => (
         <Card.A
           key={content.id}
