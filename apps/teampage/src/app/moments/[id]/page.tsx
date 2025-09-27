@@ -5,5 +5,5 @@ export default function MomentsPostPage({
 }: {
   params: { id: number };
 }) {
-  return <Post id={params.id} category="moments" />;
+  return <Post id={params.id} category="MOMENTS" />;
 }

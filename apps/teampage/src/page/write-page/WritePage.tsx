@@ -100,7 +100,6 @@ export default function WritePage() {
         const post = JSON.parse(savedPost);
         const processedContent = post.content?.replace(/\\n/g, '\n');
         setTitle(post.title || '');
-        setSpace(post.space);
         setContent(processedContent || '');
         setCategory(post.category || '');
         setSummary(post.summary || '');

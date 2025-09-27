@@ -5,10 +5,11 @@ import { useNonMemberId } from '@/entities/member-id/useNonmemberId';
 import { ErrorFallback } from '@/shared/component/ErrorFallback';
 import { Markdown } from '@/shared/component/markdown/Markdown';
 import { PostFooter } from './PostFooter';
-import { PostHeader, type PostType } from './PostHeader';
+import { PostHeader } from './PostHeader';
 import { PrevNext } from './PrevNext';
+import { SpaceType } from '@/shared/const/category';
 
-export function PostSection({ type, id }: { type: PostType; id: number }) {
+export function PostSection({ type, id }: { type: SpaceType; id: number }) {
   const { nonMemberId } = useNonMemberId();
   const { data: post } = useFindArticle(id, {
     nonMemberId: nonMemberId,
