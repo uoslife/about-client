@@ -60,6 +60,9 @@ function TopBar() {
             dispatch({ type: 'SET_KEYWORD', payload: '' });
           }}
           onChange={(e) => {
+            if (e.target.value === '') {
+              dispatch({ type: 'SET_KEYWORD', payload: '' });
+            }
             setKeyword(e.target.value);
           }}
           onKeyDown={(e) => {
