@@ -55,7 +55,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
             <Text
               variant="title-24-b"
               color="grey-900"
-              className="text-lg md:text-2xl"
+              className="text-base md:text-2xl"
             >
               {person.name}
             </Text>
@@ -64,7 +64,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
                 <Text
                   variant="body-16-m"
                   color="grey-700"
-                  className="text-sm md:text-base"
+                  className="text-xs md:text-base"
                 >
                   {person.generation || '-'}
                 </Text>
@@ -73,7 +73,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
                 <Text
                   variant="body-16-m"
                   color="grey-700"
-                  className="text-sm md:text-base"
+                  className="text-xs md:text-base"
                 >
                   {person.position || '-'}
                 </Text>
@@ -95,7 +95,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
             <Text
               variant="body-16-m"
               color="grey-700"
-              className="flex-1 text-sm md:text-base"
+              className="flex-1 text-xs md:text-base"
             >
               {person.major || '-'}
             </Text>
@@ -107,7 +107,7 @@ export default function PeopleCard({ person }: PeopleCardProps) {
             <Text
               variant="body-16-m"
               color="grey-700"
-              className="flex-1 text-sm md:text-base"
+              className="flex-1 text-xs md:text-base"
             >
               {person.career || '-'}
             </Text>
