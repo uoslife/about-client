@@ -37,7 +37,7 @@ export function Dropdown({
         <Text
           variant="body-18-m"
           color="grey-900"
-          className="text-center whitespace-nowrap"
+          className="text-center whitespace-nowrap text-sm md:text-lg"
         >
           {value || placeholder}
         </Text>
@@ -67,7 +67,7 @@ export function Dropdown({
                 <Text
                   variant="body-18-m"
                   color="grey-900"
-                  className="text-center whitespace-nowrap"
+                  className="text-center whitespace-nowrap text-sm md:text-lg"
                 >
                   {option}
                 </Text>

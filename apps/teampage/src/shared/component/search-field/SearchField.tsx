@@ -48,8 +48,8 @@ export function SearchField({
   };
 
   const inputSizeClasses = {
-    large: 'text-body-18-m',
-    small: 'text-body-16-m',
+    large: 'text-body-18-m text-sm md:text-lg',
+    small: 'text-body-16-m text-sm md:text-base',
   };
 
   const CloseIcon = (

@@ -27,7 +27,7 @@ export const Markdown = ({ content }: { content: string }) => {
         },
         h1: ({ children }) => (
           <Text
-            variant="title-36-b"
+            variant="title-48-b"
             color="grey-900"
             className="mb-4 md:mb-6 mt-6 md:mt-12 text-2xl md:text-4xl"
             as="h1"
