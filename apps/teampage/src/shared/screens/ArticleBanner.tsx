@@ -55,21 +55,11 @@ const WebContent = ({
   return (
     <>
       <Text
-        variant="title-36-b"
-        color="primary-gradiant-minified"
-        className="md:hidden"
-      >
-        {title}
-      </Text>
-      <Text
         variant="heading-72-b"
         color="primary-gradiant-minified"
         className="hidden md:block"
       >
         {title}
-      </Text>
-      <Text variant="body-16-m" color="white" className="md:hidden">
-        {description}
       </Text>
       <Text variant="title-24-b" color="white" className="hidden md:block">
         {description}
