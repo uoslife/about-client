@@ -110,7 +110,7 @@ function ArticleList() {
       {articles.map((content) => (
         <Card.A
           key={content.id}
-          content={content}
+          content={{ ...content, category: undefined }}
           link={`/moments/${content.id}`}
           showViewCount={false}
         />

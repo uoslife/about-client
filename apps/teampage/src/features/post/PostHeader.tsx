@@ -26,7 +26,7 @@ export const PostHeader = (props: PostHeaderProps) => {
   const { mutate: deleteArticle } = useDeleteArticle({
     mutation: {
       onSuccess: () => {
-        router.push(`/${type}`);
+        router.push(`/${type.toLocaleLowerCase()}`);
       },
       onError: () => {
         toast('삭제 중 오류가 발생했습니다.', 2000);
@@ -46,7 +46,9 @@ export const PostHeader = (props: PostHeaderProps) => {
           {post.title}
         </Text>
 
-        {post.category && <Tag color="white">{post.category}</Tag>}
+        {post.category && !(type === 'MOMENTS') && (
+          <Tag color="white">{post.category}</Tag>
+        )}
       </div>
 
       <div className="flex flex-col md:flex-row items-start md:justify-between w-full gap-3 md:gap-0">
