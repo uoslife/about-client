@@ -8,7 +8,6 @@ import { Dropdown } from '@/shared/component/dropdown';
 import { ArticleBanner } from '@/shared/screens/ArticleBanner';
 import { NoQueryResultFallback } from '@/shared/component/NoQueryResultFallback';
 import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
-import { isMobile } from '@/shared/utils/isMoblie';
 
 const sortGenerationWithNumber = (a: string, b: string) => {
   return Number(a.slice(0, -1)) - Number(b.slice(0, -1));
@@ -70,11 +69,7 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
     <main className="flex flex-col">
       <ArticleBanner
         title="People"
-        description={
-          isMobile()
-            ? `서로 다른 열정을 모아, 하나의 가능성을\n 만드는 시대생팀을 소개합니다.`
-            : `서로 다른 열정을 모아, 하나의 가능성을 만드는 시대생팀을 소개합니다.`
-        }
+        description="서로 다른 열정을 모아, 하나의 가능성을 만드는 시대생팀을 소개합니다."
       />
       <div className="flex items-center justify-center py-8 md:py-[100px] px-4 md:px-0">
         <div className="w-full max-w-[1120px] flex flex-col gap-6 md:gap-10 justify-center">
