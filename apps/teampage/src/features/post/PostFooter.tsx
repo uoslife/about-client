@@ -126,14 +126,14 @@ export const PostFooter = ({
           <Text
             variant="body-18-m"
             color={like ? 'white' : 'grey-700'}
-            className="font-medium text-sm md:text-lg"
+            className="text-sm md:text-lg"
           >
             좋아요
           </Text>
           <Text
             variant="title-24-b"
             color={like ? 'white' : 'grey-700'}
-            className="font-bold text-base md:text-2xl"
+            className="text-base md:text-2xl"
           >
             {optimisticLikeCount}
           </Text>
@@ -215,7 +215,7 @@ export const PostFooter = ({
               <Text
                 variant="body-20-m"
                 color="white"
-                className="font-medium text-sm md:text-lg"
+                className="text-sm md:text-lg"
               >
                 댓글 남기기
               </Text>

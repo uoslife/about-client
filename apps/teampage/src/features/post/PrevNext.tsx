@@ -35,7 +35,7 @@ const ArticleCard = ({
           <Text
             variant="title-24-b"
             color="grey-900"
-            className="group-hover:text-primary-ui transition-colors duration-200 leading-[1.5] text-base md:text-2xl"
+            className="group-hover:text-primary-ui transition-colors duration-200 text-base md:text-2xl"
           >
             {article.title}
           </Text>
