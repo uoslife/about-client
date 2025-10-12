@@ -1,9 +1,13 @@
 import type React from 'react';
 
 export type TextVariant =
+  | 'heading-220-b'
   | 'heading-100-b'
+  | 'heading-80-b'
+  | 'heading-76-b'
   | 'heading-72-b'
   | 'heading-60-b'
+  | 'title-60-b'
   | 'title-48-b'
   | 'title-40-b'
   | 'title-40-m'
@@ -55,9 +59,13 @@ interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
 }
 
 const variantToClassMap: Record<TextVariant, string> = {
+  'heading-220-b': 'text-[220px] leading-[1.1] font-bold',
   'heading-100-b': 'text-[100px] leading-[1.2] font-bold',
+  'heading-80-b': 'text-[80px] leading-[1.2] font-bold',
+  'heading-76-b': 'text-[76px] leading-[1.2] font-bold',
   'heading-72-b': 'text-[72px] leading-[1.2] font-bold',
   'heading-60-b': 'text-[60px] leading-[1.4] font-bold',
+  'title-60-b': 'text-[60px] leading-[1.4] font-bold',
   'title-48-b': 'text-[48px] leading-[1.4] font-bold',
   'title-40-b': 'text-[40px] leading-[1.4] font-bold',
   'title-40-m': 'text-[40px] leading-[1.4] font-semibold',
