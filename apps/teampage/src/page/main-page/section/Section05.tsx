@@ -41,26 +41,27 @@ export function Section05() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center gap-28 py-28"
+      className="flex flex-col items-center justify-center gap-28 py-28 max-md:pt-[60px] max-md:pb-7"
       ref={ref}
     >
       <div className="z-10 flex flex-col items-center text-center gap-8">
-        <div className="flex flex-col gap-2">
-          <Text as="h2" variant="title-28-m" color="primary-ui">
+        <div className="flex flex-col gap-2 max-md:w-[88%]">
+          <Text as="h2" variant="title-28-m" color="primary-ui" className='max-md:text-title-18-m'>
             Curriculum
           </Text>
-          <Text as="h2" variant="title-40-b" className="whitespace-pre-line">
+          <Text as="h2" variant="title-40-b" className="whitespace-normal-line max-md:text-title-24-b">
             {`정기 커리큘럼으로 함께 배우고 성장해요. 매 기수마다\n다양한 활동 속에서 IT 역량과 팀워크를 쌓을 수 있습니다.`}
           </Text>
         </div>
       </div>
-      <div className="relative w-full flex flex-col gap-9 items-center justify-center">
-        <div className="flex flex-row items-center justify-center gap-3">
+      <div className="relative w-full flex flex-col gap-9 items-center justify-center max-md:ml-[16px]">
+        <div className="flex flex-row items-center justify-center gap-3 ">
           {CATEGORY.map((cat) => (
             <TabButton
               key={cat}
               clicked={category === cat}
               onClick={() => handleTabClick(cat)}
+              className='max-md:px-[12px] max-md:py-[4px]'
             >
               {cat}
             </TabButton>
@@ -84,11 +85,11 @@ export function Section05() {
             ))}
           </div>
         </div>
-        <div className="flex flex-row w-full items-center justify-end gap-3 mr-60">
+        <div className="flex flex-row w-full items-center justify-end gap-3 mr-60 max-md:mr-4">
           <HoverScaleAnimation
             as="button"
             onClick={handlePrevClick}
-            className="w-14 h-14 rounded-full bg-grey-50 flex items-center justify-center disabled:opacity-30"
+            className="w-14 h-14 rounded-full bg-grey-50 flex items-center justify-center disabled:opacity-30 max-md:w-8 max-md:h-8"
             disabled={currentIndex === 0}
           >
             {() => (
@@ -104,7 +105,7 @@ export function Section05() {
           <HoverScaleAnimation
             as="button"
             onClick={handleNextClick}
-            className="w-14 h-14 rounded-full bg-grey-50 flex items-center justify-center disabled:opacity-30"
+            className="w-14 h-14 rounded-full bg-grey-50 flex items-center justify-center disabled:opacity-30 max-md:w-8 max-md:h-8"
             disabled={currentIndex === CURRICULUM_DATA.length - 1}
           >
             {() => (
@@ -133,8 +134,8 @@ function CurriculumCard({
   description: string;
 }) {
   return (
-    <div className="flex flex-col gap-9 w-[540px] flex-shrink-0">
-      <div className="relative w-[540px] h-[405px]">
+    <div className="flex flex-col gap-9 w-[540px] flex-shrink-0 max-md:w-[272px]">
+      <div className="relative w-[540px] h-[405px] max-md:w-[272px] max-md:h-[204px]">
         <Image
           src={imageUrl}
           alt={title}
@@ -142,12 +143,12 @@ function CurriculumCard({
           placeholder="blur"
           unoptimized
           blurDataURL={imageUrl}
-          className="rounded-[36px] object-cover"
+          className="rounded-[36px] object-cover max-md:rounded-[12px] max-md:w-[272px] max-md:min-h-[204px] max-md:aspect-[4/3]"
         />
       </div>
       <div className="flex flex-col gap-3">
-        <Text variant="title-28-b">{title}</Text>
-        <Text variant="body-18-m" color="grey-700">
+        <Text variant="title-28-b" className='max-md:text-title-18-b'>{title}</Text>
+        <Text variant="body-18-m" color="grey-700" className='max-md:text-body-14-m' >
           {description}
         </Text>
       </div>

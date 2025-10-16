@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export function Section04() {
   return (
-    <div className="flex flex-col items-center justify-center gap-[180px] my-40 max-md:my-7 max-md:p-[18px]">
+    <div className="flex flex-col items-center justify-center gap-[180px] my-40 max-md:my-7 max-md:p-[18px] max-md:gap-7">
       <Text as="h2" variant="heading-100-b" color="primary-gradiant" className='max-md:text-heading-48-b'>
         Challenge & Immersion
       </Text>
