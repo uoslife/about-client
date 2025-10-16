@@ -9,7 +9,7 @@ export function Footer() {
   const { trackEvent } = useAnalytics();
 
   return (
-    <div className="bg-grey-800 pb-[60px] pt-40 w-full mx-auto max-md:py-[20px] max-md:px-[16px]">
+    <div className="bg-grey-800 pb-[60px] px-[120px] pt-40 w-full mx-auto max-md:py-[20px] max-md:px-[16px]">
       <div className="flex flex-row gap-4 max-w-pc justify-between items-end w-full mx-auto max-md:flex-col max-md:items-start">
         <div className="flex flex-col gap-4 items-start max-md:flex-row max-md:gap-2 max-md:items-center">
           <div className="relative h-[45px] w-32 max-md:h-[22px] max-md:w-[35px]">

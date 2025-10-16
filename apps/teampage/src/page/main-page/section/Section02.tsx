@@ -81,7 +81,7 @@ function OurValueBox({
   content: string;
 }) {
   return (
-    <div className="relative flex flex-col items-start justify-start gap-1 p-8 w-[540px] rounded-[40px] max-md:w-full max-md:min-h-[219px] max-md:rounded-[20px]">
+    <div className="relative flex flex-col items-start justify-start gap-1 p-8 w-[540px] h-[360px] rounded-[40px] max-md:w-full max-md:min-h-[219px] max-md:rounded-[20px]">
       <Image
         src={imagePath}
         alt={''}
