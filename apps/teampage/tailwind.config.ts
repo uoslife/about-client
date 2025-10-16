@@ -33,11 +33,17 @@ const config: Config = {
         medium: ['Pretendard-Medium', 'sans-serif'],
       },
       fontSize: {
+        // heading
         'heading-220-b': ['220px', { lineHeight: '1', fontWeight: '700' }],
         'heading-100-b': ['100px', { lineHeight: '1.2', fontWeight: '700' }],
         'heading-80-b': ['80px', { lineHeight: '1.4', fontWeight: '700' }],
-        'heading-76-b': ['76px', { lineHeight: '1', fontWeight: '900' }], // TODO: temp 삭제 후, 디자인시스템 확정시 수정
+        'heading-76-b': ['76px', { lineHeight: '1', fontWeight: '700' }], 
         'heading-72-b': ['72px', { lineHeight: '1.2', fontWeight: '700' }],
+        'heading-60-b': ['60px', { lineHeight: '1.4', fontWeight: '700' }],
+        'heading-48-b': ['48px', { lineHeight: '1.4', fontWeight: '700' }],
+        'heading-32-b': ['32px', { lineHeight: '1.4', fontWeight: '700' }],
+        'heading-28-b': ['28px', { lineHeight: '1.4', fontWeight: '700' }],
+        // title
         'title-60-b': ['60px', { lineHeight: '1.4', fontWeight: '700' }],
         'title-48-b': ['48px', { lineHeight: '1.4', fontWeight: '700' }],
         'title-40-b': ['40px', { lineHeight: '1.4', fontWeight: '700' }],
@@ -47,6 +53,13 @@ const config: Config = {
         'title-28-m': ['28px', { lineHeight: '1.5', fontWeight: '500' }],
         'title-24-b': ['24px', { lineHeight: '1.5', fontWeight: '700' }],
         'title-24-m': ['24px', { lineHeight: '1.5', fontWeight: '500' }],
+        'title-20-b': ['20px', { lineHeight: '1.6', fontWeight: '700' }],
+        'title-20-m': ['20px', { lineHeight: '1.6', fontWeight: '500' }],
+        'title-18-b': ['18px', { lineHeight: '1.6', fontWeight: '700' }],
+        'title-18-m': ['18px', { lineHeight: '1.6', fontWeight: '500' }],
+        'title-16-b': ['16px', { lineHeight: '1.6', fontWeight: '700' }],
+        'title-16-m': ['16px', { lineHeight: '1.6', fontWeight: '500' }],
+        // body
         'body-20-b': ['20px', { lineHeight: '1.6', fontWeight: '700' }],
         'body-20-m': ['20px', { lineHeight: '1.6', fontWeight: '500' }],
         'body-18-b': ['18px', { lineHeight: '1.6', fontWeight: '700' }],
@@ -55,6 +68,9 @@ const config: Config = {
         'body-16-m': ['16px', { lineHeight: '1.6', fontWeight: '500' }],
         'body-14-sb': ['14px', { lineHeight: '1.6', fontWeight: '600' }],
         'body-14-m': ['14px', { lineHeight: '1.6', fontWeight: '500' }],
+        'body-14-b': ['14px', { lineHeight: '1.6', fontWeight: '700' }],
+        'body-12-m': ['12px', { lineHeight: '1.5', fontWeight: '500' }],
+        'body-12-b': ['12px', { lineHeight: '1.5', fontWeight: '700' }],
       },
       keyframes: {
         shimmer: {

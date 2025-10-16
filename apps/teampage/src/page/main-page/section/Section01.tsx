@@ -2,24 +2,22 @@
 import { Text } from '@shared/component/Text';
 import { Divider } from '@/shared/component/Divider';
 import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
-import { useDevice } from '@/shared/provider/DeviceProvider';
 
 export function Section01() {
-  const { isMobile } = useDevice()
   useSendViewAmplitudeEvent('VIEW_TAB', {
     tab_name: 'home',
   });
   return (
     <div
       id="section01"
-      className="scroll-m-40 flex flex-col items-center justify-center gap-20 my-52 max-md:my-[40px]"
+      className="scroll-m-40 flex flex-col items-center justify-center gap-20 px-[180px] my-52 max-md:my-[40px] max-md:px-[16px]"
     >
       <div className="flex flex-col items-center text-center gap-6">
-        <Text variant={isMobile ? "heading-76-b" : "heading-220-b"} color="primary-gradiant" className="max-md:whitespace-pre-wrap">
+        <Text variant={"heading-220-b"} color="primary-gradiant" className="max-md:whitespace-pre-wrap max-md:text-heading-76-b">
           {`TEAM\nUOSLIFE`}
         </Text>
         <Text
-          variant="title-60-b"
+          variant="title-48-b"
           className="whitespace-pre-line text-gray-800 max-md:text-[18px]"
         >
           {'시대생 팀은 IT 기술을 통해\n편리하고 즐거운 학교생활을 만듭니다.'}
@@ -28,21 +26,21 @@ export function Section01() {
       <div className="flex flex-col items-center gap-20 max-w-pc w-full">
         <div className="flex flex-col items-center text-center gap-4">
           <div className="text-4xl font-bold">
-            <Text variant="title-40-b" color="primary-ui">
+            <Text variant="title-28-b" color="primary-ui" className='max-md:text-title-24-m'>
               About Our Story
             </Text>
           </div>
-          <div className="text-gray-500 text-xl max-md:text-[14px]">
+          <div className="text-xl max-md:text-[14px]">
             <Text variant="title-28-b" className="text-grey-600 max-md:text-[14px]">
-              <span>시대생은 </span>
+              <span className='text-gray-500'>시대생은 </span>
               <span className="text-grey-900">서울시립대학교의 </span>
               <span className="font-bold text-gray-900">중앙 IT동아리</span>
-              <span>입니다. 시대생 팀은</span>
+              <span className='text-gray-500'>입니다. 시대생 팀은</span>
               <br />
               <span className="text-gray-800">
                 시대생 앱을 포함한 다양한 IT 서비스
               </span>
-              <span>를 만들고 운영하고 있습니다.</span>
+              <span className='text-gray-500'>를 만들고 운영하고 있습니다.</span>
             </Text>
           </div>
         </div>

@@ -39,7 +39,7 @@ export function TabButton({
       className={`flex items-center h-11 justify-center px-[26px] py-0 rounded-[22px] transition-colors ${stateClass} ${className || ''}`}
       {...props}
     >
-      <Text variant="body-20-m" color={currentStyle.textColor}>
+      <Text variant="body-20-m" color={currentStyle.textColor} className='max-md:text-body-14-m'>
         {children}
       </Text>
     </button>

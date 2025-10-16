@@ -10,7 +10,7 @@ export function Section02() {
   });
   return (
     <div
-      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28"
+      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28 px-[180px] max-md:gap-8 max-md:gap-15 max-md:px-[16px]"
       ref={ref}
     >
       <Image
@@ -20,12 +20,12 @@ export function Section02() {
         className="absolute top-0 left-0"
       />
       <div className="z-10 flex flex-col items-center text-center gap-4">
-        <Text as="h2" variant="title-40-b" color="white">
+        <Text as="h2" variant="title-40-b" color="white" className='max-md:text-title-18-b'>
           Our Values
         </Text>
         <Text
           variant="title-28-b"
-          className="whitespace-pre-line text-5xl text-center"
+          className="whitespace-pre-line text-5xl text-center max-md:text-title-24-b max-md:whitespace-break-spaces max-md:w-[85%]"
           color="white"
         >
           {
@@ -33,8 +33,8 @@ export function Section02() {
           }
         </Text>
       </div>
-      <div className="z-10 flex flex-col items-center gap-20">
-        <div className="grid grid-cols-2 w-full gap-6">
+      <div className="z-10 flex flex-col items-center gap-20 w-full">
+        <div className="grid grid-cols-2 w-full gap-6 max-md:grid-cols-1 max-md:gap-[16px] max-md:p-[19px]">
           {STORY_BOX_DATA.map((data) => (
             <OurValueBox
               key={data.title}
@@ -81,17 +81,17 @@ function OurValueBox({
   content: string;
 }) {
   return (
-    <div className="relative flex flex-col items-start justify-start gap-1 p-8 w-[540px] h-[360px] rounded-[40px]">
+    <div className="relative flex flex-col items-start justify-start gap-1 p-8 w-[540px] h-[360px] rounded-[40px] max-md:w-full max-md:min-h-[219px] max-md:rounded-[20px]">
       <Image
         src={imagePath}
         alt={''}
         fill
-        className="absolute top-0 left-0 -z-10 rounded-[40px]"
+        className="absolute top-0 left-0 -z-10 rounded-[40px] max-md:aspect-ratio-[328/219] max-md:rounded-[20px]"
       />
-      <Text variant="title-40-b" color="white">
+      <Text variant="title-40-b" color="white" className='max-md:text-title-20-b'>
         {title}
       </Text>
-      <Image src="/svg/add.svg" alt="add icon" width={44} height={44} />
+      <Image src="/svg/add.svg" alt="add icon" width={44} height={44} className='max-md:w-[24px] max-md:h-[24px]'/>
     </div>
   );
 }

@@ -17,14 +17,14 @@ export function Section03() {
     >
       <div className="flex flex-col items-center text-center gap-4">
         <div className="text-4xl font-bold">
-          <Text variant="title-28-b" color="grey-500">
+          <Text variant="title-28-b" color="grey-500" className='max-md:text-title-18-b'>
             How We Make It Real
           </Text>
         </div>
         <div className="text-gray-500 text-xl">
-          <Text as="h2" variant="title-60-b">
+          <Text as="h2" variant="title-60-b" className='max-md:text-title-24-b'>
             <span>시대생은 </span>
-            <Text as="span" variant="title-60-b" color="primary-gradiant">
+            <Text as="span" variant="title-60-b" color="primary-gradiant" className='max-md:text-title-24-b'>
               PM · 개발 · 디자인 · 마케팅{' '}
             </Text>
             <span>챕터로 조직되어</span>
@@ -35,12 +35,12 @@ export function Section03() {
       </div>
       <div className="relative flex flex-row justify-between gap-40 pb-[420px]">
         <div className="flex flex-col gap-4 mt-[54px]">
-          <Text variant="title-28-b" color="primary-ui">
+          <Text variant="title-28-b" color="primary-ui" className='max-md:text-title-16-b'>
             시간표 · 공지사항
           </Text>
           <Text
             variant="title-48-b"
-            className="whitespace-pre-line"
+            className="whitespace-pre-line max-md:text-title-20-b"
           >{`학교 생활에 꼭\n필요한\n유틸리티부터`}</Text>
         </div>
         <div className="flex flex-row gap-4">
