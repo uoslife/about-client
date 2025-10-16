@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Section01 } from './section/Section01';
 import { Section02 } from './section/Section02';
-import { Section03 } from './section/Section03';
+// import { Section03 } from './section/Section03';
 import { Section04 } from './section/Section04';
 import { Section05 } from './section/Section05';
 import { Section06 } from './section/Section06';
@@ -18,10 +18,10 @@ export default async function MainPage() {
         <Suspense>
           <Section01 />
           <Section02 />
+          {/* <Section03 /> */}
+          <Section04 />
           {/* TODO: 디자인 확정에 따른 모바일 적용 및 div 분리 라인 삭제 */}
             <div className="hidden md:block">
-              <Section03 />
-              <Section04 />
               <Section05 />
               <Section06 />
               <Section07 />
