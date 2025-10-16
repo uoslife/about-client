@@ -10,7 +10,7 @@ export function Section02() {
   });
   return (
     <div
-      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28"
+      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28 max-md:gap-8 max-md:gap-15"
       ref={ref}
     >
       <Image
@@ -20,12 +20,12 @@ export function Section02() {
         className="absolute top-0 left-0"
       />
       <div className="z-10 flex flex-col items-center text-center gap-4">
-        <Text as="h2" variant="title-40-b" color="white">
+        <Text as="h2" variant="title-40-b" color="white" className='max-md:text-title-18-b'>
           Our Values
         </Text>
         <Text
           variant="title-28-b"
-          className="whitespace-pre-line text-5xl text-center"
+          className="whitespace-pre-line text-5xl text-center max-md:text-title-24-b"
           color="white"
         >
           {
@@ -33,8 +33,8 @@ export function Section02() {
           }
         </Text>
       </div>
-      <div className="z-10 flex flex-col items-center gap-20">
-        <div className="grid grid-cols-2 w-full gap-6">
+      <div className="z-10 flex flex-col items-center gap-20 w-full">
+        <div className="grid grid-cols-2 w-full gap-6 max-md:grid-cols-1 max-md:gap-[16px] max-md:p-[19px]">
           {STORY_BOX_DATA.map((data) => (
             <OurValueBox
               key={data.title}
@@ -81,7 +81,7 @@ function OurValueBox({
   content: string;
 }) {
   return (
-    <div className="relative flex flex-col items-start justify-start gap-1 p-8 w-[540px] h-[360px] rounded-[40px]">
+    <div className="relative flex flex-col items-start justify-start gap-1 p-8 w-[540px] h-[360px] rounded-[40px] max-md:w-full max-md:h-auto max-md:min-h-[219px]">
       <Image
         src={imagePath}
         alt={''}

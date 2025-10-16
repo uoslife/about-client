@@ -28,7 +28,7 @@ export function Section01() {
       <div className="flex flex-col items-center gap-20 max-w-pc w-full">
         <div className="flex flex-col items-center text-center gap-4">
           <div className="text-4xl font-bold">
-            <Text variant="title-40-b" color="primary-ui">
+            <Text variant="title-40-b" color="primary-ui" className='max-md:text-title-24-m'>
               About Our Story
             </Text>
           </div>

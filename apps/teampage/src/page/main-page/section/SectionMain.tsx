@@ -51,7 +51,7 @@ export async function SectionMain() {
                   color="white"
                   className="text-center whitespace-pre-line max-md:text-[33px] max-md:whitespace-normal"
                 >
-                  {'시대생,\n모든 시대인을 — 연결하다'}
+                  {'시대생, 모든 시대인을\n— 연결하다'}
                 </Text>
                 <Text as="h2" variant="title-28-m" color="grey-100" className="max-md:text-[12px] max-md:leading-[16px] max-md:whitespace-pre-line"> 
                   {'UOSLIFE —\n Connecting Everyone at UOS'}
