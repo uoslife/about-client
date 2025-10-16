@@ -19,12 +19,12 @@ export function Section07() {
     >
       <div className="flex flex-col items-center text-center gap-9">
         <div className="gap-4">
-          <Text variant="title-24-b" color="primary-ui">
+          <Text variant="title-24-b" color="primary-ui" className='max-md:text-title-18-b'>
             Insights & Tech
           </Text>
-          <Text variant="heading-72-b">시대생이 함께 쌓아가는 기술 이야기</Text>
+          <Text variant="heading-72-b" className='max-md:text-title-24-b'>시대생이 함께 쌓아가는 기술 이야기</Text>
         </div>
-        <Text variant="title-24-m" color="grey-700">
+        <Text variant="title-24-m" color="grey-700" className='max-md:text-title-14-m'>
           PM · 개발 · 디자인 · 마케팅 각 챕터의 시선에서 풀어낸 실제 프로젝트
           경험과 기술 인사이트를 만나보세요.
         </Text>
@@ -34,7 +34,7 @@ export function Section07() {
         href="/tech"
         className="flex flex-row gap-3 pl-4 pr-4 py-2 rounded-xl bg-primary-lighter-alt"
       >
-        <Text variant="body-20-m" color="primary-ui">
+        <Text variant="body-20-m" color="primary-ui" className='max-md:text-body-14-m'>
           전체 보러 가기
         </Text>
         <Image
@@ -77,7 +77,7 @@ function TechArticleList() {
     );
 
   return (
-    <div className="grid grid-cols-2 gap-8 max-w-pc w-full">
+    <div className="grid grid-cols-2 gap-8 max-w-pc w-full max-md:grid-cols-1 max-md:justify-items-center">
       {techArticleContents
         .map((c) =>
           !c.thumbnailUrl ? { ...c, thumbnailUrl: '/svg/roomae_03.svg' } : c,

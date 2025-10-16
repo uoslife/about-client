@@ -32,14 +32,14 @@ export function CardA({
       >
         {(isHovered) => (
           <>
-            <div className="h-[324px] flex">
+            <div className="h-[324px] flex max-md:h-fit">
               {thumbnailUrl && (
                 <Image
                   src={thumbnailUrl}
                   alt={title}
                   width={768}
                   height={324}
-                  className="object-cover rounded-t-3xl"
+                  className="object-cover rounded-t-3xl max-md:w-[328px] max-md:h-[197px]"
                 />
               )}
             </div>
@@ -48,7 +48,7 @@ export function CardA({
                 {CategoryKorean[category]}
               </Tag>
             )}
-            <div className="bg-grey-50 box-border flex flex-col rounded-b-3xl h-[240px] p-8 items-start justify-between w-full">
+            <div className="bg-grey-50 box-border flex flex-col rounded-b-3xl h-[240px] p-8 items-start justify-between w-full max-md:w-[328px] max-md:gap-3 max-md:h-fit">
               <div className="flex flex-col gap-2 w-full">
                 <Text
                   variant="title-28-b"
