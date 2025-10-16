@@ -23,9 +23,9 @@ export async function SectionMain() {
           />
         </div>
         <div className="absolute inset-0 main_bg"></div>
-        <div className="sm:flex sm:flex-end absolute xl:h-[85vh] 2xl:h-[83vh] h-[70vh] bottom-0 flex flex-col items-center justify-between max-md:justify-end">
-          <div className="flex flex-col items-center justify-center">
-            <div className="px-10 max-w-[1280px] mx-auto flex flex-col w-full gap-6 items-center">
+        <div className="sm:flex sm:flex-end absolute xl:h-[85vh] 2xl:h-[83vh] w-full h-full bottom-0 flex flex-col items-center justify-between max-md:justify-end">
+          <div className="flex flex-col items-center justify-center w-full h-full">
+            <div className="absolute top-1 px-10 max-w-[1280px] mx-auto flex flex-col w-full gap-6 items-center">
               <div className="flex flex-col w-full gap-6">
                 <div className="hidden md:flex ml-32 py-[10px] font-['Pretendard:Medium',_sans-serif] px-7 border-2 border-[rgba(255,255,255,0.5)] rounded-[30px] self-start hover:scale-105 transition-transform duration-200">
                   <p className="text-[28px] text-white">UX/UI Design</p>
@@ -43,7 +43,7 @@ export async function SectionMain() {
                 </div>
               </div>
             </div>
-            <section className="z-10 gap-4 flex flex-col items-center mb-6 text-center">
+            <section className="h-full z-10 gap-4 flex flex-col items-center justify-end text-center">
               <div className="flex flex-col gap-4 max-md:gap-6">
                 <Text
                   variant="heading-100-b"

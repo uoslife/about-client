@@ -4,12 +4,12 @@ import Image from 'next/image';
 
 export function Section04() {
   return (
-    <div className="flex flex-col items-center justify-center gap-[180px] my-40 max-md:my-7 max-md:p-[18px] max-md:gap-7">
+    <div className="flex flex-col items-center justify-center gap-[80px] p-[180px] my-40 max-md:my-7 max-md:py-[18px] max-md:gap-7 max-md:px-[16px]">
       <Text as="h2" variant="heading-100-b" color="primary-gradiant" className='max-md:text-heading-48-b'>
         Challenge & Immersion
       </Text>
       <div className="flex flex-col items-start gap-14 max-w-pc w-full">
-        <Text variant="heading-80-b" className="whitespace-pre-line max-md:text-heading-28-b">
+        <Text variant="heading-60-b" className="whitespace-pre-line max-md:text-heading-28-b">
           {`대학생활에서 만나는\n가장 깊은 몰입 —`}
         </Text>
         <Image
@@ -17,7 +17,7 @@ export function Section04() {
           alt="section04 background"
           height={1440}
           width={720}
-          className="rounded-[60px] w-full max-md:h-[328px] max-md:w-[328px] max-md:rounded-[20px] max-md:object-cover max-md:object-center"
+          className="rounded-[60px] w-full max-md:h-[328px] max-md:w-full max-md:aspect-square max-md:rounded-[20px] max-md:object-cover max-md:object-center"
         />
         <Text variant="title-28-b" color="grey-600" className='max-md:text-title-18-b'>
           <span>시대생은 단순한 동아리 활동을 넘어, </span>

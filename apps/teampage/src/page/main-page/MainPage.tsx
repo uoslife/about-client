@@ -23,11 +23,8 @@ export default async function MainPage() {
           <Section05 />
           <Section06 />
           <Section07 />
-          {/* TODO: 디자인 확정에 따른 모바일 적용 및 div 분리 라인 삭제 */}
-            <div className="hidden md:block">
-              <Section08 />
-              <Section09 />
-            </div>
+          <Section08 />
+          <Section09 />
         </Suspense>
       </main>
     </div>

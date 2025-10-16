@@ -41,7 +41,7 @@ export function Section05() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center gap-28 py-28 max-md:pt-[60px] max-md:pb-7"
+      className="flex flex-col items-center justify-center gap-28 py-28 max-md:pt-[60px] max-md:pb-7 max-md:gap-7"
       ref={ref}
     >
       <div className="z-10 flex flex-col items-center text-center gap-8">
@@ -49,19 +49,19 @@ export function Section05() {
           <Text as="h2" variant="title-28-m" color="primary-ui" className='max-md:text-title-18-m'>
             Curriculum
           </Text>
-          <Text as="h2" variant="title-40-b" className="whitespace-normal-line max-md:text-title-24-b">
+          <Text as="h2" variant="title-40-b" className="whitespace-break-spaces max-md:text-title-24-b max-md:whitespace-normal">
             {`정기 커리큘럼으로 함께 배우고 성장해요. 매 기수마다\n다양한 활동 속에서 IT 역량과 팀워크를 쌓을 수 있습니다.`}
           </Text>
         </div>
       </div>
-      <div className="relative w-full flex flex-col gap-9 items-center justify-center max-md:ml-[16px]">
+      <div className="relative w-full flex flex-col gap-9 items-center justify-center">
         <div className="flex flex-row items-center justify-center gap-3 ">
           {CATEGORY.map((cat) => (
             <TabButton
               key={cat}
               clicked={category === cat}
               onClick={() => handleTabClick(cat)}
-              className='max-md:px-[12px] max-md:py-[4px]'
+              className='max-md:px-[12px] max-md:py-[6px] max-md:h-fit'
             >
               {cat}
             </TabButton>
@@ -70,7 +70,7 @@ export function Section05() {
         <div className="w-[100vw] ml-auto overflow-x-scroll">
           <div
             ref={scrollRef}
-            className="flex flex-row gap-9 overflow-x-scroll snap-x snap-mandatory px-[calc(50vw-270px)] no-scrollbar"
+            className="flex flex-row gap-9 overflow-x-scroll snap-x snap-mandatory px-[calc(50vw-270px)] no-scrollbar max-md:pl-[16px]"
           >
             {CURRICULUM_DATA.map((data, index) => (
               <div

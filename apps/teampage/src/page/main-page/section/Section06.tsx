@@ -4,7 +4,7 @@ import Image from 'next/image';
 
 export function Section06() {
   return (
-    <div className="relative flex flex-col items-center py-[60px] h-[450px max-md:max-h-[140px]">
+    <div className="relative flex flex-col items-center py-[60px] h-[450px] max-md:max-h-[150px] max-md:py-4">
       <Image
         src="/img/section06_bg.webp"
         alt="section06 background"

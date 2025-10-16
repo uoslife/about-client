@@ -19,7 +19,7 @@ export function Section08() {
 
   return (
     <div
-      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28"
+      className="relative flex flex-col items-center justify-center bg-black gap-28 py-28 max-md:px-0 max-md:py-[24px] max-md:gap-[28px]"
       ref={ref}
     >
       <Image
@@ -28,18 +28,18 @@ export function Section08() {
         fill
         className="absolute top-0 left-0"
       />
-      <div className="z-10 flex flex-col gap-8 w-full max-w-pc">
+      <div className="z-10 flex flex-col gap-8 w-full px-[180px] max-w-pc max-md:px-[18px]">
         <div className="flex flex-col gap-2">
-          <Text variant="title-28-m" color="white">
+          <Text variant="title-28-m" color="white" className='max-md:text-title-18-b'>
             Interview
           </Text>
-          <Text as="h2" variant="heading-72-b" color="white">
+          <Text as="h2" variant="heading-72-b" color="white" className='max-md:whitespace-pre-line max-md:text-title-24-b'>
             시대생 멤버들이 전하는 경험과 성장
           </Text>
         </div>
         <Text
           variant="title-24-m"
-          className="whitespace-pre-line"
+          className="whitespace-pre-line max-md:text-body-14-m"
           color="grey-100"
         >
           {
@@ -85,6 +85,7 @@ function InterviewCarousel() {
             clicked={category === cat}
             onClick={() => handleTabClick(cat)}
             color="dark"
+            className='max-md:text-body-14-b max-md:px-4 max-md:py-1 max-md:h-fit'
           >
             {cat}
           </TabButton>
@@ -93,7 +94,7 @@ function InterviewCarousel() {
       <div className="w-[100vw] ml-auto overflow-x-scroll">
         <div
           ref={scrollRef}
-          className="flex flex-row gap-9 overflow-x-scroll snap-x snap-mandatory px-[calc(50vw-225px)] no-scrollbar"
+          className="flex flex-row gap-9 overflow-x-scroll snap-x snap-mandatory px-[calc(50vw-225px)] no-scrollbar max-md:gap-3 max-md:pl-[18px]"
         >
           {INTERVIEW_DATA.map((data, index) => (
             <div
@@ -108,11 +109,11 @@ function InterviewCarousel() {
           ))}
         </div>
       </div>
-      <div className="flex flex-row w-full items-center justify-end gap-3 mr-60">
+      <div className="flex flex-row w-full items-center justify-end gap-3 mr-60 max-md:w-full max-md:mr-9">
         <HoverScaleAnimation
           as="button"
           onClick={handlePrevClick}
-          className="w-14 h-14 rounded-full bg-grey-800 flex items-center justify-center disabled:opacity-30"
+          className="w-14 h-14 rounded-full bg-grey-800 flex items-center justify-center disabled:opacity-30 max-md:w-9 max-md:h-9"
           disabled={currentIndex === 0}
         >
           {() => (
@@ -128,7 +129,7 @@ function InterviewCarousel() {
         <HoverScaleAnimation
           as="button"
           onClick={handleNextClick}
-          className="w-14 h-14 rounded-full bg-grey-800 flex items-center justify-center disabled:opacity-30"
+          className="w-14 h-14 rounded-full bg-grey-800 flex items-center justify-center disabled:opacity-30 max-md:w-9 max-md:h-9"
           disabled={currentIndex === INTERVIEW_DATA.length - 1}
         >
           {() => (
@@ -159,31 +160,31 @@ function InterviewCard({
   description: string;
 }) {
   return (
-    <div className="p-9 bg-grey-900 rounded-3xl flex flex-col gap-8 w-[420px] h-[450px]">
+    <div className="p-9 bg-grey-900 rounded-3xl flex flex-col gap-8 w-[420px] h-[450px] max-md:w-[262px] max-md:h-[386px]">
       <div className="flex flex-row justify-between items-start">
         <Image
           src={imageUrl}
           alt={name}
           width={120}
           height={120}
-          className="rounded-full w-[120px] h-[120px] object-cover"
+          className="rounded-full w-[120px] h-[120px] object-cover max-md:w-[76px] max-md:h-[76px]"
         />
         <div className="rounded-[20px] bg-grey-800 py-2 px-4">
-          <Text variant="body-16-m" color="grey-100">
+          <Text variant="body-16-m" color="grey-100" className='max-md:text-body-12-m'>
             {category}
           </Text>
         </div>
       </div>
       <div className="flex flex-col gap-6">
-        <Text variant="body-18-m" color="grey-100">
+        <Text variant="body-18-m" color="grey-100" className='max-md:text-body-14-m'>
           {description}
         </Text>
         <Divider />
         <div className="flex flex-row items-center gap-2">
-          <Text variant="body-20-b" color="white">
+          <Text variant="body-20-b" color="white" className='max-md:text-body-14-b'>
             {name}
           </Text>
-          <Text variant="body-20-m" color="grey-400">
+          <Text variant="body-20-m" color="grey-400" className='max-md:text-body-14-m'>
             {position}
           </Text>
         </div>
