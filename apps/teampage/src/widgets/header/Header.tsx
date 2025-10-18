@@ -218,7 +218,7 @@ export default function Header() {
         )}
       >
         {/* 상단 헤더 (로고 + 닫기버튼) */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-6 mx-4">
           <Image
             src="/svg/uoslife_logo.svg"
             alt="uoslife logo"
@@ -236,8 +236,12 @@ export default function Header() {
         </div>
 
         {/* 네비게이션 메뉴 */}
-        <nav className="flex flex-col items-start text-body-18-b">
-          {Object.values(ROUTE).map((route) => renderLink(route))}
+        <nav className="flex flex-col items-start text-heading-28-b">
+          {Object.values(ROUTE).map((route) => (
+            <div onClick={handleCloseMenu} key={route.path}>
+              {renderLink(route)}
+            </div>
+          ))}
         </nav>
 
         {/* 소셜 아이콘 */}
