@@ -67,8 +67,8 @@ export default function Header() {
               className={twMerge(
                 'text-body-18-b whitespace-pre cursor-pointer transition-colors',
                 isActive
-                  ? 'text-[#0F6EFB]'
-                  : 'hover:text-[#4686ff] text-gray-800',
+                  ? 'text-primary-ui'
+                  : 'hover:text-primary-ui text-gray-800',
               )}
             >
               {route.name}
