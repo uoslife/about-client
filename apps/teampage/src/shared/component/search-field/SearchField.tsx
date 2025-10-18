@@ -44,12 +44,12 @@ export function SearchField({
 
   const sizeClasses = {
     large: 'h-[56px] px-6',
-    small: 'h-[48px] w-[300px] px-5',
+    small: 'h-[48px] w-[240px] sm:w-[300px] px-3 sm:px-5',
   };
 
   const inputSizeClasses = {
     large: 'text-body-18-m text-sm md:text-lg',
-    small: 'text-body-16-m text-sm md:text-base',
+    small: 'text-body-14-m sm:text-body-16-m text-sm md:text-base',
   };
 
   const CloseIcon = (
@@ -81,7 +81,7 @@ export function SearchField({
   return (
     <div
       className={`
-        flex items-center gap-3 bg-grey-50 rounded-full
+        flex items-center gap-2 sm:gap-3 bg-grey-50 rounded-full
         ${sizeClasses[size]}
         ${isFocused ? 'border border-grey-900' : 'border border-transparent'}
         ${className || ''}

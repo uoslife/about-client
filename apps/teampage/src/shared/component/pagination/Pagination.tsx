@@ -148,7 +148,7 @@ export function Pagination({
             type="button"
             key={number}
             onClick={() => onPageChange(number)}
-            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+            className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-colors ${
               currentPage === number ? 'bg-grey-900' : 'hover:bg-grey-100'
             }`}
           >

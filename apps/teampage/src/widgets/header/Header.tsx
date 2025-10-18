@@ -73,7 +73,7 @@ export default function Header() {
   return (
     <header
       className={twMerge(
-        'w-full h-[64px] sticky top-0 z-50 px-10 py-4',
+        'w-full h-[64px] sticky top-0 z-50 px-4 sm:px-10 py-4',
         'grid grid-cols-3',
         'items-center content-center',
         'justify-items-stretch',

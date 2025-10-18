@@ -37,11 +37,11 @@ export function WritingButton({
       <motion.div
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className={`flex items-center justify-center gap-2 px-5 py-3 rounded-full bg-grey-900 text-white ${className || ''}`}
+        className={`flex items-center justify-center gap-2 px-3 sm:px-5 py-3 rounded-full bg-grey-900 text-white ${className || ''}`}
         {...props}
       >
         <PlusIcon />
-        <Text variant="body-20-m" color="white">
+        <Text variant={{ initial: 'body-14-m', sm: 'body-20-m' }} color="white">
           글쓰기
         </Text>
       </motion.div>

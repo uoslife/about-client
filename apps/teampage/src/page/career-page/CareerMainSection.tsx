@@ -37,8 +37,8 @@ function TopBar() {
   const { trackEvent } = useAnalytics();
 
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex gap-4">
+    <div className="flex justify-between items-center w-full">
+      <div className="flex sm:flex-row flex-col-reverse gap-4 px-4">
         <div className="flex flex-row gap-2 items-center ">
           {CAREER_CATEGORIES.map((cat) => (
             <TabButton
@@ -92,7 +92,7 @@ function ArticleList() {
   if (articles.length === 0) return <ArticleListEmptyContainer />;
 
   return (
-    <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
+    <div className="px-4 grid grid-cols-1 gap-y-3 sm:gap-y-10 max-w-pc w-full">
       {articles.map((content) => (
         <Card.B
           key={content.id}
@@ -113,7 +113,7 @@ function CareerPagination() {
       totalPages={totalPages}
       currentPage={state.page}
       onPageChange={(page) => dispatch({ type: 'SET_PAGE', payload: page })}
-      className="my-10"
+      className="my-2 sm:my-10"
     />
   );
 }
