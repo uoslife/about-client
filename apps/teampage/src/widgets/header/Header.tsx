@@ -78,7 +78,7 @@ export default function Header() {
         <OurStoryMenu />
       </div>
     );
-  }, []);
+  }, [pathname, ROUTE.OUR_STORY.path]);
 
   return (
     <header
