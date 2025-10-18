@@ -148,10 +148,14 @@ export default function WritePage() {
     const isOverMaxLength = (value: string) =>
       value?.length > SUMMARY_MAX_LENGTH;
 
+    const isThumbnailFile = isEditMode
+      ? thumbnailPreview === null
+      : thumbnailFile === null;
+
     if (isEmpty(title) || isEmpty(content)) return true;
 
     if (isMoments) {
-      return thumbnailFile === null;
+      return isThumbnailFile;
     }
 
     if (isCareer) {
@@ -162,9 +166,19 @@ export default function WritePage() {
       isEmpty(category) ||
       isEmpty(summary) ||
       isOverMaxLength(summary) ||
-      thumbnailFile === null
+      isThumbnailFile
     );
-  }, [title, summary, content, category, thumbnailFile, isCareer, isMoments]);
+  }, [
+    title,
+    summary,
+    content,
+    category,
+    isEditMode,
+    thumbnailPreview,
+    thumbnailFile,
+    isCareer,
+    isMoments,
+  ]);
 
   const handleFileSelect = (file: File) => {
     if (file?.type.startsWith('image/')) {
