@@ -26,13 +26,13 @@ export function CardA({
   } = content;
 
   return (
-    <Link href={link} className='w-full'>
+    <Link href={link} className="w-full">
       <HoverScaleAnimation
         className={`relative flex flex-col rounded-3xl max-w-screen-lg w-full cursor-pointer ${className || ''}`}
       >
         {(isHovered) => (
           <>
-            <div className="h-[324px] w-full flex max-md:h-fit">
+            <div className="h-[197px] sm:h-[324px] w-full flex max-md:h-fit">
               {thumbnailUrl && (
                 <Image
                   src={thumbnailUrl}
@@ -48,10 +48,10 @@ export function CardA({
                 {CategoryKorean[category]}
               </Tag>
             )}
-            <div className="bg-grey-50 box-border flex flex-col rounded-b-3xl h-[240px] p-8 items-start justify-between w-full max-md:w-full max-md:gap-3 max-md:h-fit">
+            <div className="bg-grey-50 box-border flex flex-col rounded-b-3xl h-[240px] py-4 px-5 sm:p-8 items-start justify-between w-full max-md:w-full max-md:gap-3 max-md:h-fit">
               <div className="flex flex-col gap-2 w-full">
                 <Text
-                  variant="title-28-b"
+                  variant={{ initial: 'title-18-b', sm: 'title-28-b' }}
                   color={isHovered ? 'primary-gradiant' : 'grey-900'}
                   className="line-clamp-2 overflow-ellipsis text-grey-900 w-full max-md:text-title-16-b"
                 >
@@ -67,7 +67,7 @@ export function CardA({
               </div>
               <div className="flex gap-3 items-center justify-start relative">
                 <Text
-                  variant="body-16-b"
+                  variant={{ initial: 'body-12-b', sm: 'body-16-b' }}
                   color="grey-700"
                   className="whitespace-pre max-md:text-body-12-b"
                 >
@@ -79,7 +79,7 @@ export function CardA({
                   className="h-3 w-px"
                 />
                 <Text
-                  variant="body-16-m"
+                  variant={{ initial: 'body-12-m', sm: 'body-16-m' }}
                   color="grey-600"
                   className="whitespace-pre max-md:text-body-12-m"
                 >

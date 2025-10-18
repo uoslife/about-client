@@ -38,7 +38,7 @@ function TopBar() {
   const { trackEvent } = useAnalytics();
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="px-4 sm:px-auto flex gap-4 sm:gap-0 sm:justify-between sm:items-center w-full flex-col-reverse sm:flex-row ">
       <div className="flex gap-4">
         <div className="flex flex-row gap-2 items-center ">
           {TECH_CATEGORIES.map((cat) => (
@@ -51,6 +51,8 @@ function TopBar() {
             </TabButton>
           ))}
         </div>
+      </div>
+      <div className="flex flex-row items-center justify-between">
         <SearchField
           size="small"
           placeholder="제목을 입력해주세요"
@@ -69,7 +71,6 @@ function TopBar() {
             if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
               dispatch({ type: 'SET_KEYWORD', payload: keyword });
               dispatch({ type: 'SET_CATEGORY', payload: 'ALL' });
-
               e.currentTarget.blur();
               trackEvent('SEARCH_KEYWORD', {
                 tab_name: 'tech',
@@ -78,64 +79,68 @@ function TopBar() {
             }
           }}
         />
-      </div>
-      <div className="group relative">
-        <div className="flex items-center gap-1.5 py-2 px-5 cursor-default">
-          <Text variant="body-18-m" color="grey-900">
-            {SortKorean[state.sort]}
-          </Text>
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <title>Chevron Right</title>
-            <path
-              d="M4 6L8 10L12 6"
-              stroke="#A2A2AE"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
-        <div className="z-10 hidden group-hover:block absolute top-full bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl left-1/2 -translate-x-1/2 w-full px-2 shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)]">
-          <button type="button" className="w-full group/career">
-            <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
-              <Text
-                variant="body-18-m"
-                className="group-hover/career:text-primary-ui"
-                onClick={() => {
-                  dispatch({ type: 'SET_SORT', payload: 'LATEST' });
-                  trackEvent('CLICK_FILTER', {
-                    tab_name: 'tech',
-                    filter_name: '최신순',
-                  });
-                }}
-              >
-                {SortKorean.LATEST}
-              </Text>
-            </div>
-          </button>
-          <button type="button" className="w-full group/career">
-            <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
-              <Text
-                variant="body-18-m"
-                className="group-hover/career:text-primary-ui"
-                onClick={() => {
-                  dispatch({ type: 'SET_SORT', payload: 'POPULAR' });
-                  trackEvent('CLICK_FILTER', {
-                    tab_name: 'tech',
-                    filter_name: '인기순',
-                  });
-                }}
-              >
-                {SortKorean.POPULAR}
-              </Text>
-            </div>
-          </button>
+        <div className="group relative">
+          <div className="flex items-center gap-1.5 py-2 sm:px-5 cursor-default">
+            <Text
+              variant={{ initial: 'body-14-m', sm: 'body-18-m' }}
+              color="grey-900"
+            >
+              {SortKorean[state.sort]}
+            </Text>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <title>Chevron Right</title>
+              <path
+                d="M4 6L8 10L12 6"
+                stroke="#A2A2AE"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+
+          <div className="z-10 hidden group-hover:block absolute top-full bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl left-1/2 -translate-x-1/2 w-full px-2 shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)]">
+            <button type="button" className="w-full group/career">
+              <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center sm:px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
+                <Text
+                  variant={{ initial: 'body-14-m', sm: 'body-18-m' }}
+                  className="group-hover/career:text-primary-ui"
+                  onClick={() => {
+                    dispatch({ type: 'SET_SORT', payload: 'LATEST' });
+                    trackEvent('CLICK_FILTER', {
+                      tab_name: 'tech',
+                      filter_name: '최신순',
+                    });
+                  }}
+                >
+                  {SortKorean.LATEST}
+                </Text>
+              </div>
+            </button>
+            <button type="button" className="w-full group/career">
+              <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center sm:px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
+                <Text
+                  variant={{ initial: 'body-14-m', sm: 'body-18-m' }}
+                  className="group-hover/career:text-primary-ui"
+                  onClick={() => {
+                    dispatch({ type: 'SET_SORT', payload: 'POPULAR' });
+                    trackEvent('CLICK_FILTER', {
+                      tab_name: 'tech',
+                      filter_name: '인기순',
+                    });
+                  }}
+                >
+                  {SortKorean.POPULAR}
+                </Text>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -151,7 +156,7 @@ function ArticleList() {
   if (articles.length === 0) return <ArticleListEmptyContainer />;
 
   return (
-    <div className="grid grid-cols-1 gap-y-10 max-w-pc w-full">
+    <div className="px-4 sm:px-auto grid grid-cols-1 gap-y-3 sm:gap-y-10 max-w-pc w-full">
       {articles.map((content) => (
         <Card.B
           key={content.id}
@@ -171,7 +176,7 @@ function TechPagination() {
       totalPages={totalPages}
       currentPage={state.page}
       onPageChange={(page) => dispatch({ type: 'SET_PAGE', payload: page })}
-      className="my-10"
+      className="my-2 sm:my-10"
     />
   );
 }

@@ -11,11 +11,11 @@ export function Tag({ children, color, className, ...props }: TagProps) {
 
   return (
     <div
-      className={`flex items-center h-7 md:h-10 justify-center px-3 md:px-4 py-0 rounded-[20px] ${currentColor?.background} ${currentColor?.text} ${className || ''}`}
+      className={`flex items-center h-7 md:h-10 justify-center px-2 sm:px-3 md:px-4 py-0 rounded-[20px] ${currentColor?.background} ${currentColor?.text} ${className || ''}`}
       {...props}
     >
       <Text
-        variant="body-18-m"
+        variant={{ initial: 'body-12-m', sm: 'body-18-m' }}
         color={colorClass[color].text}
         className="text-xs md:text-base"
       >

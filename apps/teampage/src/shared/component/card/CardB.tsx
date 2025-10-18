@@ -34,9 +34,9 @@ export function CardB({
         whileTap={{ scale: 0.99 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        className={`bg-grey-50 flex gap-10 items-start justify-start p-6 rounded-[24px] w-full cursor-pointer ${className || ''}`}
+        className={`bg-grey-50 flex gap-2 sm:gap-10 items-start justify-between sm:justify-start p-3 sm:p-6 rounded-[24px] w-full cursor-pointer ${className || ''}`}
       >
-        <div className="flex flex-col gap-6 flex-grow">
+        <div className="flex flex-col gap-6 sm:flex-grow">
           <div className="flex flex-col gap-3 w-full">
             {category && (
               <Tag color="white" className="self-start">
@@ -45,20 +45,24 @@ export function CardB({
             )}
             <div className="flex flex-col gap-2 w-full">
               <Text
-                variant="title-28-b"
+                variant={{ initial: 'title-18-b', sm: 'title-28-b' }}
                 color={isHovered ? 'primary-gradiant' : 'grey-900'}
                 className={`text-grey-900 w-full `}
               >
                 {title}
               </Text>
-              <Text variant="body-18-m" color="grey-700" className="w-full">
+              <Text
+                variant={{ initial: 'body-14-m', sm: 'body-18-m' }}
+                color="grey-700"
+                className="w-full"
+              >
                 {summary}
               </Text>
             </div>
           </div>
           <div className="flex gap-2 items-center">
             <Text
-              variant="body-16-b"
+              variant={{ initial: 'body-12-b', sm: 'body-16-b' }}
               color="grey-700"
               className="whitespace-pre"
             >
@@ -71,7 +75,7 @@ export function CardB({
               className="h-2.5"
             />
             <Text
-              variant="body-16-m"
+              variant={{ initial: 'body-12-m', sm: 'body-16-m' }}
               color="grey-600"
               className="whitespace-pre"
             >
@@ -90,7 +94,7 @@ export function CardB({
                   className="h-2.5"
                 />
                 <Text
-                  variant="body-16-m"
+                  variant={{ initial: 'body-12-m', sm: 'body-16-m' }}
                   color="grey-600"
                   className="whitespace-pre text-right"
                 >
@@ -100,14 +104,14 @@ export function CardB({
             )}
           </div>
         </div>
-        <div className="h-36 w-60 rounded-[12px] overflow-hidden flex-shrink-0">
+        <div className="w-[100px] h-[60px] sm:h-36 sm:w-60 rounded-[12px] overflow-hidden flex-shrink-0">
           {thumbnailUrl && (
             <Image
               src={thumbnailUrl}
               alt={title}
               width={240}
               height={144}
-              className="object-cover w-full h-full"
+              className="w-[100px] h-[60px] object-cover sm:w-full sm:h-full"
             />
           )}
         </div>
