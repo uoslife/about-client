@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
+import { usePathname } from 'next/navigation'
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { useDevice } from '@/shared/provider/DeviceProvider';
 import { useUser } from '@/entities/api/useUser';
@@ -36,6 +37,7 @@ export default function Header() {
   const ROUTE = getRoute(role as MyInfoResponseRole);
   const { status, signIn, session, signOut } = useAuth();
   const { trackEvent } = useAnalytics();
+  const pathname = usePathname(); 
   const { isMobile } = useDevice();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -46,6 +48,7 @@ export default function Header() {
 
   const renderLink = useCallback((route: { path: string; name: string }) => {
     const isShowOurStoryMenu = route.path === ROUTE.OUR_STORY.path;
+    const isActive = pathname === route.path;
     return (
       <div
         className={`relative ${isShowOurStoryMenu ? 'group' : ''}`}
@@ -60,7 +63,14 @@ export default function Header() {
             className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
             data-name={`GNB_Tap_${route.name}`}
           >
-            <p className="text-[18px] whitespace-pre hover:text-[#4686ff] cursor-pointer">
+            <p
+              className={twMerge(
+                'text-body-18-b whitespace-pre cursor-pointer transition-colors',
+                isActive
+                  ? 'text-[#0F6EFB]'
+                  : 'hover:text-[#4686ff] text-gray-800',
+              )}
+            >
               {route.name}
             </p>
           </div>
@@ -154,12 +164,12 @@ export default function Header() {
               />
             </Link>
           </div>
+          <div className="bg-[#72727C] h-[20px] w-[1px]" />
         </div>
         {/* 비회원 혹은 인증 내역을 얻기 전 */}
         {status === undefined ||
           (status === 'unauthenticated' && (
             <div className="flex justify-center items-center gap-7">
-              <div className="bg-[#72727C] h-[20px] w-[1px]" />
               <button
                 type="button"
                 onClick={() => signIn('keycloak')}
