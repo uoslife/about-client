@@ -1,5 +1,4 @@
 import type React from 'react';
-import { tv } from 'tailwind-variants';
 
 export type TextVariant =
   | 'heading-220-b'

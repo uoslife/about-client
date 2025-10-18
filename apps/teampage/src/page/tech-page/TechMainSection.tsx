@@ -156,7 +156,7 @@ function ArticleList() {
   if (articles.length === 0) return <ArticleListEmptyContainer />;
 
   return (
-    <div className="px-4 sm:px-auto grid grid-cols-1 gap-y-10 max-w-pc w-full">
+    <div className="px-4 sm:px-auto grid grid-cols-1 gap-y-3 sm:gap-y-10 max-w-pc w-full">
       {articles.map((content) => (
         <Card.B
           key={content.id}
