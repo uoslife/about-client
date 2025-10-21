@@ -22,7 +22,7 @@ const metaData: MetaConfig = {
     keywords:
         'UOSLIFE, uoslif, 동아리, 연합 동아리, IT 동아리, 개발 동아리, 대학교 동아리, 대학생 연합 동아리, 개발, 개발자, 프론트엔드, 백엔드, 디자이너, PM',
     type: 'website',
-    siteUrl: 'https://www.uoslife.team/',
+    siteUrl: 'https://www.uoslife.team',
     icon: '/img/uoslife_logo_white.png',
     image: '/img/preview.png',
     locale: 'ko_KR',

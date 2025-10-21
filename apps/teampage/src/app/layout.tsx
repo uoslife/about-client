@@ -6,6 +6,8 @@ import { ServerProvider } from './provider/server-provider';
 import { DeviceProvider } from '@/shared/provider/DeviceProvider';
 import metaData from '@/shared/const/seo.config';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export const metadata: Metadata = {
   title: metaData.title,
   description: metaData.description,
@@ -18,7 +20,7 @@ export const metadata: Metadata = {
     siteName: metaData.sitename,
     images: [
       {
-        url: metaData.image,
+        url: `${isProd ? metaData.siteUrl : ''}${metaData.image}`,
         width: 1200,
         height: 630,
         alt: metaData.title,
