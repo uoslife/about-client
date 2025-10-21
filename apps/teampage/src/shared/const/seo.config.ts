@@ -18,7 +18,7 @@ const metaData: MetaConfig = {
     sitename: 'Team UOSLIFE',
     author: 'UOSLIFE-admin',
     email: 'support@uoslife.team',
-    description: '시대생, 모든 시대인을— 연결하다, uoslife',
+    description: '시대생, 모든 시대인을 연결하다',
     keywords:
         'UOSLIFE, uoslif, 동아리, 연합 동아리, IT 동아리, 개발 동아리, 대학교 동아리, 대학생 연합 동아리, 개발, 개발자, 프론트엔드, 백엔드, 디자이너, PM',
     type: 'website',
