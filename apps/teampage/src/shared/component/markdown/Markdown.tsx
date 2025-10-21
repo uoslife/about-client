@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Text } from '../Text';
 import Image from 'next/image';
 
@@ -7,6 +8,7 @@ export const Markdown = ({ content }: { content: string }) => {
   const proccessedContent = content.replace(/\\n/g, '\n');
   return (
     <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
       components={{
         p: ({ children }) => {
           const hasImage = React.Children.toArray(children).some(
@@ -119,6 +121,48 @@ export const Markdown = ({ content }: { content: string }) => {
               </Text>
             )}
           </div>
+        ),
+        table: ({ children }) => (
+          <div className="mb-4 md:mb-6 overflow-x-auto border border-grey-300 rounded-lg">
+            <table className="min-w-full border-collapse">
+              {children}
+            </table>
+          </div>
+        ),
+        thead: ({ children }) => (
+          <thead className="bg-grey-100">{children}</thead>
+        ),
+        tbody: ({ children }) => (
+          <tbody className="bg-white">{children}</tbody>
+        ),
+        tr: ({ children }) => (
+          <tr className="border-b border-grey-300 last:border-b-0">
+            {children}
+          </tr>
+        ),
+        th: ({ children }) => (
+          <th className="px-4 md:px-6 py-3 md:py-4 text-left border-r border-grey-300 last:border-r-0">
+            <Text
+              variant="body-20-b"
+              color="grey-900"
+              as="span"
+              className="text-sm md:text-lg"
+            >
+              {children}
+            </Text>
+          </th>
+        ),
+        td: ({ children }) => (
+          <td className="px-4 md:px-6 py-3 md:py-4 border-r border-grey-300 last:border-r-0">
+            <Text
+              variant="body-20-m"
+              color="grey-800"
+              as="span"
+              className="text-sm md:text-lg"
+            >
+              {children}
+            </Text>
+          </td>
         ),
       }}
     >
