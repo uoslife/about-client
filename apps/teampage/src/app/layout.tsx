@@ -4,10 +4,42 @@ import Header from '@/widgets/header/Header';
 import { ClientProvider } from './provider/client-provider';
 import { ServerProvider } from './provider/server-provider';
 import { DeviceProvider } from '@/shared/provider/DeviceProvider';
+import metaData from '@/shared/const/seo.config';
 
 export const metadata: Metadata = {
-  title: 'UOSLIFE',
-  description: 'UOSLIFE',
+  title: metaData.title,
+  description: metaData.description,
+  keywords: metaData.keywords,
+
+  openGraph: {
+    title: metaData.title,
+    description: metaData.description,
+    url: metaData.siteUrl,
+    siteName: metaData.sitename,
+    images: [
+      {
+        url: metaData.image,
+        width: 1200,
+        height: 630,
+        alt: metaData.title,
+      },
+    ],
+    locale: metaData.locale,
+    type: metaData.type as 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: metaData.title,
+    description: metaData.description,
+    images: [metaData.image],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: metaData.icon,
+  },
 };
 
 export default function RootLayout({
