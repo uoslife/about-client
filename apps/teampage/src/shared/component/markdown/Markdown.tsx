@@ -190,6 +190,7 @@ export const Markdown = ({ content }: { content: string }) => {
             </Text>
           </td>
         ),
+        br: () => <br className="my-2" />,
       }}
     >
       {proccessedContent}
