@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Text } from '../Text';
 import Image from 'next/image';
 
@@ -67,16 +69,40 @@ export const Markdown = ({ content }: { content: string }) => {
             {children}
           </Text>
         ),
-        code: ({ children }) => (
-          <code className="px-2 py-1 bg-grey-100 text-primary-ui rounded text-xs md:text-sm font-mono">
-            {children}
-          </code>
-        ),
-        pre: ({ children }) => (
-          <pre className="bg-grey-50 p-4 md:p-6 rounded-2xl overflow-x-auto mb-4 md:mb-6 border border-grey-200 text-xs md:text-sm">
-            {children}
-          </pre>
-        ),
+        code: ({ inline, className, children, ...props }: any) => {
+          const match = /language-(\w+)/.exec(className || '');
+          const codeString = String(children).replace(/\n$/, '');
+          
+          return !inline && match ? (
+            <div className="mb-4 md:mb-6 rounded-2xl overflow-hidden border border-grey-300">
+              <div className="bg-grey-800 px-4 py-2 text-grey-300 text-xs md:text-sm font-mono">
+                {match[1]}
+              </div>
+              <SyntaxHighlighter
+                style={oneDark}
+                language={match[1]}
+                PreTag="div"
+                customStyle={{
+                  margin: 0,
+                  borderRadius: 0,
+                  fontSize: '0.875rem',
+                  padding: '1.5rem',
+                }}
+                {...props}
+              >
+                {codeString}
+              </SyntaxHighlighter>
+            </div>
+          ) : (
+            <code
+              className="px-2 py-1 bg-grey-100 text-primary-ui rounded text-xs md:text-sm font-mono"
+              {...props}
+            >
+              {children}
+            </code>
+          );
+        },
+        pre: ({ children }) => <>{children}</>,
         ul: ({ children }) => (
           <ul className="mb-4 md:mb-6 pl-4 md:pl-6 space-y-1 md:space-y-2 list-disc">
             {children}
