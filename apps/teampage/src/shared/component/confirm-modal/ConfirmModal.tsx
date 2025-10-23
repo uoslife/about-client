@@ -8,6 +8,7 @@ interface ConfirmModalProps {
   isVisible: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  onOutsideClick?: () => void;
   title: string;
   description?: string;
   confirmText?: string;
@@ -20,6 +21,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   isVisible,
   onClose,
   onConfirm,
+  onOutsideClick,
   title,
   description,
   confirmText = '확인',
@@ -62,7 +64,13 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={() => {
+              if (onOutsideClick) {
+                onOutsideClick();
+              } else {
+                onClose();
+              }
+            }}
           />
 
           <motion.div

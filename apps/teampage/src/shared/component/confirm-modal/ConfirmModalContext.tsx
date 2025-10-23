@@ -18,6 +18,7 @@ interface ConfirmModalState {
   variant?: 'default' | 'danger';
   useCancel?: boolean;
   onConfirm?: () => void;
+  onOutsideClick?: () => void;
 }
 
 interface ConfirmModalStateContextType {
@@ -52,6 +53,7 @@ export const ConfirmModalProvider: React.FC<ConfirmModalProviderProps> = ({
     variant: 'default',
     useCancel: true,
     onConfirm: undefined,
+    onOutsideClick: undefined,
   });
 
   const showConfirmModal = useCallback(
@@ -123,6 +125,7 @@ export const ConfirmModalRenderer = () => {
       isVisible={state.isVisible}
       onClose={hideConfirmModal}
       onConfirm={state.onConfirm || (() => {})}
+      onOutsideClick={state.onOutsideClick}
       title={state.title}
       description={state.description}
       confirmText={state.confirmText}

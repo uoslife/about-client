@@ -3,8 +3,10 @@ import { createContext, useEffect } from 'react';
 import { useUser } from '../api/useUser';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { MyInfoResponseRole } from '@uoslife/api';
+import { TIME } from '@/shared/const/time';
 
 const RouteByAuthContext = createContext({});
+const TIMEOUT_MS = TIME.SEC * TIME.MS * 3;
 
 const ROLE_MAP = {
   GUEST: '게스트',
@@ -29,23 +31,34 @@ export const RouteByAuthProvider = ({
     );
   }
   const { role, isUserInitialized } = useUser();
+  
   useEffect(() => {
-    if (targetRole.includes(role as MyInfoResponseRole) || !isUserInitialized) {
+    if (targetRole.includes(role as MyInfoResponseRole)) {
       return;
     }
-    open({
-      title: '접근 권한이 없습니다.',
-      description: `${targetRole.map((role) => ROLE_MAP[role]).join(', ')}만 접근할 수 있습니다.`,
-      confirmText: '확인',
-      variant: 'default',
-      useCancel: false,
-      onConfirm: () => {
-        window.location.href = route;
-      },
-    });
-  }, [role, open, route, targetRole, isUserInitialized]);
 
-  if (!isUserInitialized) {
+    const timer = setTimeout(() => {
+      if (!targetRole.includes(role as MyInfoResponseRole)) {
+        const redirectToRoute = () => {
+          window.location.href = route;
+        };
+        
+        open({
+          title: '접근 권한이 없습니다.',
+          description: `${targetRole.map((role) => ROLE_MAP[role]).join(', ')}만 접근할 수 있습니다.`,
+          confirmText: '확인',
+          variant: 'default',
+          useCancel: false,
+          onConfirm: redirectToRoute,
+          onOutsideClick: redirectToRoute,
+        });
+      }
+    }, TIMEOUT_MS);
+
+    return () => clearTimeout(timer);
+  }, [role, open, route, targetRole]);
+
+  if (!isUserInitialized || !targetRole.includes(role as MyInfoResponseRole)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="flex flex-col items-center gap-4">

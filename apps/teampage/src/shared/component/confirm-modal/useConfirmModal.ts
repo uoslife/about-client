@@ -17,6 +17,7 @@ export const useConfirmModal = () => {
       variant?: 'default' | 'danger';
       useCancel?: boolean;
       onConfirm: () => void;
+      onOutsideClick?: () => void;
     }) => {
       showConfirmModal(options);
     },
