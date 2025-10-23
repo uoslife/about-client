@@ -36,7 +36,7 @@ export const Markdown = ({ content }: { content: string }) => {
           <Text
             variant="title-48-b"
             color="grey-900"
-            className="mb-4 md:mb-6 mt-6 md:mt-12 text-2xl md:text-4xl tracking-tight leading-tight"
+            className="mb-4 md:mb-6 mt-6 md:mt-12 text-xl md:text-4xl tracking-tight leading-tight"
             as="h1"
           >
             {children}
@@ -46,7 +46,7 @@ export const Markdown = ({ content }: { content: string }) => {
           <Text
             variant="title-28-b"
             color="grey-900"
-            className="mb-3 md:mb-4 mt-5 md:mt-10 text-xl md:text-3xl tracking-tight leading-tight"
+            className="mb-3 md:mb-4 mt-5 md:mt-10 text-lg md:text-3xl tracking-tight leading-tight"
             as="h2"
           >
             {children}
