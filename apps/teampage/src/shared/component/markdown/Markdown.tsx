@@ -1,16 +1,19 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Text } from '../Text';
 import Image from 'next/image';
 
 export const Markdown = ({ content }: { content: string }) => {
-  const proccessedContent = content.replace(/\\n/g, '\n');
+  const proccessedContent = content
+    .replace(/\\n/g, '\n')
+    .replace(/<br\s*\/?>/gi, '  \n')
   return (
     <ReactMarkdown
-      remarkPlugins={[remarkGfm]}
+      remarkPlugins={[remarkGfm, remarkBreaks]}
       components={{
         p: ({ children }) => {
           const hasImage = React.Children.toArray(children).some(
@@ -23,7 +26,7 @@ export const Markdown = ({ content }: { content: string }) => {
             <Text
               variant="body-20-m"
               color="grey-800"
-              className="mb-4 md:mb-6 leading-relaxed text-sm md:text-lg"
+              className="mb-4 md:mb-6 leading-[1.8] text-sm md:text-lg tracking-normal"
             >
               {children}
             </Text>
@@ -33,7 +36,7 @@ export const Markdown = ({ content }: { content: string }) => {
           <Text
             variant="title-48-b"
             color="grey-900"
-            className="mb-4 md:mb-6 mt-6 md:mt-12 text-2xl md:text-4xl"
+            className="mb-4 md:mb-6 mt-6 md:mt-12 text-2xl md:text-4xl tracking-tight leading-tight"
             as="h1"
           >
             {children}
@@ -43,7 +46,7 @@ export const Markdown = ({ content }: { content: string }) => {
           <Text
             variant="title-28-b"
             color="grey-900"
-            className="mb-3 md:mb-4 mt-5 md:mt-10 text-xl md:text-3xl"
+            className="mb-3 md:mb-4 mt-5 md:mt-10 text-xl md:text-3xl tracking-tight leading-tight"
             as="h2"
           >
             {children}
@@ -53,7 +56,7 @@ export const Markdown = ({ content }: { content: string }) => {
           <Text
             variant="title-24-b"
             color="grey-900"
-            className="mb-3 md:mb-4 mt-4 md:mt-8 text-lg md:text-2xl"
+            className="mb-3 md:mb-4 mt-4 md:mt-8 text-lg md:text-2xl tracking-tight leading-tight"
             as="h3"
           >
             {children}
@@ -68,6 +71,16 @@ export const Markdown = ({ content }: { content: string }) => {
           >
             {children}
           </Text>
+        ),
+        a: ({ href, children }) => (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary-ui font-bold hover:text-primary-brand underline transition-colors"
+          >
+            {children}
+          </a>
         ),
         code: ({ inline, className, children, ...props }: any) => {
           const match = /language-(\w+)/.exec(className || '');
@@ -119,7 +132,7 @@ export const Markdown = ({ content }: { content: string }) => {
               variant="body-20-m"
               color="grey-800"
               as="span"
-              className="text-sm md:text-lg"
+              className="text-sm md:text-lg tracking-normal leading-[1.8]"
             >
               {children}
             </Text>
@@ -172,7 +185,7 @@ export const Markdown = ({ content }: { content: string }) => {
               variant="body-20-b"
               color="grey-900"
               as="span"
-              className="text-sm md:text-lg"
+              className="text-sm md:text-lg tracking-normal"
             >
               {children}
             </Text>
@@ -184,7 +197,7 @@ export const Markdown = ({ content }: { content: string }) => {
               variant="body-20-m"
               color="grey-800"
               as="span"
-              className="text-sm md:text-lg"
+              className="text-sm md:text-lg tracking-normal"
             >
               {children}
             </Text>
