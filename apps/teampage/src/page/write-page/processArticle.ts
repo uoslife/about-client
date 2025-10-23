@@ -154,9 +154,8 @@ const replaceAllImageUrls = (
   let updatedContent = content;
 
   fileMappings.forEach(({ oldString, newUrl }) => {
-    const imagePattern = `![](${oldString.trim()})`;
-    const replacement = `![](${newUrl})`;
-    updatedContent = updatedContent.replaceAll(imagePattern, replacement);
+    const trimmedOldUrl = oldString.trim();
+    updatedContent = updatedContent.split(trimmedOldUrl).join(newUrl);
   });
 
   return updatedContent;
