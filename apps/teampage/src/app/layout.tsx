@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   creator: metaData.author,
   publisher: metaData.sitename,
   alternates: {
-    canonical: metaData.siteUrl,
+    canonical: '/',
   },
 
   openGraph: {

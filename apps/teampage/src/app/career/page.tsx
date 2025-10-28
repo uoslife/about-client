@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Career - UOSLIFE',
   description: '시대생의 커리어 이야기입니다.',
   alternates: {
-    canonical: `${metaData.siteUrl}/career`,
+    canonical: '/career',
   },
   openGraph: {
     title: 'Career - UOSLIFE',

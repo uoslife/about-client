@@ -10,18 +10,17 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   try {
     const article = await findArticle(params.id);
-    const url = `${metaData.siteUrl}/tech/${params.id}`;
 
     return {
       title: article.title,
       description: article.summary || article.title,
       alternates: {
-        canonical: url,
+        canonical: `/tech/${params.id}`,
       },
       openGraph: {
         title: article.title,
         description: article.summary || article.title,
-        url: url,
+        url: `${metaData.siteUrl}/tech/${params.id}`,
         type: 'article',
         images: article.thumbnailUrl
           ? [

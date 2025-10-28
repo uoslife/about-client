@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Tech - UOSLIFE',
   description: '시대생의 기술 블로그입니다.',
   alternates: {
-    canonical: `${metaData.siteUrl}/tech`,
+    canonical: '/tech',
   },
   openGraph: {
     title: 'Tech - UOSLIFE',

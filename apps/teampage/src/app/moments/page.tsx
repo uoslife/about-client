@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Moments - UOSLIFE',
   description: '시대생의 순간들을 공유합니다.',
   alternates: {
-    canonical: `${metaData.siteUrl}/moments`,
+    canonical: '/moments',
   },
   openGraph: {
     title: 'Moments - UOSLIFE',
