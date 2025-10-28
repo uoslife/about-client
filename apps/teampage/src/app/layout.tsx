@@ -6,12 +6,17 @@ import { ServerProvider } from './provider/server-provider';
 import { DeviceProvider } from '@/shared/provider/DeviceProvider';
 import metaData from '@/shared/const/seo.config';
 
-const isProd = process.env.NODE_ENV === 'production';
-
 export const metadata: Metadata = {
+  metadataBase: new URL(metaData.siteUrl),
   title: metaData.title,
   description: metaData.description,
   keywords: metaData.keywords,
+  authors: [{ name: metaData.author }],
+  creator: metaData.author,
+  publisher: metaData.sitename,
+  alternates: {
+    canonical: metaData.siteUrl,
+  },
 
   openGraph: {
     title: metaData.title,
@@ -20,7 +25,7 @@ export const metadata: Metadata = {
     siteName: metaData.sitename,
     images: [
       {
-        url: `${isProd ? metaData.siteUrl : ''}${metaData.image}`,
+        url: metaData.image,
         width: 1200,
         height: 630,
         alt: metaData.title,

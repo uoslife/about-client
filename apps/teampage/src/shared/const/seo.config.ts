@@ -27,4 +27,5 @@ const metaData: MetaConfig = {
     image: '/img/preview.png',
     locale: 'ko_KR',
 };
+
 export default metaData;
