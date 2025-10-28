@@ -9,7 +9,9 @@ export async function generateMetadata({
   params: { id: number };
 }): Promise<Metadata> {
   try {
-    const article = await findArticle(params.id);
+    const article = await findArticle(params.id, {
+      nonMemberId: 'id-meta-data',
+    });
 
     return {
       title: article.title,
@@ -42,6 +44,9 @@ export async function generateMetadata({
     return {
       title: 'Tech 글',
       description: '시대생 Tech 글을 확인해보세요',
+      alternates: {
+        canonical: `/tech/${params.id}`,
+      },
     };
   }
 }
