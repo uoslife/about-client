@@ -204,6 +204,18 @@ export const Markdown = ({ content }: { content: string }) => {
           </td>
         ),
         br: () => <br className="my-2" />,
+        blockquote: ({ children }) => (
+          <blockquote className="mb-4 md:mb-6 pl-4 md:pl-6 py-2 md:p-3 border-l-4 border-grey-400 bg-grey-50 ">
+            <Text
+              variant="body-20-m"
+              color="grey-700"
+              as="div"
+              className="text-sm md:text-lg tracking-normal leading-[1.8]"
+            >
+              {children}
+            </Text>
+          </blockquote>
+        ),
       }}
     >
       {proccessedContent}

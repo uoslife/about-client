@@ -46,7 +46,12 @@ const nextConfig = {
         hostname: 'd544kp0ugcek4.cloudfront.net',
         port: '',
         pathname: '/**',
-      },
+      },{
+        protocol: 'https',
+        hostname: 'velog.velcdn.com',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
 };
