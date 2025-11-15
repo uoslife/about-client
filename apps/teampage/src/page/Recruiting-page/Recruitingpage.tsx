@@ -1,3 +1,4 @@
+'use client';
 import { Suspense } from 'react';
 import { Section01 } from './section/Section01';
 import { Section02 } from './section/Section02';
@@ -8,7 +9,7 @@ import { Section06 } from './section/Section06';
 import { Section07 } from './section/Section07';
 import { SectionMain } from './section/SectionMain';
 
-export default async function RecruitingPage() {
+export default function RecruitingPage() {
   return (
     <div className="flex flex-col  gap-40 items-center w-[800px] bg-[#FFF]">
       <main>
