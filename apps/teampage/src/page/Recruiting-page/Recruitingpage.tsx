@@ -8,10 +8,9 @@ import { Section06 } from './section/Section06';
 import { Section07 } from './section/Section07';
 import { SectionMain } from './section/SectionMain';
 
-
 export default async function RecruitingPage() {
   return (
-    <div className="flex flex-col gap-16 mb-8 sm:mb-60 w-full">
+    <div className="flex flex-col  gap-40 items-center w-[800px] bg-[#FFF]">
       <main>
         <SectionMain />
         <Suspense>
