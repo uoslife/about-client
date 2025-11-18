@@ -9,16 +9,14 @@ interface RecruitmentFieldButtonProps {
   setOpen: (value: boolean | ((prev: boolean) => boolean)) => void;
 }
 
-export function RecruitmentFieldButton({
-  name,
-  open,
-  setOpen,
-}: RecruitmentFieldButtonProps) {
+export function RecruitmentFieldButton({ name, open, setOpen }: RecruitmentFieldButtonProps) {
   return (
     <div className="flex justify-between items-center self-stretch">
       <h5
         className={`text-[1.75rem] font-bold leading-[150%] bg-clip-text text-transparent 
-          ${open ? 'bg-gradient-to-r from-blue-600 to-black' : 'bg-[#222227]'}`}
+          ${open ? 'bg-gradient-to-r from-blue-600 to-black' : 'bg-[#222227]'}
+          max-md:text-lg max-md:font-bold max-md:leading-[160%] 
+          `}
       >
         {name}
       </h5>

@@ -86,12 +86,6 @@ const config: Config = {
         shimmer: 'shimmer 2s linear infinite',
         fadeIn: 'fadeIn 1s ease-in-out forwards',
       },
-      spacing: {
-        '30': '7.5rem',
-        '40': '10rem',
-        '50': '12.5rem',
-        '80': '20rem',
-      },
     },
   },
   plugins: [require('@tailwindcss/typography')],

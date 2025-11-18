@@ -3,21 +3,25 @@
 import React from 'react';
 import { useState } from 'react';
 import { RecruitmentFieldButton } from './RecruitmentFieldButton';
+import { date } from 'zod';
 
 const Detail = ({ item }) => {
   return (
     <>
       <div className="flex flex-col items-start gap-4 self-stretch">
-        <h6 className="text-[#222227] text-xl font-bold leading-[160%]">하는 일</h6>
-        <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] list-disc pl-5 space-y-2 [&>li]:pl-2">
+        <h6 className="text-[#222227] text-xl font-bold leading-[160%] max-md:text-sm">하는 일</h6>
+        <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] list-disc pl-5 space-y-2 [&>li]:pl-2 max-md:text-sm">
           {item.do.map((task, taskIndex) => (
             <li key={taskIndex}>{task}</li>
           ))}
         </ul>
       </div>
       <div className="flex flex-col items-start gap-4 self-stretch">
-        <h6 className="text-[#222227] text-xl font-bold leading-[160%]">이런 사람과 함께 하고 싶어요</h6>
-        <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] list-disc pl-5 space-y-2 [&>li]:pl-2">
+        <h6 className="text-[#222227] text-xl font-bold leading-[160%] max-md:text-sm">이런 사람과 함께 하고 싶어요</h6>
+        <ul
+          className="self-stretch text-[#303037] text-lg font-medium leading-[160%] list-disc pl-5 space-y-2 [&>li]:pl-2 
+        max-md:text-sm"
+        >
           {item.with.map((requirement, reqIndex) => {
             if (React.isValidElement(requirement)) {
               return (
@@ -38,13 +42,16 @@ interface SubRole {
   do: string[];
   with: (string | React.ReactNode)[];
 }
-const Section4text: Array<{
+
+interface textRole {
   role: string;
   type: string;
   do?: string[];
   with?: string[];
   content?: SubRole[];
-}> = [
+}
+
+const Section4text: textRole[] = [
   {
     role: '기획자',
     type: 'one',
@@ -87,9 +94,9 @@ const Section4text: Array<{
           '코드뿐 아니라 사용자 경험(UX)에도 관심이 많은 분',
           '완성도 높은 결과물을 위해 세세한 디테일을 놓치지 않는 분',
           '아래 기술 스택에 익숙하신 분',
-          <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] [list-style:none] pl-5 space-y-2">
-            <li className="list-disc">React (Vite) / Javascript(Typescript)</li>
-          </ul>,
+          <li key="dveloper-width" className="list-disc">
+            React (Vite) / Javascript(Typescript)
+          </li>,
         ],
       },
       {
@@ -103,9 +110,9 @@ const Section4text: Array<{
           '비 개발자와도 커뮤니케이션이 원활하신 분',
           '디자인 패턴, 아키텍처에 대해 고민해 본 경험이 있으면 좋아요.',
           '아래 기술 스택에 익숙하신 분',
-          <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] [list-style:none] pl-5 space-y-2">
-            <li className="list-disc">Kotlin(or Java) / Spring Boot / RDBMS(예: PostgreSQL, MySQL)</li>
-          </ul>,
+          <li key="subrole-width" className="list-disc">
+            Kotlin(or Java) / Spring Boot / RDBMS(예: PostgreSQL, MySQL)
+          </li>,
         ],
       },
     ],
@@ -125,39 +132,47 @@ const Section4text: Array<{
   },
 ];
 
+export const FnQContent = ({ item, index }: { item: textRole; index: number }) => {
+  const initS = index === 0 ? true : false;
+  const [isOpen, setIsOpen] = useState(initS);
+  return (
+    <div
+      key={index}
+      className={`flex flex-col items-start self-stretch py-7 px-8 ${isOpen ? 'pb-9' : 'pb-7'} gap-2.5 rounded-2xl border border-[#4686FF] bg-white/80 max-md:rounded-xl
+            max-md:${isOpen ? 'pb-6' : 'pb-4'} max-md:px-4 max-md:pt-4
+            `}
+    >
+      <div
+        className="flex flex-col items-start gap-5 self-stretch
+            max-md: gap-4"
+      >
+        <RecruitmentFieldButton name={item.role} open={isOpen} setOpen={setIsOpen} />
+        {isOpen && (
+          <>
+            <hr className="h-px self-stretch bg-[#4686FF]/20" />
+            {item.type == 'one' ? (
+              <Detail item={item} />
+            ) : (
+              item.content?.map((subitem, subIndex) => (
+                <div key={subIndex} className="flex flex-col items-start gap-5 self-stretch max-md: gap-2">
+                  <h5 className="text-[#222227] text-2xl font-bold leading-[150%]">{subitem.subrole}</h5>
+                  <Detail item={subitem}></Detail>
+                </div>
+              ))
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export function RecruitmentField() {
   return (
     <>
-      {Section4text.map((item, index) => {
-        const initS = index === 0 ? true : false;
-        const [isOpen, setIsOpen] = useState(initS);
-
-        return (
-          <div
-            key={index}
-            className={`flex flex-col items-start self-stretch py-7 px-8 ${isOpen ? 'pb-9' : 'pb-7'} gap-2.5 rounded-2xl border border-[#4686FF] bg-white/80`}
-          >
-            <div className="flex flex-col items-start gap-5 self-stretch">
-              <RecruitmentFieldButton name={item.role} open={isOpen} setOpen={setIsOpen} />
-              {isOpen && (
-                <>
-                  <hr className="h-px self-stretch bg-[#4686FF]/20" />
-                  {item.type == 'one' ? (
-                    <Detail item={item} />
-                  ) : (
-                    item.content?.map((subitem, subIndex) => (
-                      <div key={subIndex} className="flex flex-col items-start gap-5 self-stretch">
-                        <h5 className="text-[#222227] text-2xl font-bold leading-[150%]">{subitem.subrole}</h5>
-                        <Detail item={subitem}></Detail>
-                      </div>
-                    ))
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        );
-      })}
+      {Section4text.map((item, index) => (
+        <FnQContent item={item} index={index} />
+      ))}
     </>
   );
 }
