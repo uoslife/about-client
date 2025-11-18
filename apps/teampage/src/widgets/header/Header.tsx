@@ -29,6 +29,10 @@ const getRoute = (role: MyInfoResponseRole) => {
       path: role === 'ASSOCIATE_MEMBER' ? '/moments' : '/career',
       name: 'Our Story',
     },
+    RECRUIT: {
+      path: '/recruit',
+      name: 'Recruit',
+    },
   } as const;
 };
 
