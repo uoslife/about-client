@@ -37,7 +37,7 @@ const config: Config = {
         'heading-220-b': ['220px', { lineHeight: '1', fontWeight: '700' }],
         'heading-100-b': ['100px', { lineHeight: '1.2', fontWeight: '700' }],
         'heading-80-b': ['80px', { lineHeight: '1.4', fontWeight: '700' }],
-        'heading-76-b': ['76px', { lineHeight: '1', fontWeight: '700' }], 
+        'heading-76-b': ['76px', { lineHeight: '1', fontWeight: '700' }],
         'heading-72-b': ['72px', { lineHeight: '1.2', fontWeight: '700' }],
         'heading-60-b': ['60px', { lineHeight: '1.4', fontWeight: '700' }],
         'heading-48-b': ['48px', { lineHeight: '1.4', fontWeight: '700' }],
