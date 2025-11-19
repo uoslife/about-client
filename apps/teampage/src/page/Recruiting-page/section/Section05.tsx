@@ -74,7 +74,7 @@ const QandA = () => {
   return (
     <>
       {Section5text.map((item, index) => {
-        <QandAchild item={item} index={index} />;
+        return <QandAchild key={index} item={item} index={index} />;
       })}
     </>
   );

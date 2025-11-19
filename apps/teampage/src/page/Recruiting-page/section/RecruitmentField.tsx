@@ -3,7 +3,6 @@
 import React from 'react';
 import { useState } from 'react';
 import { RecruitmentFieldButton } from './RecruitmentFieldButton';
-import { date } from 'zod';
 
 const Detail = ({ item }) => {
   return (
@@ -139,7 +138,7 @@ export const FnQContent = ({ item, index }: { item: textRole; index: number }) =
     <div
       key={index}
       className={`flex flex-col items-start self-stretch py-7 px-8 ${isOpen ? 'pb-9' : 'pb-7'} gap-2.5 rounded-2xl border border-[#4686FF] bg-white/80 max-md:rounded-xl
-            max-md:${isOpen ? 'pb-6' : 'pb-4'} max-md:px-4 max-md:pt-4
+            ${isOpen ? 'max-md:pb-6' : 'max-md:pb-4'} max-md:px-4 max-md:pt-4
             `}
     >
       <div
@@ -171,7 +170,7 @@ export function RecruitmentField() {
   return (
     <>
       {Section4text.map((item, index) => (
-        <FnQContent item={item} index={index} />
+        <FnQContent key={index} item={item} index={index} />
       ))}
     </>
   );
