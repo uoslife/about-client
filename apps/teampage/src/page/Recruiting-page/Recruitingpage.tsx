@@ -31,7 +31,7 @@ export default function RecruitingPage() {
       const section06Top = ref5.current.getBoundingClientRect().top;
       const windowHeight = window.innerHeight;
 
-      if (section06Top + 42.5 * 8 <= windowHeight) {
+      if (section06Top + 30 * 8 <= windowHeight) {
         console.log(section06Top);
         console.log(windowHeight);
         setShowButton(false);
@@ -48,7 +48,9 @@ export default function RecruitingPage() {
   return (
     <div className="flex flex-col  gap-40 items-center w-full bg-[#FFF]">
       <main className="w-full">
-        {showButton && <Recruitbutton className={`fixed top-3/4 left-1/2 -translate-x-1/2 -translate-y-3/4 z-10`} />}
+        {showButton && (
+          <Recruitbutton className={`fixed top-[83.333%] left-1/2 -translate-x-1/2 -translate-y-[83.333%] z-10`} />
+        )}
         {/* 버튼 isInRange && 붙여서 랜더링 안되게 */}
 
         <Section01 />
