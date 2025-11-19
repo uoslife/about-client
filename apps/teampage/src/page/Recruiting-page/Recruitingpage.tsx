@@ -18,11 +18,11 @@ export default function RecruitingPage() {
   const [showButton, setShowButton] = useState(true);
 
   console.log(isInRange);
-  // 이벤트 리스너로 현재 스크롤의 위치를 파악해서 
+  // 이벤트 리스너로 현재 스크롤의 위치를 파악해서
   // ref5에 저장된 위치와 비교함.
   // 오프셋을 42.5*8 만큼 줘서(버튼이 떠있는 위치, 수정 할수도)
-  // 섹션6에 버튼이 닿았을 때 발동하게 함 
-  useEffect(() => { 
+  // 섹션6에 버튼이 닿았을 때 발동하게 함
+  useEffect(() => {
     const handleScroll = () => {
       if (!ref5.current) {
         return;
@@ -48,7 +48,7 @@ export default function RecruitingPage() {
   return (
     <div className="flex flex-col  gap-40 items-center w-full bg-[#FFF]">
       <main className="w-full">
-        {showButton && <Recruitbutton className={`fixed top-3/4 left-1/2 -translate-x-1/2 -translate-y-3/4`} />}
+        {showButton && <Recruitbutton className={`fixed top-3/4 left-1/2 -translate-x-1/2 -translate-y-3/4 z-10`} />}
         {/* 버튼 isInRange && 붙여서 랜더링 안되게 */}
 
         <Section01 />
