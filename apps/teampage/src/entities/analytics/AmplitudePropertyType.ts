@@ -1,4 +1,4 @@
-export type TabName = 'home' | 'tech' | 'career' | 'moments' | 'people';
+export type TabName = 'home' | 'tech' | 'career' | 'moments' | 'people' | 'recruiting';
 export type MemberRole = 'guest' | 'associate_member' | 'full_member' | 'admin';
 export type FilterName =
   | 'PM'

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
-import { usePathname } from 'next/navigation'
+import { usePathname } from 'next/navigation';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 import { useDevice } from '@/shared/provider/DeviceProvider';
 import { useUser } from '@/entities/api/useUser';
@@ -29,6 +29,10 @@ const getRoute = (role: MyInfoResponseRole) => {
       path: role === 'ASSOCIATE_MEMBER' ? '/moments' : '/career',
       name: 'Our Story',
     },
+    RECRUITING: {
+      path: '/recruiting',
+      name: 'Recruiting',
+    },
   } as const;
 };
 
@@ -37,7 +41,7 @@ export default function Header() {
   const ROUTE = getRoute(role as MyInfoResponseRole);
   const { status, signIn, session, signOut } = useAuth();
   const { trackEvent } = useAnalytics();
-  const pathname = usePathname(); 
+  const pathname = usePathname();
   const { isMobile } = useDevice();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -46,39 +50,42 @@ export default function Header() {
     setIsMenuOpen(false);
   };
 
-  const renderLink = useCallback((route: { path: string; name: string }) => {
-    const isShowOurStoryMenu = route.path === ROUTE.OUR_STORY.path;
-    const isActive = pathname === route.path;
-    return (
-      <div
-        className={`relative ${isShowOurStoryMenu ? 'group' : ''}`}
-        key={route.path}
-      >
-        <Link
-          href={route.path}
-          className="w-full group"
-          onClick={handleCloseMenu}
+  const renderLink = useCallback(
+    (route: { path: string; name: string }) => {
+      const isShowOurStoryMenu = route.path === ROUTE.OUR_STORY.path;
+      const isActive = pathname === route.path;
+      return (
+        <div
+          className={`relative ${isShowOurStoryMenu ? 'group' : ''}`}
+          key={route.path}
         >
-          <div
-            className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
-            data-name={`GNB_Tap_${route.name}`}
+          <Link
+            href={route.path}
+            className="w-full group"
+            onClick={handleCloseMenu}
           >
-            <p
-              className={twMerge(
-                'text-body-18-b whitespace-pre cursor-pointer transition-colors',
-                isActive
-                  ? 'text-primary-ui'
-                  : 'hover:text-primary-ui text-gray-800',
-              )}
+            <div
+              className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
+              data-name={`GNB_Tap_${route.name}`}
             >
-              {route.name}
-            </p>
-          </div>
-        </Link>
-        <OurStoryMenu />
-      </div>
-    );
-  }, [pathname, ROUTE.OUR_STORY.path]);
+              <p
+                className={twMerge(
+                  'text-body-18-b whitespace-pre cursor-pointer transition-colors',
+                  isActive
+                    ? 'text-primary-ui'
+                    : 'hover:text-primary-ui text-gray-800',
+                )}
+              >
+                {route.name}
+              </p>
+            </div>
+          </Link>
+          <OurStoryMenu />
+        </div>
+      );
+    },
+    [pathname, ROUTE.OUR_STORY.path],
+  );
 
   return (
     <header
