@@ -17,6 +17,7 @@ export default function RecruitingPage() {
   const ref5 = useRef<HTMLDivElement>(null);
   const [showButton, setShowButton] = useState(true);
 
+  console.log(isInRange);
   // 이벤트 리스너로 현재 스크롤의 위치를 파악해서 
   // ref5에 저장된 위치와 비교함.
   // 오프셋을 42.5*8 만큼 줘서(버튼이 떠있는 위치, 수정 할수도)

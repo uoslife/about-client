@@ -5,8 +5,8 @@ import { RecruitmentField } from './RecruitmentField';
 export function Section04() {
   return (
     <div
-      className="flex flex-col items-start self-stretch pt-20 gap-40 pr-80 pb-50 pl-80 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(70,134,255,0.07)_80%,rgba(255,255,255,0.07)_100%)]
-    max-md:gap-[3.75rem] max-md:w-full max-md:pt-7 max-md:px-4 max-md:pb-[4.5rem]"
+      className="flex flex-col items-start self-stretch pt-20 gap-40 px-[20%] pb-50 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(70,134,255,0.07)_80%,rgba(255,255,255,0.07)_100%)]
+    max-lg:gap-[3.75rem] max-lg:w-full max-lg:pt-7 max-lg:px-4 max-lg:pb-[4.5rem]"
     >
       <h3 className="self-stretch text-[#222227] font-bold text-[4.5rem] leading-[120%]  w-full max-md:text-[2rem] max-md:leading-[140%]">
         IT 기술을 통해 <br />
@@ -15,7 +15,7 @@ export function Section04() {
         만들어갈 인재를 모집합니다.
       </h3>
       <div className="flex flex-col items-start self-stretch gap-[120px] max-md:gap-11">
-        <div className="flex w-[54rem] justify-between items-start  max-md:flex-col max-md:gap-4 max-md:self-stretch max-md:w-full">
+        <div className="flex w-full justify-between items-start  max-md:flex-col max-md:gap-4 max-md:self-stretch max-md:w-full">
           <h4 className="text-[#222227] font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
             모집 대상
           </h4>
@@ -130,7 +130,7 @@ export function Section04() {
                     1월 4일(일)
                   </p>
                 </div>
-                
+
                 <p
                   className="text-[#80808B] text-base font-medium leading-[160%] max-md:self-stretch
                 max-md:text-xs max-md:leading-[150%]"

@@ -46,31 +46,35 @@ const Section5text: Array<{
   },
 ];
 
+const QandAchild = ({ item, index }) => {
+  const initS = index === 0 ? true : false;
+  const [open, setOpen] = useState(initS);
+  return (
+    <div key={index} className="flex flex-col items-start gap-5 self-stretch max-md:gap-4">
+      <FAQbutton question={item.question} open={open} setOpen={setOpen} />
+      {open && (
+        <div className="flex flex-col items-start w-[66.4375rem] gap-5 max-md:w-full items-start max-md:gap-2 max-md:self-stretch">
+          {item.answer.map((answeritem, answerIndex) => (
+            <p
+              key={answerIndex}
+              className={`font-medium leading-[160%] self-stretch text-xl ${answeritem.startsWith('*') ? 'text-[#80808B]' : 'text-[#303037]'}
+                    max-md:text-sm`}
+            >
+              {answeritem}
+            </p>
+          ))}
+        </div>
+      )}
+      {index !== Section5text.length - 1 && <div className="h-[0.0625rem] self-stretch bg-[#E1E1E7]" />}
+    </div>
+  );
+};
+
 const QandA = () => {
   return (
     <>
       {Section5text.map((item, index) => {
-        const initS = index === 0 ? true : false;
-        const [open, setOpen] = useState(initS);
-        return (
-          <div key={index} className="flex flex-col items-start gap-5 self-stretch max-md:gap-4">
-            <FAQbutton question={item.question} open={open} setOpen={setOpen} />
-            {open && (
-              <div className="flex flex-col items-start w-[66.4375rem] gap-5 max-md:w-full items-start max-md:gap-2 max-md:self-stretch">
-                {item.answer.map((answeritem, answerIndex) => (
-                  <p
-                    key={answerIndex}
-                    className={`font-medium leading-[160%] self-stretch text-xl ${answeritem.startsWith('*') ? 'text-[#80808B]' : 'text-[#303037]'}
-                    max-md:text-sm`}
-                  >
-                    {answeritem}
-                  </p>
-                ))}
-              </div>
-            )}
-            {index !== Section5text.length - 1 && <div className="h-[0.0625rem] self-stretch bg-[#E1E1E7]" />}
-          </div>
-        );
+        <QandAchild item={item} index={index} />;
       })}
     </>
   );

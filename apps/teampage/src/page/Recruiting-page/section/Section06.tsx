@@ -3,7 +3,7 @@
 import { forwardRef } from 'react';
 import { Recruitbutton } from './Recruitbutton';
 
-export const Section06 = forwardRef<HTMLDivElement, any>((props, ref) => {
+export const Section06 = forwardRef<HTMLDivElement, any>((_, ref) => {
   return (
     <div
       ref={ref}
@@ -24,3 +24,5 @@ export const Section06 = forwardRef<HTMLDivElement, any>((props, ref) => {
     </div>
   );
 });
+
+Section06.displayName = 'Section06';
