@@ -53,7 +53,7 @@ const QandAchild = ({ item, index }) => {
     <div key={index} className="flex flex-col items-start gap-5 self-stretch max-md:gap-4">
       <FAQbutton question={item.question} open={open} setOpen={setOpen} />
       {open && (
-        <div className="flex flex-col items-start w-[66.4375rem] gap-5 max-md:w-full items-start max-md:gap-2 max-md:self-stretch">
+        <div className="flex flex-col items-start w-[100%] gap-5 max-md:w-full items-start max-md:gap-2 max-md:self-stretch">
           {item.answer.map((answeritem, answerIndex) => (
             <p
               key={answerIndex}
