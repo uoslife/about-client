@@ -15,7 +15,7 @@ export function Section04() {
         만들어갈 인재를 모집합니다.
       </h3>
       <div className="flex flex-col items-start self-stretch gap-[120px] max-md:gap-11">
-        <div className="flex w-[54rem] justify-between items-start  max-md:flex-col max-md:gap-4 max-md:self-stretch max-md:w-full">
+        <div className="flex w-[100%] justify-between items-start  max-md:flex-col max-md:gap-4 max-md:self-stretch max-md:w-full">
           <h4 className="text-[#222227] font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
             모집 대상
           </h4>
@@ -47,7 +47,7 @@ export function Section04() {
           </h4>
           <div className="flex flex-col items-start gap-10 max-md:items-start max-md:gap-5 max-md:self-stretch">
             <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
-              <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%]">
+              <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%] max-lg:">
                 1차 서류 모집
               </h5>
               <div className="flex items-start gap-3 pt-0.5 max-md:gap-2">
