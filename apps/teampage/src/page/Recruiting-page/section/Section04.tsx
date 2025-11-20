@@ -8,14 +8,17 @@ export function Section04() {
       className="flex flex-col items-start self-stretch pt-20 gap-40 px-[20%] pb-50 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(70,134,255,0.07)_80%,rgba(255,255,255,0.07)_100%)]
     max-lg:gap-[3.75rem] max-lg:w-full max-lg:pt-7 max-lg:px-4 max-lg:pb-[4.5rem]"
     >
-      <h3 className="self-stretch text-[#222227] font-bold text-[4.5rem] leading-[120%]  w-full max-md:text-[2rem] max-md:leading-[140%]">
+      <h3 className="self-stretch text-[#222227] font-bold text-[4.5rem] leading-[120%]  w-full max-md:text-[2rem] max-md:leading-[140%] max-lg:text-[3rem]">
         IT 기술을 통해 <br />
         서울시립대학교 구성원을 <br />
         연결하는 프로덕트를 <br />
         만들어갈 인재를 모집합니다.
       </h3>
       <div className="flex flex-col items-start self-stretch gap-[120px] max-md:gap-11">
-        <div className="flex w-[100%] justify-between items-start  max-md:flex-col max-md:gap-4 max-md:self-stretch max-md:w-full">
+        <div
+          className="flex w-[54rem] justify-between items-start  max-md:flex-col max-md:gap-4 max-md:self-stretch max-md:w-full
+        max-xl:w-[48rem]"
+        >
           <h4 className="text-[#222227] font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
             모집 대상
           </h4>
