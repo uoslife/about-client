@@ -12,21 +12,19 @@ import { SectionMain } from './section/SectionMain';
 
 export default async function MainPage() {
   return (
-    <div className="flex flex-col items-center justify-center">
-      <main>
-        <SectionMain />
-        <Suspense>
-          <Section01 />
-          <Section02 />
-          <Section03 />
-          <Section04 />
-          <Section05 />
-          <Section06 />
-          <Section07 />
-          <Section08 />
-          <Section09 />
-        </Suspense>
-      </main>
-    </div>
+    <main>
+      <SectionMain />
+      <Suspense>
+        <Section01 />
+        <Section02 />
+        <Section03 />
+        <Section04 />
+        <Section05 />
+        <Section06 />
+        <Section07 />
+        <Section08 />
+        <Section09 />
+      </Suspense>
+    </main>
   );
 }

@@ -12,26 +12,19 @@ export function Section03() {
   });
   return (
     <div
-      className="relative flex flex-col items-center justify-center gap-14 sm:gap-40 my-32 pb-[280px] sm:pb-[512px]"
+      className="relative flex flex-col items-center justify-center gap-14 sm:gap-40 my-12 sm:my-32 pb-[280px] sm:pb-[512px]"
       ref={ref}
     >
       <div className="flex flex-col items-center text-center gap-4">
         <div className="text-4xl font-bold">
-          <Text
-            variant={{ initial: 'body-16-b', sm: 'title-28-b' }}
-            color="grey-500"
-          >
+          <Text variant={{ initial: 'body-16-b', sm: 'title-28-b' }} color="grey-500">
             How We Make It Real
           </Text>
         </div>
         <div className="text-gray-500 text-xl">
           <Text as="h2" variant={{ initial: 'body-14-b', sm: 'title-60-b' }}>
             <span>시대생은 </span>
-            <Text
-              as="span"
-              variant={{ initial: 'body-14-b', sm: 'title-60-b' }}
-              color="primary-gradiant"
-            >
+            <Text as="span" variant={{ initial: 'body-14-b', sm: 'title-60-b' }} color="primary-gradiant">
               PM · 개발 · 디자인 · 마케팅{' '}
             </Text>
             <span>챕터로 조직되어</span>
@@ -40,14 +33,11 @@ export function Section03() {
           </Text>
         </div>
       </div>
-      <div className="w-full overflow-x-scroll">
-        <div className="mx-8 overflow-x-scroll relative flex sm:flex-row justify-between gap-8 sm:gap-40 sm:pb-[420px]">
-          <div className="flex-shrink-0 flex sm:flex-row flex-col justify-between gap-8 sm:gap-40 ">
+      <div className="w-full overflow-x-scroll no-scrollbar z-10">
+        <div className="flex justify-start sm:justify-center overflow-x-scroll relative sm:flex-row gap-8 sm:gap-40 sm:pb-[452px] no-scrollbar">
+          <div className="flex-shrink-0 flex sm:flex-row flex-col gap-8 pl-4 sm:pl-0">
             <div className="flex flex-col gap-2 sm:gap-4 sm:mt-[54px]">
-              <Text
-                variant={{ initial: 'body-14-b', sm: 'title-28-b' }}
-                color="primary-ui"
-              >
+              <Text variant={{ initial: 'body-14-b', sm: 'title-28-b' }} color="primary-ui">
                 시간표 · 공지사항
               </Text>
               <Text
@@ -72,12 +62,9 @@ export function Section03() {
               />
             </div>
           </div>
-          <div className="flex-shrink-0 sm:absolute bottom-0 flex flex-col sm:flex-row-reverse sm:items-end justify-between gap-8 sm:gap-20">
+          <div className="flex-shrink-0 sm:absolute bottom-0 flex flex-col sm:flex-row-reverse sm:items-end justify-between gap-8 sm:gap-20 pr-4 sm:pr-0">
             <div className="flex flex-col gap-2 sm:gap-4 sm:mt-[54px] sm:pb-40">
-              <Text
-                variant={{ initial: 'body-14-b', sm: 'title-28-b' }}
-                color="primary-ui"
-              >
+              <Text variant={{ initial: 'body-14-b', sm: 'title-28-b' }} color="primary-ui">
                 시대팅
               </Text>
               <Text
@@ -95,18 +82,18 @@ export function Section03() {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 w-full -z-10 sm:z-0 sm:px-8 sm:rounded-[62px] sm:h-[600px] flex flex-col items-center justify-end gap-8 pb-12">
+      <div className="absolute sm:bottom-4 bottom-[-70px] left-0 w-full sm:z-0 sm:px-8 sm:rounded-[62px] h-[400px] sm:h-[600px] flex flex-col items-center justify-end gap-8 pb-12">
         <Image
           src="/img/section03_bg.webp"
           alt="section 03 background"
           fill
-          className="sm:block hidden absolute -z-10 top-0 left-0 w-full"
+          className="sm:block hidden absolute top-0 left-0 w-full object-cover"
         />
         <Image
           src="/img/section03_bg.webp"
           alt="section 03 background"
           fill
-          className="sm:hidden absolute top-0 left-0 w-full"
+          className="sm:hidden absolute top-0 left-0 w-full object-cover"
         />
         <div className="z-10 sm:z-0 flex flex-col gap-5 items-center pt-[100px] sm:pt-0">
           <Image
@@ -141,16 +128,8 @@ export function Section03() {
               width={22}
               className="w-[12px] h-[14px] sm:h-[19px] sm:w-[22px]"
             />
-            <Text
-              variant={{ initial: 'body-12-m', sm: 'body-14-m' }}
-              color="white"
-              className="flex items-center gap-1"
-            >
-              <Text
-                as="span"
-                variant={{ initial: 'body-12-b', sm: 'body-16-b' }}
-                color="white"
-              >
+            <Text variant={{ initial: 'body-12-m', sm: 'body-14-m' }} color="white" className="flex items-center gap-1">
+              <Text as="span" variant={{ initial: 'body-12-b', sm: 'body-16-b' }} color="white">
                 iOS 앱
               </Text>
               다운로드
@@ -174,16 +153,8 @@ export function Section03() {
               width={22}
               className="w-[12px] h-[14px] sm:h-[19px] sm:w-[22px]"
             />
-            <Text
-              variant={{ initial: 'body-12-m', sm: 'body-14-m' }}
-              color="white"
-              className="flex items-center gap-1"
-            >
-              <Text
-                as="span"
-                variant={{ initial: 'body-12-b', sm: 'body-16-b' }}
-                color="white"
-              >
+            <Text variant={{ initial: 'body-12-m', sm: 'body-14-m' }} color="white" className="flex items-center gap-1">
+              <Text as="span" variant={{ initial: 'body-12-b', sm: 'body-16-b' }} color="white">
                 Android 앱
               </Text>
               다운로드

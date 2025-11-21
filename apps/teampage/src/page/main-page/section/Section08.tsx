@@ -22,26 +22,22 @@ export function Section08() {
       className="relative flex flex-col items-center justify-center bg-black gap-28 py-28 max-md:px-0 max-md:py-[24px] max-md:gap-[28px]"
       ref={ref}
     >
-      <Image
-        src="/img/section08_bg.webp"
-        alt="section 09 background"
-        fill
-        className="absolute top-0 left-0"
-      />
+      <Image src="/img/section08_bg.webp" alt="section 09 background" fill className="absolute top-0 left-0" />
       <div className="z-10 flex flex-col gap-8 w-full px-[180px] max-w-pc max-md:px-[18px]">
         <div className="flex flex-col gap-2">
-          <Text variant="title-28-m" color="white" className='max-md:text-title-18-b'>
+          <Text variant="title-28-m" color="white" className="max-md:text-title-18-b">
             Interview
           </Text>
-          <Text as="h2" variant="heading-72-b" color="white" className='max-md:whitespace-pre-line max-md:text-title-24-b'>
+          <Text
+            as="h2"
+            variant="heading-72-b"
+            color="white"
+            className="max-md:whitespace-pre-line max-md:text-title-24-b"
+          >
             시대생 멤버들이 전하는 경험과 성장
           </Text>
         </div>
-        <Text
-          variant="title-24-m"
-          className="whitespace-pre-line max-md:text-body-14-m"
-          color="grey-100"
-        >
+        <Text variant="title-24-m" className="whitespace-pre-line max-md:text-body-14-m" color="grey-100">
           {
             '졸업생, 대표단, 현 활동 멤버까지 —\n시대생을 통해 어떤 배움과 변화를 얻었는지 생생한 경험담을 확인해보세요.'
           }
@@ -54,15 +50,8 @@ export function Section08() {
 
 function InterviewCarousel() {
   const hasSwipeLastItem = useRef(false);
-  const {
-    category,
-    currentIndex,
-    scrollRef,
-    itemRefs,
-    handleTabClick,
-    handlePrevClick,
-    handleNextClick,
-  } = useHorizontalScroll<CategoryType>({ data: INTERVIEW_DATA });
+  const { category, currentIndex, scrollRef, itemRefs, handleTabClick, handlePrevClick, handleNextClick } =
+    useHorizontalScroll<CategoryType>({ data: INTERVIEW_DATA });
   const { trackEvent } = useAnalytics();
 
   useEffect(() => {
@@ -85,7 +74,7 @@ function InterviewCarousel() {
             clicked={category === cat}
             onClick={() => handleTabClick(cat)}
             color="dark"
-            className='max-md:text-body-14-b max-md:px-4 max-md:py-1 max-md:h-fit'
+            className="max-md:text-body-14-b max-md:px-4 max-md:py-1 max-md:h-fit"
           >
             {cat}
           </TabButton>
@@ -116,14 +105,7 @@ function InterviewCarousel() {
           className="w-14 h-14 rounded-full bg-grey-800 flex items-center justify-center disabled:opacity-30 max-md:w-9 max-md:h-9"
           disabled={currentIndex === 0}
         >
-          {() => (
-            <Image
-              src="/svg/arrow-left.svg"
-              alt="이전"
-              width={24}
-              height={24}
-            />
-          )}
+          {() => <Image src="/svg/arrow-left.svg" alt="이전" width={24} height={24} />}
         </HoverScaleAnimation>
 
         <HoverScaleAnimation
@@ -132,14 +114,7 @@ function InterviewCarousel() {
           className="w-14 h-14 rounded-full bg-grey-800 flex items-center justify-center disabled:opacity-30 max-md:w-9 max-md:h-9"
           disabled={currentIndex === INTERVIEW_DATA.length - 1}
         >
-          {() => (
-            <Image
-              src="/svg/arrow-right.svg"
-              alt="다음"
-              width={24}
-              height={24}
-            />
-          )}
+          {() => <Image src="/svg/arrow-right.svg" alt="다음" width={24} height={24} />}
         </HoverScaleAnimation>
       </div>
     </div>
@@ -170,21 +145,21 @@ function InterviewCard({
           className="rounded-full w-[120px] h-[120px] object-cover max-md:w-[76px] max-md:h-[76px]"
         />
         <div className="rounded-[20px] bg-grey-800 py-2 px-4">
-          <Text variant="body-16-m" color="grey-100" className='max-md:text-body-12-m'>
+          <Text variant="body-16-m" color="grey-100" className="max-md:text-body-12-m">
             {category}
           </Text>
         </div>
       </div>
       <div className="flex flex-col gap-6">
-        <Text variant="body-18-m" color="grey-100" className='max-md:text-body-14-m'>
+        <Text variant="body-18-m" color="grey-100" className="max-md:text-body-14-m">
           {description}
         </Text>
         <Divider />
         <div className="flex flex-row items-center gap-2">
-          <Text variant="body-20-b" color="white" className='max-md:text-body-14-b'>
+          <Text variant="body-20-b" color="white" className="max-md:text-body-14-b">
             {name}
           </Text>
-          <Text variant="body-20-m" color="grey-400" className='max-md:text-body-14-m'>
+          <Text variant="body-20-m" color="grey-400" className="max-md:text-body-14-m">
             {position}
           </Text>
         </div>
