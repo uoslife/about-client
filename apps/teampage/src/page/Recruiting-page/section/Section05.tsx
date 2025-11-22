@@ -82,7 +82,7 @@ const QandA = () => {
 
 export function Section05() {
   return (
-    <div className="flex flex-col items-start w-full gap-20 w-full p-[10%] max-md:gap-7">
+    <div className="flex flex-col items-start w-full gap-20 w-full max-md:gap-7 px-[16.66667%] pb-[120px]">
       <h3 className="text-[#222227] font-bold text-[4.5rem] leading-[120%] self-stretch max-md:text-[2rem] max-md:leading-[140%]">
         자주 묻는 질문
       </h3>

@@ -5,7 +5,7 @@ import { RecruitmentField } from './RecruitmentField';
 export function Section04() {
   return (
     <div
-      className="flex flex-col items-start self-stretch pt-20 gap-40 px-[20%] pb-50 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(70,134,255,0.07)_80%,rgba(255,255,255,0.07)_100%)]
+      className="flex flex-col items-start self-stretch gap-40 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(70,134,255,0.07)_80%,rgba(255,255,255,0.07)_100%)] px-80 pt-20 pb-[200px]
     max-lg:gap-[3.75rem] max-lg:w-full max-lg:pt-7 max-lg:px-4 max-lg:pb-[4.5rem]"
     >
       <h3 className="self-stretch text-[#222227] font-bold text-[4.5rem] leading-[120%]  w-full max-md:text-[2rem] max-md:leading-[140%] max-lg:text-[3rem]">
@@ -38,7 +38,7 @@ export function Section04() {
         </div>
         <div className="flex items-start gap-[15.0625rem] self-stretch max-md:flex-col max-md:gap-4 max-md:self-stretch">
           <h4 className="text-[#222227] font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
-            모집 분야 및 <br /> 우대 사항
+            모집 분야 및 우대 사항
           </h4>
           <div className="flex flex-col items-start w-[52.9375rem] gap-5 max-md:gap-3 max-md:self-stretch max-md:w-full">
             <RecruitmentField />
