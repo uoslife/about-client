@@ -1,4 +1,64 @@
+import { Text } from '@/shared/component/Text';
+import Image from 'next/image';
 import Link from 'next/link';
+
+type People = {
+  company: string;
+  name: string;
+  role: string;
+  src: string;
+};
+
+const People = [
+  {
+    company: '네이버',
+    name: '정인우',
+    role: 'Back-end Engineer',
+    src: '/img/recruit/mentor1.svg',
+  },
+  {
+    company: '카카오페이',
+    name: '김나연',
+    role: 'Back-end Engineer',
+    src: '/img/recruit/mentor2.svg',
+  },
+  {
+    company: '미리디',
+    name: '조종빈',
+    role: 'Front-end Engineer',
+    src: '/img/recruit/mentor3.svg',
+  },
+  {
+    company: 'SKT',
+    name: '배서현',
+    role: 'Infra Engineer',
+    src: '/img/recruit/mentor4.svg',
+  },
+  {
+    company: '리멤버',
+    name: '김은서',
+    role: 'Product Manager',
+    src: '/img/recruit/mentor5.svg',
+  },
+  {
+    company: 'PwC컨설팅',
+    name: '문정민',
+    role: 'Consultant',
+    src: '/img/recruit/mentor6.svg',
+  },
+  {
+    company: '그릿스탠다드',
+    name: '정희윤',
+    role: 'UXUI Designer',
+    src: '/img/recruit/mentor7.svg',
+  },
+  {
+    company: '에코마케팅',
+    name: '우채윤',
+    role: 'Marketer',
+    src: '/img/recruit/mentor8.svg',
+  },
+] as const satisfies People[];
 
 export function Section02() {
   return (
@@ -52,25 +112,38 @@ export function Section02() {
         </div>
       </section>
 
-      <section className="w-full px-6 py-24">
+      <section className="w-full px-6 py-3">
         <div className="mx-auto flex w-full max-w-[1152px] flex-col items-center gap-16">
-          {/* 제목 */}
           <h2 className="text-[36px] font-bold text-[#222227]">멘토 소개</h2>
-
-          {/* 카드 반복 렌더링 */}
-          <div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 8 }).map((_, idx) => (
-              <div
-                key={idx}
-                className="flex flex-col items-center rounded-2xl bg-white px-10 py-12 shadow-md min-h-[320px]"
-              >
-                {/* 이미지 placeholder */}
-                <div className="mb-8 h-[140px] w-[140px] rounded-full bg-gray-200" />
-
-                {/* 텍스트 */}
-                <p className="text-[20px] font-bold text-[#222227]">Company</p>
-                <p className="mt-1 text-[16px] text-[#666666]">Role</p>
-                <p className="mt-4 text-[16px] text-[#222227]">Name</p>
+          <div className="grid w-full grid-cols-2 gap-4 lg:grid-cols-4">
+            {People.map((person, idx) => (
+              <div key={idx} className="flex flex-col items-center rounded-2xl bg-white px-6 py-3 shadow-md">
+                <Image
+                  src={person.src}
+                  alt={`${person.name} 멘토`}
+                  width={140}
+                  height={140}
+                  className="mb-8 rounded-full"
+                />
+                <div className="flex flex-col items-center gap-2">
+                  <Text
+                    variant={{ initial: 'body-14-b', lg: 'body-20-b' }}
+                    color="grey-900"
+                    className="whitespace-nowrap"
+                  >
+                    {person.company}
+                  </Text>
+                  <Text
+                    variant={{ initial: 'body-14-m', lg: 'body-16-m' }}
+                    color="grey-700"
+                    className="whitespace-nowrap"
+                  >
+                    {person.role}
+                  </Text>
+                  <Text variant={{ initial: 'body-14-b', lg: 'body-16-b' }} color="grey-900">
+                    {person.name}
+                  </Text>
+                </div>
               </div>
             ))}
           </div>

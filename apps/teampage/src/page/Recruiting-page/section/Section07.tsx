@@ -35,7 +35,7 @@ export function Section07() {
                 시대생 카카오톡 채널 바로가기
               </p>
               <div className="flex w-6 h-6 justify-center items-center gap-2.5 max-md:w-4 max-md:h-4 max-md:gap-[6.667px]">
-                <Image src="/img/recruit/anglebracket.svg" alt="bracket" width={10} height={20} />
+                <Image src="/img/recruit/anglebracket.svg" alt="bracket" width={8} height={8} />
               </div>
             </div>
           </Link>
@@ -62,7 +62,7 @@ export function Section07() {
               max-md:w-4 max-md:h-4 max-md:gap-[6.667px]
               "
               >
-                <Image src="/img/recruit/anglebracket.svg" alt="bracket" width={10} height={20} />
+                <Image src="/img/recruit/anglebracket.svg" alt="bracket" width={8} height={8} />
               </div>
             </div>
           </Link>
