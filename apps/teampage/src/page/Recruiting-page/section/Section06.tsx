@@ -15,7 +15,7 @@ export const Section06 = forwardRef<HTMLDivElement, any>((_, ref) => {
             UOSLIFE에서 <br />
             여러분을 기다립니다
           </h3>
-          <p className="text-center text-[#54545C] text-[1.125rem] font-medium leading-[160%] max-md:text-sm w-3/4">
+          <p className="text-center text-[#54545C] text-[1.125rem] font-medium leading-[160%] max-md:text-sm w-[100%] max-md:w-[80%]">
             11/30(일) 오후 11시 59분까지 하단의 링크를 통해 지원서를 제출해 주세요.
           </p>
         </div>
