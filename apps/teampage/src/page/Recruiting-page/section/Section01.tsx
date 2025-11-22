@@ -1,12 +1,21 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export function Section01() {
   return (
     <>
-      <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-white px-6 py-20">
+      <div className="absolute inset-0 -z-10">
+        {'배경 이미지 영역'}
+        <Image src="/img/recruit/rightlogo.svg" alt="background logo" width={1215} height={762} />
+      </div>
+      <div  className="absolute inset-0 -z-10">
+        {'배경 이미지 영역'}
+        <Image src="/img/recruit/leftlogo.svg" alt="background logo" width={1215} height={762} />
+      </div>
+      <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-white px-6 py-20">
         {/* 메인 컨텐츠 영역 */}
         <div className="flex w-full max-w-[1440px] flex-col gap-16">
           {/* 메인 텍스트 */}
@@ -24,7 +33,7 @@ export function Section01() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
       <section className="w-full px-6 py-24">
         <div className="mx-auto flex w-full max-w-[1152px] flex-col gap-12 lg:flex-row lg:items-center lg:gap-24">
@@ -90,7 +99,7 @@ export function Section01() {
                 {/* 이미지 placeholder */}
                 <div className="mb-8 h-[140px] w-[140px] rounded-full bg-gray-200" />
 
-                {/* 텍스트 */} 
+                {/* 텍스트 */}
                 <p className="text-[20px] font-bold text-[#222227]">Company</p>
                 <p className="mt-1 text-[16px] text-[#666666]">Role</p>
                 <p className="mt-4 text-[16px] text-[#222227]">Name</p>
