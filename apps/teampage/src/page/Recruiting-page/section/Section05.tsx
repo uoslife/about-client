@@ -53,7 +53,7 @@ const QandAchild = ({ item, index }) => {
     <div key={index} className="flex flex-col items-start gap-5 self-stretch max-md:gap-4">
       <FAQbutton question={item.question} open={open} setOpen={setOpen} />
       {open && (
-        <div className="flex flex-col items-start w-[66.43rem] gap-5 max-md:w-full items-start max-md:gap-2 max-md:self-stretch max-xl:w-[100%]">
+        <div className="flex flex-col items-start w-[66.43rem]  gap-5 items-start max-md:gap-2 max-md:self-stretch max-2xl:w-[100%]">
           {item.answer.map((answeritem, answerIndex) => (
             <p
               key={answerIndex}
@@ -82,7 +82,7 @@ const QandA = () => {
 
 export function Section05() {
   return (
-    <div className="flex flex-col items-start w-full gap-20 w-full max-md:gap-7 px-[16.66667%] pb-[120px]">
+    <div className="flex flex-col items-start w-full gap-20 w-full max-md:gap-7 px-[16.66667%] pb-[120px] max-md:pb-[60px] max-md:px-4">
       <h3 className="text-[#222227] font-bold text-[4.5rem] leading-[120%] self-stretch max-md:text-[2rem] max-md:leading-[140%]">
         자주 묻는 질문
       </h3>

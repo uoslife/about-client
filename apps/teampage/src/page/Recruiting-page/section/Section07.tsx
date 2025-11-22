@@ -4,7 +4,7 @@ import Image from 'next/image';
 export function Section07() {
   return (
     <>
-      <div className="flex flex-col items-start gap-20 self-stretch py-60 px-80 max-md:px-4 max-md:py-[84px] max-md:gap-7 max-xl:px-[10%]">
+      <div className="flex flex-col items-start gap-20 self-stretch py-60 px-80 max-md:px-4 max-md:py-[84px] max-md:gap-7 max-xl:px-[10%] ">
         <h2 className="text-[#222227] font-pretendard text-[72px] font-bold leading-[120%] self-stretch max-md:text-[32px] font-bold max-md:leading-[140%]">
           더 궁금한 게 있다면
           <br />
