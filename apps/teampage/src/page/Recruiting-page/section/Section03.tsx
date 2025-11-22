@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-export function Section02() {
+export function Section03() {
   const logos = Array.from({ length: 9 }, (_, i) => `/svg/logo/${i + 1}.svg`);
   const infiniteLogos = [...logos, ...logos];
 

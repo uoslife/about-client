@@ -50,7 +50,7 @@ const QandAchild = ({ item, index }) => {
   const initS = index === 0 ? true : false;
   const [open, setOpen] = useState(initS);
   return (
-    <div key={index} className="flex flex-col items-start gap-5 self-stretch max-md:gap-4">
+    <div key={index} className="flex flex-col items-start gap-5 self-stretch max-md:gap-4 ">
       <FAQbutton question={item.question} open={open} setOpen={setOpen} />
       {open && (
         <div className="flex flex-col items-start w-[66.43rem]  gap-5 items-start max-md:gap-2 max-md:self-stretch max-2xl:w-[100%]">
