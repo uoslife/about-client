@@ -1,6 +1,7 @@
 'use client';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signIn, signOut as _signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
+import { useMemo } from 'react';
 
 type SessionType = {
   accessToken: string;
@@ -22,19 +23,20 @@ export const useAuth = () => {
     return false;
   };
 
-  const session =
-    rawSession && safeParseSession(rawSession)
-      ? {
-          ...rawSession,
-          user: {
-            ...rawSession.user,
-            name: parseUserName(rawSession.user?.name || ''),
-          },
-        }
-      : null;
+  const session = useMemo(() => {
+    if (!(rawSession && safeParseSession(rawSession))) return null;
 
-  const handleSignOut = async () => {
-    signOut({ redirect: false });
+    return {
+      ...rawSession,
+      user: {
+        ...rawSession.user,
+        name: parseUserName(rawSession.user?.name || ''),
+      },
+    };
+  }, [rawSession]);
+
+  const signOut = async () => {
+    _signOut({ redirect: false });
     if (!process.env.NEXT_PUBLIC_NEXTAUTH_URL || !session) throw new Error('NEXT_PUBLIC_NEXTAUTH_URL is not defined');
 
     const keycloakLogoutUrl =
@@ -48,6 +50,6 @@ export const useAuth = () => {
     session,
     status,
     signIn,
-    signOut: handleSignOut,
+    signOut,
   };
 };
