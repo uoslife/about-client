@@ -8,6 +8,7 @@ import { Section05 } from './section/Section05';
 import { Section06 } from './section/Section06';
 import { Section07 } from './section/Section07';
 import { Recruitbutton } from './section/Recruitbutton';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
 export default function RecruitingPage() {
   const now = new Date();
@@ -44,6 +45,10 @@ export default function RecruitingPage() {
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [showButton]);
+
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'recruiting',
+  });
 
   return (
     <div className="flex flex-col  gap-40 items-center w-full bg-[#FFF]">
