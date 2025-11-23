@@ -1,8 +1,6 @@
 import * as amplitude from '@amplitude/analytics-browser';
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect } from 'react';
 import { AmlitudeEventNameMapper, AmplitudeEventName } from './AmplitudeEventParameterMap';
-import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect } from 'react';
-import { AmlitudeEventNameMapper, AmplitudeEventName } from './AmplitudeEventParameterMap';
 import { AmplitudeEventParameterMap } from './AmplitudeEventParameterMap';
 import { makeBaseProperty } from './utils/makeBaseProperty';
 import { useUser } from '../api/useUser';
@@ -37,7 +35,7 @@ const AnalyticsContext = createContext<{
 );
 
 const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const { role, isUserInitialized } = useUser();
+  const { role, isLoading } = useUser();
   if (!process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY) {
     throw new Error('AMPLITUDE_API_KEY is not set');
   }
@@ -58,7 +56,7 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => 
    */
   const trackEvent = useCallback(
     (eventName: AmplitudeEventName, eventProperties?: EventPropertyType[AmplitudeEventName]) => {
-      if (!isUserInitialized) return;
+      if (isLoading) return;
 
       const properties = {
         ...eventProperties,
@@ -79,7 +77,6 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => 
     [role, isLoading],
   );
 
-  return <AnalyticsContext.Provider value={{ trackEvent }}>{children}</AnalyticsContext.Provider>;
   return <AnalyticsContext.Provider value={{ trackEvent }}>{children}</AnalyticsContext.Provider>;
 };
 
