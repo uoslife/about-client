@@ -145,6 +145,7 @@ export const FnQContent = ({ item, index }: { item: textRole; index: number }) =
         className="flex flex-col items-start gap-5 self-stretch
             max-md: gap-4"
       >
+
         <RecruitmentFieldButton name={item.role} open={isOpen} setOpen={setIsOpen} />
         {isOpen && (
           <>
