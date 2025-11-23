@@ -1,13 +1,18 @@
 import { useMe } from '@uoslife/api';
-import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export const useUser = () => {
-  const [isUserInitialized, setIsUserInitialized] = useState(false);
-  const { data: me, isLoading, isError } = useMe();
-  useEffect(() => {
-    if (me || isError || !isLoading) {
-      setIsUserInitialized(true);
-    }
-  }, [me, isLoading, isError]);
-  return { role: me?.role, isUserInitialized };
+  const { data: session } = useSession();
+
+  const { data: me, isLoading } = useMe({
+    query: {
+      enabled: !!session,
+      retry: false,
+    },
+  });
+
+  return {
+    role: me?.role,
+    isLoading,
+  };
 };
