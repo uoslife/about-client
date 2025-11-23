@@ -23,10 +23,7 @@ export class NotionManager {
     return NotionUtil.parseNotionList(response);
   };
 
-  private downloadAndSaveImage = async (
-    notionImageUrl: string,
-    personName: string,
-  ): Promise<string> => {
+  private downloadAndSaveImage = async (notionImageUrl: string, personName: string): Promise<string> => {
     try {
       const safeName = personName.replace(/[^a-zA-Z0-9가-힣]/g, '_');
       const filename = `${safeName}.jpg`;
@@ -40,9 +37,11 @@ export class NotionManager {
         fs.mkdirSync(imagesDir, { recursive: true });
       }
 
-      const response = await fetch(notionImageUrl);
+      const response = await fetch(notionImageUrl, {
+        cache: 'no-store',
+      });
       if (!response.ok) {
-        throw new Error(`Failed to fetch image: ${response.status}`);
+        throw new Error(`Failed to fetch image: ${response.status} ${response.statusText}`);
       }
 
       const buffer = await response.arrayBuffer();
@@ -62,10 +61,7 @@ export class NotionManager {
         list.results.map(async (page) => {
           const data = NotionUtil.convertToPeopleData(page);
           if (data.image_profile) {
-            data.image_profile = await this.downloadAndSaveImage(
-              data.image_profile,
-              data.name,
-            );
+            data.image_profile = await this.downloadAndSaveImage(data.image_profile, data.name);
           }
           return data;
         }),
