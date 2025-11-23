@@ -4,8 +4,6 @@ import { makePostArticleParameter } from './makeParameter/makePostArticleParamet
 import { makePostCommentParameter } from './makeParameter/makePostCommentParameter';
 import { makeLikeArticleParameter } from './makeParameter/makeLikeArticleParameter';
 import { makeClickShareParameter } from './makeParameter/makeClickShareParameter';
-import { makeClickDownloadParameter } from './makeParameter/makeClickDownloadParameter';
-import { makeClickRecruitAlertParameter } from './makeParameter/makeClickRecruitAlertParameter';
 import { makeClickGnbParameter } from './makeParameter/makeClickGnbParameter';
 import { makeClickFooterParameter } from './makeParameter/makeClickFooterParameter';
 import { makeClickPeopleLinkParameter } from './makeParameter/makeClickPeopleLinkParameter';
@@ -13,7 +11,8 @@ import { makeClickFilterParameter } from './makeParameter/makeClickFilterParamet
 import { makeSearchKeywordParameter } from './makeParameter/makeSearchKeywordParameter';
 import { makeScrollHomeParameter } from './makeParameter/makeScrollHomeParameter';
 import { makeScrollArticleParameter } from './makeParameter/makeScrollArticleParameter';
-import { makeSwipeCurriculumParameter } from './makeParameter/makeSwipeCurriculumParameter';
+import { makeClickDownloadParameter } from './makeParameter/makeClickDownloadParameter';
+import { makeSwiptCurriculamParameter } from './makeParameter/makeSwiptCurriculam';
 import { makeSwipeInterviewParameter } from './makeParameter/makeSwipeInterviewParameter';
 
 export const AmplitudeEventParameterMap = {
@@ -23,8 +22,6 @@ export const AmplitudeEventParameterMap = {
   POST_COMMENT: makePostCommentParameter,
   LIKE_ARTICLE: makeLikeArticleParameter,
   CLICK_SHARE: makeClickShareParameter,
-  CLICK_DOWNLOAD: makeClickDownloadParameter,
-  CLICK_RECRUIT_ALERT: makeClickRecruitAlertParameter,
   CLICK_GNB: makeClickGnbParameter,
   CLICK_FOOTER: makeClickFooterParameter,
   CLICK_PEOPLE_LINK: makeClickPeopleLinkParameter,
@@ -32,8 +29,11 @@ export const AmplitudeEventParameterMap = {
   SEARCH_KEYWORD: makeSearchKeywordParameter,
   SCROLL_HOME: makeScrollHomeParameter,
   SCROLL_ARTICLE: makeScrollArticleParameter,
-  SWIPE_CURRICULUM: makeSwipeCurriculumParameter,
+  CLICK_DOWNLOAD: makeClickDownloadParameter,
+  SWIPE_CURRICULUM: makeSwiptCurriculamParameter,
   SWIPE_INTERVIEW: makeSwipeInterviewParameter,
+  CLICK_RECRUIT_ALERT: undefined,
+  CLICK_RECRUIT_BUTTON: undefined,
 } as const;
 
 export const AmlitudeEventNameMapper = {
@@ -54,6 +54,7 @@ export const AmlitudeEventNameMapper = {
   SCROLL_ARTICLE: 'scroll_article',
   SWIPE_CURRICULUM: 'swipe_curriculum',
   SWIPE_INTERVIEW: 'swipe_interview',
+  CLICK_RECRUIT_BUTTON: 'click_recruit_button',
 } as const;
 
 export type AmplitudeEventName = keyof typeof AmplitudeEventParameterMap;

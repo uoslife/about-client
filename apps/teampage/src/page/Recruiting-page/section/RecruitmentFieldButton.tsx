@@ -21,13 +21,13 @@ export function RecruitmentFieldButton({ name, open, setOpen }: RecruitmentField
         {name}
       </h5>
       <button
-        className="flex justify-between items-center self-stretch py-5"
+        className="flex justify-between items-center self-stretch py-[10px] max-md:py-[8px]"
         onClick={(e) => {
           e.preventDefault();
           setOpen((prev) => !prev);
         }}
       >
-        <div className="flex flex-col justify-center items-center w-6 h-6 gap-2.5 flex-shrink-0">
+        <div className="flex flex-col justify-center items-center w-[20px] h-[20px] gap-2.5 flex-shrink-0 max-md:w-[16px] max-md:h-[16px]">
           <Image src={open == true ? minus : plus} alt="펼치기 버튼" />
         </div>
       </button>

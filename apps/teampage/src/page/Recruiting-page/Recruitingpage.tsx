@@ -8,6 +8,7 @@ import { Section05 } from './section/Section05';
 import { Section06 } from './section/Section06';
 import { Section07 } from './section/Section07';
 import { Recruitbutton } from './section/Recruitbutton';
+import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
 export default function RecruitingPage() {
   const now = new Date();
@@ -45,20 +46,22 @@ export default function RecruitingPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [showButton]);
 
+  useSendViewAmplitudeEvent('VIEW_TAB', {
+    tab_name: 'recruiting',
+  });
+
   return (
     <div className="flex flex-col  gap-40 items-center w-full bg-[#FFF]">
       <main className="w-full">
-        {showButton && (
+        {isInRange && showButton && (
           <Recruitbutton className={`fixed top-[83.333%] left-1/2 -translate-x-1/2 -translate-y-[83.333%] z-10`} />
         )}
-        {/* 버튼 isInRange && 붙여서 랜더링 안되게 */}
 
         <Section01 />
         <Section02 />
         <Section03 />
         <Section04 />
         <Section05 />
-        {/* 나중에 1~5는 기간 검사해서 랜더링 안되게 */}
         <Section06 ref={ref5} />
         <Section07 />
       </main>
