@@ -14,7 +14,8 @@ export function Section07() {
         <div className="flex items-center gap-10 self-stretch max-md:gap-2">
           {/* 카드 1 */}
           <Link
-            href="#"
+            href="https://pf.kakao.com/_gMEHK"
+            target="_blank"
             className="flex h-[400px] p-12 flex-col justify-between items-start flex-1 rounded-[20px] bg-white/80 shadow-[0_0_16px_0_rgba(70,134,255,0.12)] max-md:h-60 max-md:p-4 max-md:rounded-lg"
           >
             <p
@@ -42,7 +43,8 @@ export function Section07() {
 
           {/* 카드 2 */}
           <Link
-            href="#"
+            href="https://www.instagram.com/uoslife_official/"
+            target="_blank"
             className="flex h-[400px] p-12 flex-col justify-between items-start flex-1 rounded-[20px] bg-white/80 shadow-[0_0_16px_0_rgba(70,134,255,0.12)] max-md:h-60 max-md:p-4 max-md:rounded-lg"
           >
             <p className="self-stretch opacity-95 text-[#222227] font-['Pretendard'] text-[40px] font-bold leading-[140%] max-md:text-xl max-md:leading-[160%]">
