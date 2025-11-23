@@ -11,7 +11,7 @@ export function Recruitbutton({ className = '' }) {
         window.open(
           ISINRANGE
             ? 'https://docs.google.com/forms/d/e/1FAIpQLSeBv_mC-gD4WdQAbYZ6RPHDmuiHLey44AaU5XBeDgxLkSqcKQ/viewform'
-            : 'https://docs.google.com/forms/d/e/1FAIpQLSeBv_mC-gD4WdQAbYZ6RPHDmuiHLey44AaU5XBeDgxLkSqcKQ/viewform',
+            : 'https://docs.google.com/forms/d/1O61Rt-m2OOX9KbCMG-CtkGR-2ytaEgsRiXB2STQKxi4/viewform?edit_requested=true',
           '_blank',
         );
       }}
