@@ -34,6 +34,7 @@ export const AmplitudeEventParameterMap = {
   SCROLL_ARTICLE: makeScrollArticleParameter,
   SWIPE_CURRICULUM: makeSwipeCurriculumParameter,
   SWIPE_INTERVIEW: makeSwipeInterviewParameter,
+  CLICK_RECRUIT_BUTTON: undefined,
 } as const;
 
 export const AmlitudeEventNameMapper = {
@@ -54,6 +55,7 @@ export const AmlitudeEventNameMapper = {
   SCROLL_ARTICLE: 'scroll_article',
   SWIPE_CURRICULUM: 'swipe_curriculum',
   SWIPE_INTERVIEW: 'swipe_interview',
+  CLICK_RECRUIT_BUTTON: 'click_recruit_button',
 } as const;
 
 export type AmplitudeEventName = keyof typeof AmplitudeEventParameterMap;
