@@ -73,7 +73,9 @@ export function Section04() {
                 </div>
               </div>
             </div>
-            <hr className="h-px self-stretch bg-[rgba(70,134,255,0.20)]" />
+            <svg className="w-full h-px self-stretch" preserveAspectRatio="none">
+              <rect width="100%" height="1" fill="rgba(70, 134, 255, 0.20)" />
+            </svg>
             <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
               <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%]">
                 1차 결과 발표
@@ -83,7 +85,9 @@ export function Section04() {
               </p>
             </div>
 
-            <hr className="h-px self-stretch bg-[rgba(70,134,255,0.20)]" />
+            <svg className="w-full h-px self-stretch" preserveAspectRatio="none">
+              <rect width="100%" height="1" fill="rgba(70, 134, 255, 0.20)" />
+            </svg>
             <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
               <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%]">
                 2차 대면 면접
@@ -107,7 +111,9 @@ export function Section04() {
                 </p>
               </div>
             </div>
-            <hr className="h-px self-stretch bg-[rgba(70,134,255,0.20)]" />
+            <svg className="w-full h-px self-stretch" preserveAspectRatio="none">
+              <rect width="100%" height="1" fill="rgba(70, 134, 255, 0.20)" />
+            </svg>
             <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
               <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%]">
                 최종 결과 발표
@@ -121,7 +127,9 @@ export function Section04() {
                 </p>
               </div>
             </div>
-            <hr className="h-px self-stretch bg-[rgba(70,134,255,0.20)]" />
+            <svg className="w-full h-px self-stretch" preserveAspectRatio="none">
+              <rect width="100%" height="1" fill="rgba(70, 134, 255, 0.20)" />
+            </svg>
             <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
               <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%]">
                 합격자 온보딩 워크샵
