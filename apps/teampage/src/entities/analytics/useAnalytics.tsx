@@ -1,15 +1,6 @@
 import * as amplitude from '@amplitude/analytics-browser';
-import React, {
-  createContext,
-  PropsWithChildren,
-  useCallback,
-  useContext,
-  useEffect,
-} from 'react';
-import {
-  AmlitudeEventNameMapper,
-  AmplitudeEventName,
-} from './AmplitudeEventParameterMap';
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect } from 'react';
+import { AmlitudeEventNameMapper, AmplitudeEventName } from './AmplitudeEventParameterMap';
 import { AmplitudeEventParameterMap } from './AmplitudeEventParameterMap';
 import { makeBaseProperty } from './utils/makeBaseProperty';
 import { useUser } from '../api/useUser';
@@ -18,9 +9,7 @@ declare global {
   interface Window {
     dataLayer: {
       event: (typeof AmlitudeEventNameMapper)[AmplitudeEventName];
-      properties: ReturnType<
-        (typeof AmplitudeEventParameterMap)[AmplitudeEventName]
-      >;
+      properties: ReturnType<(typeof AmplitudeEventParameterMap)[AmplitudeEventName]>;
     }[];
   }
 }
@@ -36,14 +25,10 @@ type AnalyticsContextProps = {
   ) => void;
 };
 
-const AnalyticsContext = createContext<AnalyticsContextProps>(
-  {} as AnalyticsContextProps,
-);
+const AnalyticsContext = createContext<AnalyticsContextProps>({} as AnalyticsContextProps);
 
-const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
-  children,
-}) => {
-  const { role, isUserInitialized } = useUser();
+const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const { role, isLoading } = useUser();
   if (!process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY) {
     throw new Error('AMPLITUDE_API_KEY is not set');
   }
@@ -58,7 +43,7 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
       eventName: T,
       eventProperties?: ReturnType<(typeof AmplitudeEventParameterMap)[T]>,
     ) => {
-      if (!isUserInitialized) return;
+      if (isLoading) return;
 
       const properties = {
         ...eventProperties,
@@ -76,14 +61,10 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({
       if (!isProduction) return;
       amplitude.logEvent(AmlitudeEventNameMapper[eventName], properties);
     },
-    [role, isUserInitialized],
+    [role, isLoading],
   );
 
-  return (
-    <AnalyticsContext.Provider value={{ trackEvent }}>
-      {children}
-    </AnalyticsContext.Provider>
-  );
+  return <AnalyticsContext.Provider value={{ trackEvent }}>{children}</AnalyticsContext.Provider>;
 };
 
 export const useAnalytics = () => useContext(AnalyticsContext);
