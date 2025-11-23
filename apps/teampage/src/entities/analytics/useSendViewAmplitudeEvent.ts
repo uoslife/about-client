@@ -1,14 +1,12 @@
 'use client';
 import { useEffect } from 'react';
 import { useAnalytics } from './useAnalytics';
-import {
-  AmplitudeEventName,
-  AmplitudeEventParameterMap,
-} from './AmplitudeEventParameterMap';
+import { AmplitudeEventName } from './AmplitudeEventParameterMap';
+import { EventPropertyType } from './useAnalytics';
 
-export const useSendViewAmplitudeEvent = <T extends AmplitudeEventName>(
-  eventName: T,
-  eventProperties?: ReturnType<(typeof AmplitudeEventParameterMap)[T]>,
+export const useSendViewAmplitudeEvent = (
+  eventName: AmplitudeEventName,
+  eventProperties?: EventPropertyType[AmplitudeEventName],
 ) => {
   const { trackEvent } = useAnalytics();
   useEffect(() => {

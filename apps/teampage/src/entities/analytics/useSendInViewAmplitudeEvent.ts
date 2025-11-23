@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { useAnalytics } from './useAnalytics';
-import {
-  AmplitudeEventName,
-  AmplitudeEventParameterMap,
-} from './AmplitudeEventParameterMap';
+import { AmplitudeEventName } from './AmplitudeEventParameterMap';
+import { EventPropertyType } from './useAnalytics';
 
-export const useSendInViewAmplitudeEvent = <T extends AmplitudeEventName>(
-  eventName: T,
-  eventProperties?: ReturnType<(typeof AmplitudeEventParameterMap)[T]>,
+export const useSendInViewAmplitudeEvent = (
+  eventName: AmplitudeEventName,
+  eventProperties?: EventPropertyType[AmplitudeEventName],
 ) => {
   const hasSentEvent = useRef(false);
   const ref = useRef<HTMLDivElement>(null);

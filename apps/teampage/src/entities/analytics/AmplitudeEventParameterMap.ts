@@ -11,6 +11,9 @@ import { makeClickFilterParameter } from './makeParameter/makeClickFilterParamet
 import { makeSearchKeywordParameter } from './makeParameter/makeSearchKeywordParameter';
 import { makeScrollHomeParameter } from './makeParameter/makeScrollHomeParameter';
 import { makeScrollArticleParameter } from './makeParameter/makeScrollArticleParameter';
+import { makeClickDownloadParameter } from './makeParameter/makeClickDownloadParameter';
+import { makeSwiptCurriculamParameter } from './makeParameter/makeSwiptCurriculam';
+import { makeSwipeInterviewParameter } from './makeParameter/makeSwipeInterviewParameter';
 
 export const AmplitudeEventParameterMap = {
   VIEW_TAB: makeViewTabParameter,
@@ -26,10 +29,10 @@ export const AmplitudeEventParameterMap = {
   SEARCH_KEYWORD: makeSearchKeywordParameter,
   SCROLL_HOME: makeScrollHomeParameter,
   SCROLL_ARTICLE: makeScrollArticleParameter,
-  CLICK_DOWNLOAD: undefined,
+  CLICK_DOWNLOAD: makeClickDownloadParameter,
+  SWIPE_CURRICULUM: makeSwiptCurriculamParameter,
+  SWIPE_INTERVIEW: makeSwipeInterviewParameter,
   CLICK_RECRUIT_ALERT: undefined,
-  SWIPE_CURRICULUM: undefined,
-  SWIPE_INTERVIEW: undefined,
   CLICK_RECRUIT_BUTTON: undefined,
 } as const;
 
