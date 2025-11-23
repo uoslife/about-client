@@ -28,9 +28,11 @@ export const RouteByAuthProvider = ({
   if (!RouteByAuthContext) {
     throw new Error('RouteByAuthContext must be used within a RouteByAuthProvider');
   }
-  const { role, isUserInitialized } = useUser();
+  const { role, isLoading } = useUser();
 
   useEffect(() => {
+    if (isLoading) return;
+
     if (targetRole.includes(role as MyInfoResponseRole)) {
       return;
     }
@@ -54,9 +56,9 @@ export const RouteByAuthProvider = ({
     }, TIMEOUT_MS);
 
     return () => clearTimeout(timer);
-  }, [role, open, route, targetRole]);
+  }, [role, isLoading, open, route, targetRole]);
 
-  if (!isUserInitialized || !targetRole.includes(role as MyInfoResponseRole)) {
+  if (isLoading || !targetRole.includes(role as MyInfoResponseRole)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white">
         <div className="flex flex-col items-center gap-4">

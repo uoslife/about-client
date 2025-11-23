@@ -2,12 +2,9 @@ import { Post } from '@/widgets/post/Post';
 import { Metadata } from 'next';
 import { findArticle } from '@uoslife/api';
 import metaData from '@/shared/const/seo.config';
+import { RouteByAuthProvider } from '@/entities/auth/RouteByAuthContext';
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: number };
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { id: number } }): Promise<Metadata> {
   try {
     const article = await findArticle(params.id, {
       nonMemberId: 'id-meta-data',
@@ -52,5 +49,9 @@ export async function generateMetadata({
 }
 
 export default function CareerPostPage({ params }: { params: { id: number } }) {
-  return <Post id={params.id} category="CAREER" />;
+  return (
+    <RouteByAuthProvider route="/" targetRole={['FULL_MEMBER', 'ADMIN']}>
+      <Post id={params.id} category="CAREER" />
+    </RouteByAuthProvider>
+  );
 }

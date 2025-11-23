@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signIn, signOut as _signOut } from 'next-auth/react';
 import { Session } from 'next-auth';
+import { useMemo } from 'react';
 
 type SessionType = {
   accessToken: string;
@@ -14,7 +14,6 @@ const parseUserName = (name: string) => {
 };
 
 export const useAuth = () => {
-  const [session, setSession] = useState<SessionType | null>(null);
   const { data: rawSession, status } = useSession();
 
   const safeParseSession = (session: Session): session is SessionType => {
@@ -24,35 +23,25 @@ export const useAuth = () => {
     return false;
   };
 
-  useEffect(() => {
-    if (rawSession && safeParseSession(rawSession)) {
-      const session = {
-        ...rawSession,
-        user: {
-          ...rawSession.user,
-          name: parseUserName(rawSession.user?.name || ''),
-        },
-      };
-      setSession(session);
-    }
+  const session = useMemo(() => {
+    if (!(rawSession && safeParseSession(rawSession))) return null;
+
+    return {
+      ...rawSession,
+      user: {
+        ...rawSession.user,
+        name: parseUserName(rawSession.user?.name || ''),
+      },
+    };
   }, [rawSession]);
 
-  const handleSignOut = async () => {
-    signOut({ redirect: false });
-    if (!process.env.NEXT_PUBLIC_NEXTAUTH_URL || !session)
-      throw new Error('NEXT_PUBLIC_NEXTAUTH_URL is not defined');
-
-    // keycloak server에서 로그아웃 시키도록 수정
+  const signOut = async () => {
+    _signOut({ redirect: false });
+    if (!process.env.NEXT_PUBLIC_NEXTAUTH_URL || !session) throw new Error('NEXT_PUBLIC_NEXTAUTH_URL is not defined');
 
     const keycloakLogoutUrl =
       `${process.env.NEXT_PUBLIC_KEYCLOAK_ISSUER}/protocol/openid-connect/logout?` +
       `redirect_uri=${encodeURIComponent(process.env.NEXT_PUBLIC_NEXTAUTH_URL)}`;
-
-    // TODO: 로그아웃시, 로그아웃 페이지에서 진행하지 않고 바로 홈페이지로 redirect 하도록 수정 필요
-    // const keycloakLogoutUrl =
-    //   `${process.env.NEXT_PUBLIC_KEYCLOAK_ISSUER}/protocol/openid-connect/logout?` +
-    //   `id_token_hint=${session?.idToken}&` +
-    //   `post_logout_redirect_uri=${encodeURIComponent(process.env.NEXT_PUBLIC_NEXTAUTH_URL)}`;
 
     window.location.href = keycloakLogoutUrl;
   };
@@ -61,6 +50,6 @@ export const useAuth = () => {
     session,
     status,
     signIn,
-    signOut: handleSignOut,
+    signOut,
   };
 };
