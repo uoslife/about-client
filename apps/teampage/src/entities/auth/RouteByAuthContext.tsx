@@ -1,4 +1,3 @@
-
 'use client';
 import { createContext, useEffect } from 'react';
 import { useUser } from '../api/useUser';
@@ -7,7 +6,7 @@ import { MyInfoResponseRole } from '@uoslife/api';
 import { TIME } from '@/shared/const/time';
 
 const RouteByAuthContext = createContext({});
-const TIMEOUT_MS = TIME.SEC * TIME.MS * 3;
+const TIMEOUT_MS = TIME.SEC * TIME.MS * 1;
 
 const ROLE_MAP = {
   GUEST: '게스트',
@@ -27,12 +26,10 @@ export const RouteByAuthProvider = ({
 }) => {
   const { open } = useConfirmModal();
   if (!RouteByAuthContext) {
-    throw new Error(
-      'RouteByAuthContext must be used within a RouteByAuthProvider',
-    );
+    throw new Error('RouteByAuthContext must be used within a RouteByAuthProvider');
   }
   const { role, isUserInitialized } = useUser();
-  
+
   useEffect(() => {
     if (targetRole.includes(role as MyInfoResponseRole)) {
       return;
@@ -43,7 +40,7 @@ export const RouteByAuthProvider = ({
         const redirectToRoute = () => {
           window.location.href = route;
         };
-        
+
         open({
           title: '접근 권한이 없습니다.',
           description: `${targetRole.map((role) => ROLE_MAP[role]).join(', ')}만 접근할 수 있습니다.`,
@@ -69,9 +66,5 @@ export const RouteByAuthProvider = ({
       </div>
     );
   }
-  return (
-    <RouteByAuthContext.Provider value={{}}>
-      {children}
-    </RouteByAuthContext.Provider>
-  );
+  return <RouteByAuthContext.Provider value={{}}>{children}</RouteByAuthContext.Provider>;
 };
