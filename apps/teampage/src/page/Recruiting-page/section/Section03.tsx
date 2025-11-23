@@ -1,14 +1,19 @@
 import Image from 'next/image';
+import { twMerge } from 'tailwind-merge';
 
 export function Section03() {
-  const logos = Array.from({ length: 9 }, (_, i) => `/svg/logo/${i + 1}.svg`);
+  const logos = Array.from({ length: 11 }, (_, i) => `/svg/logo/${i + 1}.svg`);
 
   // 모바일용 2줄 분할
-  const firstRow = logos.slice(0, 5); // 5개
-  const secondRow = logos.slice(5); // 4개
+  const firstRow = logos.slice(0, 6); // 5개
+  const secondRow = logos.slice(6); // 4개
 
   return (
-    <div className="flex flex-col items-center gap-[60px] self-stretch pb-[160px] max-md:gap-[24px] max-md:pb-[60px]">
+    <div
+      className={twMerge(
+        'flex flex-col items-center gap-[60px] self-stretch pb-[160px] max-md:gap-[24px] max-md:pb-[60px]',
+      )}
+    >
       <div className="flex flex-col items-center gap-8 self-stretch max-md:gap-[12px]">
         {/* 제목 */}
         <h2
