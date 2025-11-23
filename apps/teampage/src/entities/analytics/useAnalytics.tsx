@@ -1,6 +1,8 @@
 import * as amplitude from '@amplitude/analytics-browser';
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect } from 'react';
 import { AmlitudeEventNameMapper, AmplitudeEventName } from './AmplitudeEventParameterMap';
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect } from 'react';
+import { AmlitudeEventNameMapper, AmplitudeEventName } from './AmplitudeEventParameterMap';
 import { AmplitudeEventParameterMap } from './AmplitudeEventParameterMap';
 import { makeBaseProperty } from './utils/makeBaseProperty';
 import { useUser } from '../api/useUser';
@@ -74,9 +76,10 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => 
       if (!isProduction) return;
       amplitude.logEvent(AmlitudeEventNameMapper[eventName], properties);
     },
-    [role, isUserInitialized],
+    [role, isLoading],
   );
 
+  return <AnalyticsContext.Provider value={{ trackEvent }}>{children}</AnalyticsContext.Provider>;
   return <AnalyticsContext.Provider value={{ trackEvent }}>{children}</AnalyticsContext.Provider>;
 };
 

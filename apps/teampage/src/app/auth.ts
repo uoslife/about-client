@@ -1,10 +1,7 @@
 import type { NextAuthOptions } from 'next-auth';
 import type { JWT } from 'next-auth/jwt';
 import KeycloakProvider from 'next-auth/providers/keycloak';
-import {
-  getAccessTokenByRefreshToken,
-  isTokenExpired,
-} from '@/shared/utils/jwt';
+import { getAccessTokenByRefreshToken, isTokenExpired } from '@/shared/utils/jwt';
 
 const getAuthOptions = (): NextAuthOptions => {
   const clientId = process.env.KEYCLOAK_CLIENT_ID;
@@ -54,9 +51,7 @@ const getAuthOptions = (): NextAuthOptions => {
 
         // access token이 만료된 경우
         try {
-          const newTokens = await getAccessTokenByRefreshToken(
-            token.refreshToken,
-          );
+          const newTokens = await getAccessTokenByRefreshToken(token.refreshToken);
           token.accessToken = newTokens.accessToken;
           token.refreshToken = newTokens.refreshToken;
 
