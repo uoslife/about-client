@@ -120,7 +120,7 @@ export function Section04() {
               </h5>
               <div className="flex flex-col items-start w-[7.75rem] pt-0.5 gap-4 max-md:w-[4.6875rem] max-md:gap-3">
                 <p className="text-[#222227] text-xl font-medium leading-[160%] max-md:self-stretch max-md:text-sm max-2xl:text-base">
-                  12월 7일(화)
+                  12월 7일(일)
                 </p>
                 <p className="text-[#80808B] text-base font-medium leading-[160%] max-md:text-xs max-md:leading-[150%] max-2xl:text-sm">
                   *개별 안내 예정
@@ -132,7 +132,18 @@ export function Section04() {
             </svg>
             <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
               <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%]">
-                합격자 온보딩 워크샵
+                합격자 온보딩
+              </h5>
+              <p className="text-[#222227] text-xl font-medium leading-[160%] max-md:self-stretch max-md:text-sm max-2xl:text-base">
+                12월 28일(일)
+              </p>
+            </div>
+            <svg className="w-full h-px self-stretch" preserveAspectRatio="none">
+              <rect width="100%" height="1" fill="rgba(70, 134, 255, 0.20)" />
+            </svg>
+            <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
+              <h5 className="text-[#222227] text-[1.75rem] font-bold leading-[150%] w-[14.4375rem] max-md:text-lg  max-md:leading-[160%]">
+                합격자 워크샵
               </h5>
               <div className="flex flex-col items-start pt-0.5 gap-4 max-md:gap-3">
                 <div className="flex items-center gap-3 self-stretch max-md:gap-2">
