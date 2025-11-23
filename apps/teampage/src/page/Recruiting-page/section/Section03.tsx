@@ -21,7 +21,7 @@ export function Section03() {
         >
           네이버, 카카오페이, 라인, 리멤버 등 국내 최고의 IT 회사부터 SKT, 현대자동차, NH투자증권, 한국은행 등 유수의
           대기업/금융권까지
-          <br className="md:hidden" />
+          <br className="hidden lg:block" />
           다양한 업계의 구성원이 지속적인 시너지를 주고 받을 수 있는 관계를 만들어갑니다.
         </p>
       </div>
