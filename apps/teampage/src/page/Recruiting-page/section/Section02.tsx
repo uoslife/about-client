@@ -1,4 +1,3 @@
-import { Text } from '@/shared/component/Text';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -63,92 +62,77 @@ const People = [
 export function Section02() {
   return (
     <>
-      <section className="w-full px-6 py-24">
-        <div className="mx-auto flex w-full max-w-[1152px] flex-col gap-12 lg:flex-row lg:items-center lg:gap-24">
-          <div className="flex flex-col gap-4 text-left lg:min-w-[360px]">
-            <h2 className="text-[42px] font-bold text-[#222227]">
-              Team{' '}
-              <span className="bg-gradient-to-r from-[#0F6EFB] to-[#6AB5FF] bg-clip-text text-transparent">
-                UOSLIFE
-              </span>
-            </h2>
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-[18px] font-semibold text-[#222227] transition-colors hover:text-[#0F6EFB]"
+      <div className="flex w-[100%] flex-row gap-[13.25rem] pb-60 px-80 pt-[100px]">
+        <div className="flex flex-col items-start gap-5">
+          <h2 className="whitespace-nowrap font-['Pretendard'] text-[48px] font-bold leading-[140%] self-stretch bg-gradient-to-r from-black via-[#0F6EFB] to-[#AACEFF] bg-clip-text text-transparent">
+            Team UOSLIFE
+          </h2>
+          <Link href="/" className="flex p-1 items-center gap-1">
+            시대생 자세히 알아보기
+            <div className="text-[#54545C] font-['Pretendard'] text-xl font-medium leading-[160%]">
+              <Image src="/img/recruit/anglebracket.svg" alt="bracket" width={8} height={8} />
+            </div>
+          </Link>
+        </div>
+        <div className="text-[#303037] font-['Pretendard'] text-xl font-medium leading-[160%] gap-5 flex flex-col">
+          <p className="text-[#303037] font-['Pretendard'] text-xl font-medium leading-[160%]">
+            UOSLIFE(시대생)는 서울시립대학교 학우들에게 편리하고 즐거운 학교생활을 위한 서비스를 만들어가는 IT
+            소프트웨어 동아리입니다. 시대생 앱을 운영하며 시간표, 공지사항, 시대팅 등 대학 생활을 위한 다양한 서비스를
+            제공하고 있습니다.
+          </p>
+          <p className="text-[#303037] font-['Pretendard'] text-xl font-medium leading-[160%]">
+            2026년에는 대학 생활의 본질적 가치를 확장하는 새로운 기능과 경험을 선보이며, 학우들의 일상 속에 더욱 깊이
+            스며드는 플랫폼으로 성장할 것입니다. 아울러 구성원들이 자율적으로 협업하고 함께 배우는 문화를 바탕으로,
+            캠퍼스 내에서 지속 가능한 IT 생태계를 만들어 나가고자 합니다.
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-col items-center gap-10 text-center pb-40">
+        <h2 className="text-[#222227] text-center font-['Pretendard'] text-[72px] font-bold leading-[120%]">
+          Synergize with Alumni
+        </h2>
+        <div className="w-2/3">
+          <p className="text-[#303037] text-center font-['Pretendard'] text-xl font-medium leading-[160%] self-stretch">
+            샌프란시스코 실리콘밸리의 성공 배경에는, Pay it forward라 불리는 IT 업계 선후배 사이의 멘토 문화가 핵심으로
+            자리 잡고 있습니다.
+          </p>
+          <p className="text-[#303037] text-center font-['Pretendard'] text-xl font-medium leading-[160%] self-stretch">
+            그리고 UOSLIFE는 업계 다방면에서 활동하는 선배들과 직접 소통하며 성장할 수 있는 곳입니다.
+          </p>
+          <p className="text-[#303037] text-center font-['Pretendard'] text-xl font-medium leading-[160%] self-stretch">
+            &apos;UOSLIFE&apos;는 5년 전 시작한 시대생 앱을 시작으로 선후배가 함께 어우러져 다양한 IT 서비스를 운영하고
+            있습니다.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex w-2/3 flex-col items-center gap-[60px] mx-auto pb-40">
+        <h2 className="text-[36px] font-bold text-[#222227]">6기와 활동을 함께할 멘토</h2>
+        <div className="grid w-full grid-cols-2 gap-[20px] lg:grid-cols-4">
+          {People.map((person, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col items-center rounded-2xl bg-white py-6 px-9 shadow-md justify-center items-center gap-7 rounded-[20px] border-[1.5px] border-white bg-white shadow-[0_0_16px_0_rgba(70,134,255,0.12)]"
             >
-              시대생 자세히 알아보기
-              <span aria-hidden="true">›</span>
-            </Link>
-          </div>
-          <div className="flex flex-1 flex-col gap-6 text-[18px] leading-[1.8] text-[#222227] lg:max-w-[600px]">
-            <p>
-              UOSLIFE(시대생)는 서울시립대학교 학우들에게 편리하고 즐거운 학교생활을 위한 서비스를 만들어가는 IT
-              소프트웨어 동아리입니다. 시대생 앱을 운영하며 시간표, 공지사항, 시대팅 등 대학 생활을 위한 다양한 서비스를
-              제공하고 있습니다.
-            </p>
-            <p>
-              2026년에는 대학 생활의 본질적 가치를 확장하는 새로운 기능과 경험을 선보이며, 학우들의 일상 속에 더욱 깊이
-              스며드는 플랫폼으로 성장할 것입니다. 아울러 구성원들이 자율적으로 협업하고 함께 배우는 문화를 바탕으로,
-              캠퍼스 내에서 지속 가능한 IT 생태계를 만들어 나가고자 합니다.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="w-full px-6 py-24">
-        <div className="mx-auto flex w-full max-w-[1152px] flex-col items-center gap-8 text-center">
-          <h2 className="text-[48px] font-bold text-[#222227]">Synergize with Alumni</h2>
-          <div className="flex flex-col gap-1 text-[18px] leading-[1.8] text-[#222227]">
-            <p>
-              샌프란시스코 실리콘밸리의 성공 배경에는, Pay it forward라 불리는 IT 업계 선후배 사이의 멘토 문화가
-              핵심으로 자리 잡고 있습니다.
-            </p>
-            <p>그리고 UOSLIFE는 업계 다방면에서 활동하는 선배들과 직접 소통하며 성장할 수 있는 곳입니다.</p>
-            <p>
-              &apos;UOSLIFE&apos;는 5년 전 시작한 시대생 앱을 시작으로 선후배가 함께 어우러져 다양한 IT 서비스를
-              운영하고 있습니다.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="w-full px-6 py-3">
-        <div className="mx-auto flex w-full max-w-[1152px] flex-col items-center gap-16">
-          <h2 className="text-[36px] font-bold text-[#222227]">멘토 소개</h2>
-          <div className="grid w-full grid-cols-2 gap-4 lg:grid-cols-4">
-            {People.map((person, idx) => (
-              <div key={idx} className="flex flex-col items-center rounded-2xl bg-white px-6 py-3 shadow-md">
-                <Image
-                  src={person.src}
-                  alt={`${person.name} 멘토`}
-                  width={140}
-                  height={140}
-                  className="mb-8 rounded-full"
-                />
-                <div className="flex flex-col items-center gap-2">
-                  <Text
-                    variant={{ initial: 'body-14-b', lg: 'body-20-b' }}
-                    color="grey-900"
-                    className="whitespace-nowrap"
-                  >
+              <Image src={person.src} alt={`${person.name} 멘토`} width={200} height={200} className="rounded-full" />
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex flex-col items-center self-stretch">
+                  <p className="text-[#222227] text-center font-['Pretendard'] text-[28px] font-bold leading-[150%]">
                     {person.company}
-                  </Text>
-                  <Text
-                    variant={{ initial: 'body-14-m', lg: 'body-16-m' }}
-                    color="grey-700"
-                    className="whitespace-nowrap"
-                  >
+                  </p>
+                  <p className="text-[#54545C] text-center font-['Pretendard'] text-lg font-medium leading-[160%] self-stretch">
                     {person.role}
-                  </Text>
-                  <Text variant={{ initial: 'body-14-b', lg: 'body-16-b' }} color="grey-900">
-                    {person.name}
-                  </Text>
+                  </p>
                 </div>
+
+                <p className="text-[#303037] text-center font-['Pretendard'] text-xl font-bold leading-[160%] self-stretch">
+                  {person.name}
+                </p>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      </section>
+      </div>
     </>
   );
 }
