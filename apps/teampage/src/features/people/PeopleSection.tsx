@@ -28,11 +28,7 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
 
   const filteredPeopleData = useMemo(() => {
     const filtered = peopleData
-      .filter(
-        (person) =>
-          selectedGeneration === -1 ||
-          person.generation === generations[selectedGeneration],
-      )
+      .filter((person) => selectedGeneration === -1 || person.generation === generations[selectedGeneration])
       .filter(
         (person) =>
           person.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,10 +48,8 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
         return a.name.localeCompare(b.name, 'ko');
       } else {
         const positionOrder = { 대표: 0, 부대표: 1 };
-        const orderA =
-          positionOrder[a.position as keyof typeof positionOrder] ?? 2;
-        const orderB =
-          positionOrder[b.position as keyof typeof positionOrder] ?? 2;
+        const orderA = positionOrder[a.position as keyof typeof positionOrder] ?? 2;
+        const orderB = positionOrder[b.position as keyof typeof positionOrder] ?? 2;
 
         if (orderA !== orderB) {
           return orderA - orderB;
@@ -66,12 +60,12 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
   }, [peopleData, selectedGeneration, searchQuery, generations]);
 
   return (
-    <main className="flex flex-col">
+    <div className="flex flex-col gap-16 mb-8 sm:mb-60 w-full">
       <ArticleBanner
         title="People"
         description="서로 다른 열정을 모아, 하나의 가능성을 만드는 시대생팀을 소개합니다."
       />
-      <div className="flex items-center justify-center py-8 md:py-[100px] px-4 md:px-0">
+      <div className="flex items-center justify-center px-4 md:px-0">
         <div className="w-full max-w-[1120px] flex flex-col gap-6 md:gap-10 justify-center">
           <PeopleHeader generations={generations} />
           <div className="flex flex-col md:flex-row md:flex-wrap justify-center gap-3 md:gap-5">
@@ -85,13 +79,11 @@ const PeopleSectionContent = ({ peopleData }: { peopleData: PeopleData[] }) => {
                 aria-hidden="true"
               />
             ))}
-            {filteredPeopleData.length === 0 && (
-              <NoQueryResultFallback message="검색 결과가 없습니다." />
-            )}
+            {filteredPeopleData.length === 0 && <NoQueryResultFallback message="검색 결과가 없습니다." />}
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 };
 
@@ -109,12 +101,7 @@ const PeopleSection = ({ peopleData }: { peopleData: PeopleData[] }) => {
 export default PeopleSection;
 
 const PeopleHeader = ({ generations }: { generations: string[] }) => {
-  const {
-    setSearchQuery,
-    selectedGeneration,
-    setSelectedGeneration,
-    queryText,
-  } = useContext(PeopleContext)!;
+  const { setSearchQuery, selectedGeneration, setSelectedGeneration, queryText } = useContext(PeopleContext)!;
 
   const [isComposing, setIsComposing] = useState(false);
 
@@ -143,11 +130,7 @@ const PeopleHeader = ({ generations }: { generations: string[] }) => {
       />
       <Dropdown
         options={generations}
-        value={
-          selectedGeneration === -1
-            ? generations[0]
-            : generations[selectedGeneration]
-        }
+        value={selectedGeneration === -1 ? generations[0] : generations[selectedGeneration]}
         onChange={(_, index) => setSelectedGeneration(index === 0 ? -1 : index)}
         placeholder="전체 기수"
       />

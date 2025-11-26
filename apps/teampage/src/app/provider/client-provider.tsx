@@ -29,7 +29,7 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
             <ConfirmModalProvider>
               <div className="min-h-full flex flex-col">
                 <Header />
-                {children}
+                <main className="flex-1 w-full flex flex-col items-center">{children}</main>
                 <Footer />
               </div>
               <DimRenderer />

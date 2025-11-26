@@ -52,9 +52,7 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>
-        <main>{children}</main>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
