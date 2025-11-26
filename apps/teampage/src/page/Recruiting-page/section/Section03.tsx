@@ -24,7 +24,7 @@ export function Section03() {
           Alumni Network
         </h2>
         <p
-          className="text-[#303037] text-center font-['Pretendard'] text-xl font-medium leading-[160%] max-md:text-[14px]
+          className="text-[#303037] text-center font-['Pretendard'] text-xl font-medium leading-[160%] max-md:text-[14px] max-md:px-4
         "
         >
           네이버, 카카오페이, 라인, 리멤버 등 국내 최고의 IT 회사부터 SKT, 현대자동차, NH투자증권, 한국은행 등 유수의
