@@ -1,6 +1,9 @@
-import _PeoplePage from "@pages/people-page";
+import _PeoplePage from '@pages/people-page';
 import { Metadata } from 'next';
 import metaData from '@/shared/const/seo.config';
+
+export const dynamic = 'force-static';
+export const revalidate = false;
 
 export const metadata: Metadata = {
   title: '시대생 팀원 소개',
