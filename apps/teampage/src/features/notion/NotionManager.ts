@@ -4,7 +4,6 @@ import { NotionUtil } from './NotionUtil';
 import type { PeopleData, NotionListResponse } from './NotionType';
 import fs from 'fs';
 import path from 'path';
-import sharp from 'sharp';
 
 const TOKEN = 'NOTION_MANAGER' as const;
 @SingletonRegister(TOKEN)
@@ -27,12 +26,11 @@ export class NotionManager {
   private downloadAndSaveImage = async (notionImageUrl: string, personName: string): Promise<string> => {
     try {
       const safeName = personName.replace(/[^a-zA-Z0-9가-힣]/g, '_');
-      const optimizedFilename = `${safeName}.webp`;
+      const filename = `${safeName}.jpg`;
       const imagesDir = path.join(process.cwd(), 'public', 'images', 'people');
-      const optimizedFilepath = path.join(imagesDir, optimizedFilename);
-
-      if (fs.existsSync(optimizedFilepath)) {
-        return `/images/people/${optimizedFilename}`;
+      const filepath = path.join(imagesDir, filename);
+      if (fs.existsSync(filepath)) {
+        return `/images/people/${filename}`;
       }
 
       if (!fs.existsSync(imagesDir)) {
@@ -47,16 +45,9 @@ export class NotionManager {
       }
 
       const buffer = await response.arrayBuffer();
+      await fs.promises.writeFile(filepath, new Uint8Array(buffer));
 
-      await sharp(Buffer.from(buffer))
-        .resize(800, 800, {
-          fit: 'inside',
-          withoutEnlargement: true,
-        })
-        .webp({ quality: 80 })
-        .toFile(optimizedFilepath);
-
-      return `/images/people/${optimizedFilename}`;
+      return `/images/people/${filename}`;
     } catch (error) {
       console.error('Failed to download image:', error);
       return notionImageUrl;
