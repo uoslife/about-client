@@ -48,7 +48,7 @@ export function Section04() {
           </div>
         </div>
         <div className="flex items-start gap-[17.8125rem] max-md:flex-col max-md:gap-4 max-md:self-stretch">
-          <h4 className="text-[#222227] font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
+          <h4 className="text-[#222227] whitespace-nowrap font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
             모집 일정
           </h4>
           <div className="flex flex-col items-start gap-10 max-md:items-start max-md:gap-5 max-md:self-stretch">
