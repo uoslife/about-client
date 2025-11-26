@@ -1,7 +1,7 @@
-import { Client } from "@notionhq/client";
-import { SingletonRegister } from "@shared/utils/SingletonRegistry";
+import { Client } from '@notionhq/client';
+import { SingletonRegister } from '@shared/utils/SingletonRegistry';
 
-const TOKEN = "NOTION_CLIENT" as const;
+const TOKEN = 'NOTION_CLIENT' as const;
 @SingletonRegister(TOKEN)
 export class NotionClient {
   public static TOKEN = TOKEN;
@@ -13,22 +13,28 @@ export class NotionClient {
 
   public getInstance(): Client {
     if (!this.instance) {
-      throw new Error("Notion client failed to initialize");
+      throw new Error('Notion client failed to initialize');
     }
     return this.instance;
   }
 
   private initialize(): void {
     if (!process.env.NOTION_API_KEY) {
-      throw new Error("NOTION_API_KEY is not set in environment variables");
+      throw new Error('NOTION_API_KEY is not set in environment variables');
     }
     this.instance = new Client({
       auth: process.env.NOTION_API_KEY,
+      fetch: (url, init) => {
+        return fetch(url, {
+          ...init,
+          cache: 'no-store',
+        });
+      },
     });
   }
 }
 
-declare module "@shared/utils/SingletonRegistry" {
+declare module '@shared/utils/SingletonRegistry' {
   interface SingletonRegistry {
     [TOKEN]: NotionClient;
   }
