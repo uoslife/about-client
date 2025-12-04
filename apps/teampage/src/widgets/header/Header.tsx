@@ -55,15 +55,8 @@ export default function Header() {
       const isShowOurStoryMenu = route.path === ROUTE.OUR_STORY.path;
       const isActive = pathname === route.path;
       return (
-        <div
-          className={`relative ${isShowOurStoryMenu ? 'group' : ''}`}
-          key={route.path}
-        >
-          <Link
-            href={route.path}
-            className="w-full group"
-            onClick={handleCloseMenu}
-          >
+        <div className={`relative ${isShowOurStoryMenu ? 'group' : ''}`} key={route.path}>
+          <Link href={route.path} className="w-full group" onClick={handleCloseMenu}>
             <div
               className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
               data-name={`GNB_Tap_${route.name}`}
@@ -71,9 +64,7 @@ export default function Header() {
               <p
                 className={twMerge(
                   'text-body-18-b whitespace-pre cursor-pointer transition-colors',
-                  isActive
-                    ? 'text-primary-ui'
-                    : 'hover:text-primary-ui text-gray-800',
+                  isActive ? 'text-primary-ui' : 'hover:text-primary-ui text-gray-800',
                 )}
               >
                 {route.name}
@@ -95,7 +86,7 @@ export default function Header() {
         'items-center content-center',
         'justify-items-stretch',
         'bg-white',
-        'max-md:flex max-md:justify-between',
+        'max-[1100px]:flex max-[1100px]:justify-between',
       )}
       data-name="GNB"
     >
@@ -105,7 +96,7 @@ export default function Header() {
           alt="uoslife logo icon"
           height={28}
           width={80}
-          className="w-[80px] h-[28px] max-md:w-[46px] max-md:h-[16px]"
+          className="w-[80px] h-[28px] max-[1100px]:w-[46px] max-[1100px]:h-[16px]"
         />
       </Link>
       {/* 데스크탑 메뉴 */}
@@ -116,11 +107,7 @@ export default function Header() {
       <div className="hidden md:flex box-border content-stretch flex-row gap-4 items-center justify-end p-0 relative shrink-0">
         <div className="box-border content-stretch flex flex-row gap-[15px] items-center justify-start p-0 relative shrink-0">
           <div className="box-border content-stretch flex flex-row gap-4 items-center justify-start p-0 relative shrink-0">
-            <Link
-              href="http://pf.kakao.com/_gMEHK"
-              target="_blank"
-              rel="noopener"
-            >
+            <Link href="http://pf.kakao.com/_gMEHK" target="_blank" rel="noopener">
               <Image
                 src="/svg/kakao.svg"
                 alt="search icon"
@@ -145,12 +132,7 @@ export default function Header() {
                 });
               }}
             >
-              <Image
-                src="/svg/instagram.svg"
-                alt="instagram icon"
-                width={44}
-                height={44}
-              />
+              <Image src="/svg/instagram.svg" alt="instagram icon" width={44} height={44} />
             </Link>
             <Link
               href="https://github.com/uoslife"
@@ -163,12 +145,7 @@ export default function Header() {
                 });
               }}
             >
-              <Image
-                src="/svg/github.svg"
-                alt="github icon"
-                width={44}
-                height={44}
-              />
+              <Image src="/svg/github.svg" alt="github icon" width={44} height={44} />
             </Link>
           </div>
           <div className="bg-[#72727C] h-[20px] w-[1px]" />
@@ -182,9 +159,7 @@ export default function Header() {
                 onClick={() => signIn('keycloak')}
                 className="flex justify-center items-center px-5 py-[5px] rounded-[8px] border border-[#0F6EFB] bg-[#0F6EFB33] hover:bg-[#0F6EFB] hover:text-white text-[#0F6EFB]"
               >
-                <p className="text-center text-[18px] font-bold whitespace-pre">
-                  Login
-                </p>
+                <p className="text-center text-[18px] font-bold whitespace-pre">Login</p>
               </button>
             </div>
           ))}
@@ -195,12 +170,7 @@ export default function Header() {
               {session?.user?.name}
             </Text>
             <button type="button" onClick={() => signOut()}>
-              <Image
-                src="/svg/logout.svg"
-                alt="logout icon"
-                width={24}
-                height={24}
-              />
+              <Image src="/svg/logout.svg" alt="logout icon" width={24} height={24} />
             </button>
           </div>
         )}
@@ -226,19 +196,9 @@ export default function Header() {
       >
         {/* 상단 헤더 (로고 + 닫기버튼) */}
         <div className="flex justify-between items-center mb-6 mx-4">
-          <Image
-            src="/svg/uoslife_logo.svg"
-            alt="uoslife logo"
-            width={46}
-            height={16}
-          />
+          <Image src="/svg/uoslife_logo.svg" alt="uoslife logo" width={46} height={16} />
           <button onClick={() => setIsMenuOpen(false)}>
-            <Image
-              src="/svg/close.svg"
-              alt="close menu"
-              width={24}
-              height={24}
-            />
+            <Image src="/svg/close.svg" alt="close menu" width={24} height={24} />
           </button>
         </div>
 
@@ -254,12 +214,7 @@ export default function Header() {
         {/* 소셜 아이콘 */}
         <div className="flex gap-4 mt-[36px]">
           <Link href="https://instagram.com/uoslife_official" target="_blank">
-            <Image
-              src="/svg/instagram.svg"
-              alt="instagram"
-              width={32}
-              height={32}
-            />
+            <Image src="/svg/instagram.svg" alt="instagram" width={32} height={32} />
           </Link>
           <Link href="https://github.com/uoslife" target="_blank">
             <Image src="/svg/github.svg" alt="github" width={32} height={32} />
@@ -278,9 +233,7 @@ export default function Header() {
                 onClick={() => signIn('keycloak')}
                 className="flex justify-center items-center px-5 py-[5px] rounded-[8px] border border-[#0F6EFB] bg-[#0F6EFB33] hover:bg-[#0F6EFB] hover:text-white text-[#0F6EFB]"
               >
-                <p className="text-center text-[18px] font-bold whitespace-pre">
-                  Login
-                </p>
+                <p className="text-center text-[18px] font-bold whitespace-pre">Login</p>
               </button>
             </div>
           ))}
@@ -291,12 +244,7 @@ export default function Header() {
               {session?.user?.name}
             </Text>
             <button type="button" onClick={() => signOut()}>
-              <Image
-                src="/svg/logout.svg"
-                alt="logout icon"
-                width={24}
-                height={24}
-              />
+              <Image src="/svg/logout.svg" alt="logout icon" width={24} height={24} />
             </button>
           </div>
         )}
@@ -310,20 +258,14 @@ function OurStoryMenu() {
     <div className="hidden group-hover:block absolute top-full w-40 bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)]">
       <Link href="/career" className="w-full group/career">
         <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
-          <Text
-            variant="body-18-m"
-            className="group-hover/career:text-primary-ui"
-          >
+          <Text variant="body-18-m" className="group-hover/career:text-primary-ui">
             Career
           </Text>
         </div>
       </Link>
       <Link href="/moments" className="w-full group/moments">
         <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
-          <Text
-            variant="body-18-m"
-            className="group-hover/moments:text-primary-ui"
-          >
+          <Text variant="body-18-m" className="group-hover/moments:text-primary-ui">
             Moments
           </Text>
         </div>

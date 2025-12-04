@@ -12,11 +12,11 @@ export const Section06 = forwardRef<HTMLDivElement, any>((_, ref) => {
       <div className="flex flex-col items-center gap-12 max-md:gap-7">
         <div className="flex flex-col items-center gap-3 max-md:gap-3">
           <h3 className="text-center font-bold text-[4.5rem] leading-[120%] bg-gradient-to-r from-black via-blue-600 to-blue-200 bg-clip-text text-transparent max-md:text-[2rem] max-md:leading-[140%]">
-            UOSLIFE에서 <br />
-            여러분을 기다립니다
+            모집 기간이 <br />
+            종료되었어요
           </h3>
           <p className="text-center text-[#54545C] text-[1.125rem] font-medium leading-[160%] max-md:text-sm w-[100%] max-md:w-[80%]">
-            11/30(일) 오후 11시 59분까지 하단의 링크를 통해 지원서를 제출해 주세요.
+            다음 모집 알림을 받으면 빠르게 지원할 수 있어요!
           </p>
         </div>
         <Recruitbutton />
