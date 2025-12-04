@@ -54,6 +54,7 @@ export default function Header() {
     (route: { path: string; name: string }) => {
       const isShowOurStoryMenu = route.path === ROUTE.OUR_STORY.path;
       const isActive = pathname === route.path;
+
       return (
         <div className={`relative ${isShowOurStoryMenu ? 'group' : ''}`} key={route.path}>
           <Link href={route.path} className="w-full group" onClick={handleCloseMenu}>
@@ -264,7 +265,7 @@ function OurStoryMenu() {
         </div>
       </Link>
       <Link href="/moments" className="w-full group/moments">
-        <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
+        <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100 static">
           <Text variant="body-18-m" className="group-hover/moments:text-primary-ui">
             Moments
           </Text>
