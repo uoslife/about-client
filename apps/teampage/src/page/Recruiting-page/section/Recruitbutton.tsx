@@ -3,7 +3,7 @@ import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 export function Recruitbutton({ className = '' }) {
   const { trackEvent } = useAnalytics();
-  const status = ISINRANGE == true ? '6기 지원하기' : '다음 모집 알림 받기';
+  const status = true ? '6기 지원하기' : '다음 모집 알림 받기';
   return (
     <button
       onClick={() => {
