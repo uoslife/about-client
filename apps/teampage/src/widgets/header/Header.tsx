@@ -56,7 +56,7 @@ export default function Header() {
       const isActive = pathname === route.path;
 
       return (
-        <div className={`relative ${isShowOurStoryMenu ? 'group' : ''}`} key={route.path}>
+        <div className={`relative ${isShowOurStoryMenu ? 'group' : ''} `} key={route.path}>
           <Link href={route.path} className="w-full group" onClick={handleCloseMenu}>
             <div
               className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
@@ -256,7 +256,7 @@ export default function Header() {
 
 function OurStoryMenu() {
   return (
-    <div className="hidden group-hover:block absolute top-full w-40 bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)]">
+    <div className="hidden group-hover:block top-full w-40 bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)] static">
       <Link href="/career" className="w-full group/career">
         <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
           <Text variant="body-18-m" className="group-hover/career:text-primary-ui">
@@ -265,7 +265,7 @@ function OurStoryMenu() {
         </div>
       </Link>
       <Link href="/moments" className="w-full group/moments">
-        <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100 static">
+        <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
           <Text variant="body-18-m" className="group-hover/moments:text-primary-ui">
             Moments
           </Text>
