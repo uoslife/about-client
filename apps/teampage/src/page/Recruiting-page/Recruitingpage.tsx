@@ -10,7 +10,7 @@ import { Section07 } from './section/Section07';
 import { Recruitbutton } from './section/Recruitbutton';
 import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
-export const ISINRANGE = true;
+export const ISINRANGE = false;
 
 export default function RecruitingPage() {
   const ref5 = useRef<HTMLDivElement>(null);
@@ -48,7 +48,7 @@ export default function RecruitingPage() {
   return (
     <div className="flex flex-col  gap-40 items-center w-full bg-[#FFF]">
       <main className="w-full">
-        {ISINRANGE && showButton && (
+        {showButton && (
           <Recruitbutton className={`fixed top-[83.333%] left-1/2 -translate-x-1/2 -translate-y-[83.333%] z-10`} />
         )}
 
