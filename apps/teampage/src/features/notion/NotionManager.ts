@@ -49,6 +49,7 @@ export class NotionManager {
       const buffer = await response.arrayBuffer();
 
       await sharp(Buffer.from(buffer))
+        .rotate()
         .resize(800, 800, {
           fit: 'inside',
           withoutEnlargement: true,
