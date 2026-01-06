@@ -1,7 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { TabButton } from '@/shared/component/TabButton';
-import { PushNotificationForm } from './sections/PushNotificationForm';
+import { PushNotificationForm, type PushNotificationFormRef } from './sections/PushNotificationForm';
 import { PushNotificationHistory } from './sections/PushNotificationHistory';
 import { PushNotificationPreview } from './sections/PushNotificationPreview';
 import { useSendNotification, type NotificationRequest } from '@uoslife/api';
@@ -30,6 +30,7 @@ export default function BackofficePage() {
   const { toast } = useToast();
   const { open: openConfirmModal } = useConfirmModal();
   const sendNotificationMutation = useSendNotification();
+  const formRef = useRef<PushNotificationFormRef>(null);
 
   const handleTabClick = (index: number) => {
     // TODO: '배너 관리'와 '상단 공지'는 더미 기능이므로 클릭해도 아무 일도 일어나지 않음 추후 기능 추가
@@ -65,6 +66,9 @@ export default function BackofficePage() {
       {
         onSuccess: () => {
           toast('발송이 완료되었습니다.');
+          if (formRef.current) {
+            formRef.current.resetForm();
+          }
         },
         onError: () => {
           toast('발송이 실패하였습니다.');
@@ -111,7 +115,7 @@ export default function BackofficePage() {
             {/* 메인 콘텐츠 영역: 왼쪽 예시 이미지 + 오른쪽 폼 */}
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
               <PushNotificationPreview />
-              <PushNotificationForm onSubmit={handleSubmit} />
+              <PushNotificationForm ref={formRef} onSubmit={handleSubmit} />
             </div>
 
             {/* 하단: 푸시 알림 내역 테이블 */}
