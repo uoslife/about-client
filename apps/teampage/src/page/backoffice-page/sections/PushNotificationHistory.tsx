@@ -51,7 +51,8 @@ export function PushNotificationHistory() {
               </tr>
             </thead>
             <tbody>
-              {notificationLogs && notificationLogs.length > 0 ? (
+              {notificationLogs &&
+                notificationLogs.length > 0 &&
                 notificationLogs.map((item) => {
                   const startTime = item.startTime instanceof Date ? item.startTime : new Date(item.startTime);
                   const timeKey = startTime instanceof Date ? startTime.toISOString() : String(item.startTime);
@@ -90,8 +91,8 @@ export function PushNotificationHistory() {
                       </td>
                     </tr>
                   );
-                })
-              ) : (
+                })}
+              {notificationLogs && notificationLogs.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <Text variant="body-16-m" color="grey-500" as="span">
