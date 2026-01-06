@@ -51,40 +51,50 @@ export function PushNotificationHistory() {
               </tr>
             </thead>
             <tbody>
-              {notificationLogs?.map((item) => (
-                <tr className="border-b border-grey-200 hover:bg-grey-50" key={item.startTime.toISOString()}>
-                  <td className="px-6 py-4">
-                    <Text variant="body-14-m" color="grey-700" as="span">
-                      {item.startTime.toLocaleString()}
-                    </Text>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Text variant="body-14-m" color="grey-700" as="span">
-                      {item.author}
-                    </Text>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Text variant="body-14-m" color="grey-700" as="span">
-                      {item.target}
-                    </Text>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Text variant="body-14-m" color="grey-700" as="span">
-                      {item.title}
-                    </Text>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Text variant="body-14-m" color="grey-700" as="span">
-                      {item.message}
-                    </Text>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Text variant="body-14-m" color="grey-700" as="span">
-                      {item.path}
+              {notificationLogs && notificationLogs.length > 0 ? (
+                notificationLogs.map((item) => (
+                  <tr className="border-b border-grey-200 hover:bg-grey-50" key={item.startTime.toISOString()}>
+                    <td className="px-6 py-4">
+                      <Text variant="body-14-m" color="grey-700" as="span">
+                        {item.startTime.toLocaleString()}
+                      </Text>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Text variant="body-14-m" color="grey-700" as="span">
+                        {item.author}
+                      </Text>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Text variant="body-14-m" color="grey-700" as="span">
+                        {item.target}
+                      </Text>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Text variant="body-14-m" color="grey-700" as="span">
+                        {item.title}
+                      </Text>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Text variant="body-14-m" color="grey-700" as="span">
+                        {item.message}
+                      </Text>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Text variant="body-14-m" color="grey-700" as="span">
+                        {item.path}
+                      </Text>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="px-6 py-12 text-center">
+                    <Text variant="body-16-m" color="grey-500" as="span">
+                      발송 내역이 없습니다.
                     </Text>
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
