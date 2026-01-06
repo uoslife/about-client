@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { TabButton } from '@/shared/component/TabButton';
-import { PushNotificationForm } from './PushNotificationForm';
-import { PushNotificationHistory } from './PushNotificationHistory';
-import { PushNotificationPreview } from './PushNotificationPreview';
+import { PushNotificationForm } from './sections/PushNotificationForm';
+import { PushNotificationHistory } from './sections/PushNotificationHistory';
+import { PushNotificationPreview } from './sections/PushNotificationPreview';
 
 const TABS = ['푸시 알림', '배너 관리', '상단 공지'] as const;
 const ACTIVE_TAB_INDEX = 0; // '푸시 알림'만 활성화

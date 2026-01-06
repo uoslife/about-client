@@ -1,11 +1,20 @@
 'use client';
 import { useForm, Controller } from 'react-hook-form';
 import { Text } from '@/shared/component/Text';
-import type { PushNotificationFormData } from './BackOfficePage';
+import type { PushNotificationFormData } from '../BackOfficePage';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface PushNotificationFormProps {
   onSubmit: (data: PushNotificationFormData) => void;
 }
+
+const LINK = {
+  deeplink:
+    'https://www.notion.so/uoslife/2d5de257e4b180b3bfcad16644189917?v=2d5de257e4b18099863b000cc736d3eb&source=copy_link',
+  emails:
+    'https://www.notion.so/uoslife/2d5de257e4b180eb9589e34ccd21cc66?v=2d5de257e4b181b6bd6b000c97e2f813&source=copy_link',
+};
 
 export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
   const {
@@ -71,9 +80,9 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
             <Text variant="body-18-m" color="grey-900">
               딥링크
             </Text>
-            <div className="w-4 h-4 flex items-center justify-center">
-              <div className="w-4 h-4 border border-grey-600 rounded"></div>
-            </div>
+            <Link href={LINK.deeplink} target="_blank" className="w-4 h-4 flex items-center justify-center">
+              <Image src="/svg/link.svg" alt="link" width={16} height={16} />
+            </Link>
           </div>
           <input
             type="text"
@@ -130,9 +139,9 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
                       <Text variant="body-16-m" color="grey-900">
                         테스트 (직접 입력)
                       </Text>
-                      <div className="w-4 h-4 flex items-center justify-center">
-                        <div className="w-4 h-4 border border-grey-600 rounded"></div>
-                      </div>
+                      <Link href={LINK.emails} target="_blank" className="w-4 h-4 flex items-center justify-center">
+                        <Image src="/svg/link.svg" alt="link" width={16} height={16} />
+                      </Link>
                     </div>
                   </label>
                 </>
