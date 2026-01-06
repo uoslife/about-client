@@ -12,7 +12,7 @@ export function BackofficeHeader() {
   const hasAccess = role === 'ADMIN' || role === 'FULL_MEMBER';
 
   return (
-    <header className="w-full h-[64px] sticky z-50 py-10 my-10 bg-white">
+    <header className="w-full h-[64px] sticky z-50 py-10 my-10 max-md:my-4 max-md:py-4 bg-white">
       <div className="flex flex-row items-center justify-between">
         {/* 로고 + 타이틀 */}
         <Link href="/" className="flex flex-row items-center gap-4">
