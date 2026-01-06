@@ -1,13 +1,22 @@
 import { SessionProvider } from '@/app/provider/session-provider';
 import { ClientProvider } from '../provider/client-provider';
 import { BackofficeHeader } from '@/widgets/backoffice-header/BackOfficeHeader';
+import { useUser } from '@/entities/api/useUser';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // TODO: 비로그인시 / 리다이렉트 처리
+  const router = useRouter();
+  const { role } = useUser();
+
+  useEffect(() => {
+    if (role === 'GUEST') router.push('/');
+  }, [role, router]);
+
   return (
     <SessionProvider session={null}>
       <ClientProvider>
