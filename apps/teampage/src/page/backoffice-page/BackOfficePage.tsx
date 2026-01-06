@@ -4,6 +4,9 @@ import { TabButton } from '@/shared/component/TabButton';
 import { PushNotificationForm } from './sections/PushNotificationForm';
 import { PushNotificationHistory } from './sections/PushNotificationHistory';
 import { PushNotificationPreview } from './sections/PushNotificationPreview';
+import { useSendNotification, type NotificationRequest } from '@uoslife/api';
+import { useToast } from '@/shared/component/toast';
+import { useConfirmModal } from '@/shared/component/confirm-modal';
 
 const TABS = ['푸시 알림', '배너 관리', '상단 공지'] as const;
 const ACTIVE_TAB_INDEX = 0; // '푸시 알림'만 활성화
@@ -24,6 +27,9 @@ export interface PushNotificationFormData {
 
 export default function BackofficePage() {
   const [selectedTab, setSelectedTab] = useState<number>(ACTIVE_TAB_INDEX);
+  const { toast } = useToast();
+  const { open: openConfirmModal } = useConfirmModal();
+  const sendNotificationMutation = useSendNotification();
 
   const handleTabClick = (index: number) => {
     // TODO: '배너 관리'와 '상단 공지'는 더미 기능이므로 클릭해도 아무 일도 일어나지 않음 추후 기능 추가
@@ -32,9 +38,54 @@ export default function BackofficePage() {
     }
   };
 
+  const convertToNotificationRequest = (data: PushNotificationFormData): NotificationRequest => {
+    const request: NotificationRequest = {
+      title: data.title,
+      message: data.message,
+      path: data.path || undefined,
+      recipient:
+        data.recipient.recipientType === 'EMAILS'
+          ? {
+              recipientType: 'EMAILS',
+              emails: data.recipient.emails || [],
+            }
+          : {
+              recipientType: 'TARGET',
+              target: data.recipient.target || 'ALL',
+            },
+    };
+    return request;
+  };
+
+  const sendNotification = (data: PushNotificationFormData) => {
+    const request = convertToNotificationRequest(data);
+
+    sendNotificationMutation.mutate(
+      { data: request },
+      {
+        onSuccess: () => {
+          toast('발송이 완료되었습니다.');
+        },
+        onError: () => {
+          toast('발송이 실패하였습니다.');
+        },
+      },
+    );
+  };
+
   const handleSubmit = (data: PushNotificationFormData) => {
-    // TODO: 발송 로직 구현
-    alert(JSON.stringify(data));
+    if (data.recipient.recipientType === 'TARGET') {
+      openConfirmModal({
+        title: '실제 유저 대상으로 발송하시겠습니까?',
+        confirmText: '확인',
+        cancelText: '취소',
+        onConfirm: () => {
+          sendNotification(data);
+        },
+      });
+    } else {
+      sendNotification(data);
+    }
   };
 
   return (
