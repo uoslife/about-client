@@ -8,14 +8,18 @@ import { PushNotificationPreview } from './sections/PushNotificationPreview';
 const TABS = ['푸시 알림', '배너 관리', '상단 공지'] as const;
 const ACTIVE_TAB_INDEX = 0; // '푸시 알림'만 활성화
 
-type TargetType = 'all' | 'marketing' | 'test';
+type TargetType = 'TARGET' | 'EMAILS';
+type Target = 'ALL' | 'MARKETING_CONSENT';
 
 export interface PushNotificationFormData {
   title: string;
   message: string;
-  deeplink: string;
-  target: TargetType;
-  testEmails: string;
+  path: string;
+  recipient: {
+    recipientType: TargetType;
+    emails?: string[];
+    target?: Target;
+  };
 }
 
 export default function BackofficePage() {

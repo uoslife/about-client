@@ -1,5 +1,6 @@
 'use client';
 import { useForm, Controller } from 'react-hook-form';
+import { useState, useEffect } from 'react';
 import { Text } from '@/shared/component/Text';
 import type { PushNotificationFormData } from '../BackOfficePage';
 import Image from 'next/image';
@@ -22,22 +23,78 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
     handleSubmit,
     control,
     watch,
+    setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<PushNotificationFormData>({
     defaultValues: {
       title: '',
       message: '',
-      deeplink: '',
-      target: 'test',
-      testEmails: '',
+      path: '',
+      recipient: {
+        recipientType: 'TARGET',
+        emails: [],
+        target: 'ALL',
+      },
     },
   });
 
-  const target = watch('target');
+  const recipientType = watch('recipient.recipientType');
+  const target = watch('recipient.target');
+
+  // 현재 선택된 타겟 옵션 계산 (UI용)
+  const selectedTargetOption = recipientType === 'EMAILS' ? 'EMAILS' : target || 'ALL';
+
+  // 이메일 입력을 위한 로컬 상태 (쉼표 입력 보존을 위해)
+  const [emailInput, setEmailInput] = useState('');
+
+  // recipientType이 EMAILS로 변경될 때 초기화
+  useEffect(() => {
+    if (recipientType !== 'EMAILS') {
+      setEmailInput('');
+    }
+  }, [recipientType]);
+
+  // submit 전에 이메일 문자열을 배열로 변환하고 validation
+  const handleFormSubmit = (data: PushNotificationFormData) => {
+    if (data.recipient.recipientType === 'EMAILS') {
+      if (!emailInput || emailInput.trim().length === 0) {
+        setError('recipient.emails', {
+          type: 'manual',
+          message: '테스트 이메일을 입력하세요.',
+        });
+        return;
+      }
+      const emailArray = emailInput
+        .split(',')
+        .map((email) => email.trim())
+        .filter((email) => email.length > 0);
+
+      if (emailArray.length === 0) {
+        setError('recipient.emails', {
+          type: 'manual',
+          message: '테스트 이메일을 입력하세요.',
+        });
+        return;
+      }
+
+      if (emailArray.length > 10) {
+        setError('recipient.emails', {
+          type: 'manual',
+          message: '최대 10개까지 입력 가능합니다.',
+        });
+        return;
+      }
+
+      data.recipient.emails = emailArray;
+    }
+    onSubmit(data);
+  };
 
   return (
     <div className="flex flex-col gap-6 lg:w-1/2">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col gap-6">
         {/* 제목 */}
         <div className="flex flex-col gap-2">
           <Text variant="body-18-m" color="grey-900">
@@ -86,7 +143,7 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
           </div>
           <input
             type="text"
-            {...register('deeplink')}
+            {...register('path')}
             placeholder="딥링크를 입력하세요."
             className="w-full px-4 py-3 border border-grey-300 rounded-lg outline-none focus:border-primary-ui focus:ring-1 focus:ring-primary-ui text-body-16-m placeholder:text-grey-500"
           />
@@ -99,16 +156,27 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
           </Text>
           <div className="flex flex-col gap-3">
             <Controller
-              name="target"
+              name="recipient"
               control={control}
-              render={({ field }) => (
+              rules={{
+                validate: (value) => {
+                  if (value.recipientType === 'TARGET' && !value.target) {
+                    return '타겟을 선택하세요.';
+                  }
+                  return true;
+                },
+              }}
+              render={() => (
                 <>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="radio"
-                      {...field}
-                      value="all"
-                      checked={field.value === 'all'}
+                      checked={selectedTargetOption === 'ALL'}
+                      onChange={() => {
+                        setValue('recipient.recipientType', 'TARGET');
+                        setValue('recipient.target', 'ALL');
+                        setValue('recipient.emails', undefined);
+                      }}
                       className="w-5 h-5 text-primary-ui focus:ring-primary-ui"
                     />
                     <Text variant="body-16-m" color="grey-900">
@@ -118,9 +186,12 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="radio"
-                      {...field}
-                      value="marketing"
-                      checked={field.value === 'marketing'}
+                      checked={selectedTargetOption === 'MARKETING_CONSENT'}
+                      onChange={() => {
+                        setValue('recipient.recipientType', 'TARGET');
+                        setValue('recipient.target', 'MARKETING_CONSENT');
+                        setValue('recipient.emails', undefined);
+                      }}
                       className="w-5 h-5 text-primary-ui focus:ring-primary-ui"
                     />
                     <Text variant="body-16-m" color="grey-900">
@@ -130,9 +201,12 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="radio"
-                      {...field}
-                      value="test"
-                      checked={field.value === 'test'}
+                      checked={selectedTargetOption === 'EMAILS'}
+                      onChange={() => {
+                        setValue('recipient.recipientType', 'EMAILS');
+                        setValue('recipient.target', undefined);
+                        setValue('recipient.emails', []);
+                      }}
                       className="w-5 h-5 text-primary-ui focus:ring-primary-ui"
                     />
                     <div className="flex items-center gap-2">
@@ -148,26 +222,41 @@ export function PushNotificationForm({ onSubmit }: PushNotificationFormProps) {
               )}
             />
           </div>
-          {target === 'test' && (
+
+          {/* recipientType이 EMAILS일 때 emails 입력 */}
+          {recipientType === 'EMAILS' && (
             <div className="mt-2">
               <textarea
-                {...register('testEmails', {
-                  required: target === 'test' ? '테스트 이메일을 입력하세요.' : false,
-                })}
-                placeholder="이메일 ID를 입력하세요. (최대 10개)"
+                value={emailInput}
+                onChange={(e) => {
+                  setEmailInput(e.target.value);
+                  if (errors.recipient?.emails) {
+                    clearErrors('recipient.emails');
+                  }
+                }}
+                placeholder="이메일 ID를 입력하세요. (최대 10개, 쉼표로 구분)"
                 rows={3}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
                 className="w-full px-4 py-3 border border-grey-300 rounded-lg outline-none focus:border-primary-ui focus:ring-1 focus:ring-primary-ui text-body-16-m placeholder:text-grey-500 resize-none"
               />
-              {errors.testEmails && (
+              {errors.recipient?.emails && (
                 <Text variant="body-12-m" color="grey-600" as="span">
-                  {errors.testEmails.message}
+                  {errors.recipient.emails.message}
                 </Text>
               )}
             </div>
           )}
+          {(errors.recipient as any)?.message && (
+            <Text variant="body-12-m" color="grey-600" as="span">
+              {(errors.recipient as any).message}
+            </Text>
+          )}
         </div>
 
-        {/* 발송하기 버튼 */}
         <div className="flex justify-end">
           <button
             type="submit"
