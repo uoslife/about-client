@@ -12,7 +12,7 @@ export default async function RootLayout({
     <SessionProvider session={null}>
       <ClientProvider>
         <RoleGuard>
-          <div className="min-h-full flex flex-col mx-40 max-md:mx-2">
+          <div className="min-h-full flex flex-col mx-40 max-md:mx-4">
             <BackofficeHeader />
             <main className="flex-1 w-full flex flex-col items-center">{children}</main>
           </div>

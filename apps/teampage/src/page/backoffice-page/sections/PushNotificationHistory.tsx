@@ -4,7 +4,7 @@ import { useGetAllLog } from '@uoslife/api';
 export function PushNotificationHistory() {
   const { data: notificationLogs } = useGetAllLog({ notificationType: 'BACKOFFICE' });
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 whitespace-nowrap">
       <div className="flex flex-col gap-1">
         <Text variant="title-24-b" color="grey-900">
           푸시 알림 내역
