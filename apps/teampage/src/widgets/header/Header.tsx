@@ -108,6 +108,17 @@ export default function Header() {
       <div className="hidden md:flex box-border content-stretch flex-row gap-4 items-center justify-end p-0 relative shrink-0">
         <div className="box-border content-stretch flex flex-row gap-[15px] items-center justify-start p-0 relative shrink-0">
           <div className="box-border content-stretch flex flex-row gap-4 items-center justify-start p-0 relative shrink-0">
+            {status === 'authenticated' && (
+              <Link href="/backoffice">
+                <Image
+                  src="/svg/link_backoffice.svg"
+                  alt="link_backoffice"
+                  width={44}
+                  height={44}
+                  className="hover:bg-gray-100 rounded-xl"
+                />
+              </Link>
+            )}
             <Link href="http://pf.kakao.com/_gMEHK" target="_blank" rel="noopener">
               <Image
                 src="/svg/kakao.svg"
@@ -214,6 +225,11 @@ export default function Header() {
 
         {/* 소셜 아이콘 */}
         <div className="flex gap-4 mt-[36px]">
+          {status === 'authenticated' && (
+            <Link href="/backoffice">
+              <Image src="/svg/link_backoffice.svg" alt="link_backoffice" width={32} height={32} />
+            </Link>
+          )}
           <Link href="https://instagram.com/uoslife_official" target="_blank">
             <Image src="/svg/instagram.svg" alt="instagram" width={32} height={32} />
           </Link>
@@ -256,7 +272,7 @@ export default function Header() {
 
 function OurStoryMenu() {
   return (
-    <div className="hidden group-hover:block top-full w-40 bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)] static">
+    <div className="hidden group-hover:block top-full w-40 bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)] absolute transform translate-x-[-22%]">
       <Link href="/career" className="w-full group/career">
         <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
           <Text variant="body-18-m" className="group-hover/career:text-primary-ui">

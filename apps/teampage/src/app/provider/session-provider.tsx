@@ -6,13 +6,7 @@ import { useEffect } from 'react';
 
 export type SessionType = Nullable<Session & { accessToken: string; refreshToken: string; idToken: string }>;
 
-export const SessionProvider = async ({
-  children,
-  session,
-}: {
-  children: React.ReactNode;
-  session: SessionType | null;
-}) => {
+export const SessionProvider = ({ children, session }: { children: React.ReactNode; session: SessionType | null }) => {
   // api instance에 access token 설정
   useEffect(() => {
     if (!session) return;

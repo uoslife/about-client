@@ -6,8 +6,6 @@ import { ConfirmModalProvider } from '@/shared/component/confirm-modal/ConfirmMo
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { DeviceProvider } from '@/shared/provider/DeviceProvider';
-import Header from '@/widgets/header/Header';
-import { Footer } from '@/widgets/footer/Footer';
 
 const DimRenderer = dynamic(
   () =>
@@ -27,11 +25,7 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
         <ToastProvider>
           <DeviceProvider>
             <ConfirmModalProvider>
-              <div className="min-h-full flex flex-col">
-                <Header />
-                <main className="flex-1 w-full flex flex-col items-center">{children}</main>
-                <Footer />
-              </div>
+              {children}
               <DimRenderer />
             </ConfirmModalProvider>
           </DeviceProvider>
