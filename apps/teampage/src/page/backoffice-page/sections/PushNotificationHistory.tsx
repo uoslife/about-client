@@ -51,42 +51,48 @@ export function PushNotificationHistory() {
               </tr>
             </thead>
             <tbody>
-              {notificationLogs && notificationLogs.length > 0 ? (
-                notificationLogs.map((item) => (
-                  <tr className="border-b border-grey-200 hover:bg-grey-50" key={item.startTime.toISOString()}>
-                    <td className="px-6 py-4">
-                      <Text variant="body-14-m" color="grey-700" as="span">
-                        {item.startTime.toLocaleString()}
-                      </Text>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Text variant="body-14-m" color="grey-700" as="span">
-                        {item.author}
-                      </Text>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Text variant="body-14-m" color="grey-700" as="span">
-                        {item.target}
-                      </Text>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Text variant="body-14-m" color="grey-700" as="span">
-                        {item.title}
-                      </Text>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Text variant="body-14-m" color="grey-700" as="span">
-                        {item.message}
-                      </Text>
-                    </td>
-                    <td className="px-6 py-4">
-                      <Text variant="body-14-m" color="grey-700" as="span">
-                        {item.path}
-                      </Text>
-                    </td>
-                  </tr>
-                ))
-              ) : (
+              {notificationLogs &&
+                notificationLogs.length > 0 &&
+                notificationLogs.map((item) => {
+                  const startTime = item.startTime instanceof Date ? item.startTime : new Date(item.startTime);
+                  const timeKey = startTime instanceof Date ? startTime.toISOString() : String(item.startTime);
+
+                  return (
+                    <tr className="border-b border-grey-200 hover:bg-grey-50" key={timeKey}>
+                      <td className="px-6 py-4">
+                        <Text variant="body-14-m" color="grey-700" as="span">
+                          {startTime.toLocaleString()}
+                        </Text>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Text variant="body-14-m" color="grey-700" as="span">
+                          {item.author}
+                        </Text>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Text variant="body-14-m" color="grey-700" as="span">
+                          {item.target}
+                        </Text>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Text variant="body-14-m" color="grey-700" as="span">
+                          {item.title}
+                        </Text>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Text variant="body-14-m" color="grey-700" as="span">
+                          {item.message}
+                        </Text>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Text variant="body-14-m" color="grey-700" as="span">
+                          {item.path}
+                        </Text>
+                      </td>
+                    </tr>
+                  );
+                })}
+              {notificationLogs && notificationLogs.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center">
                     <Text variant="body-16-m" color="grey-500" as="span">
