@@ -5,22 +5,52 @@
  * Uoslife Teampage API Swagger
  * OpenAPI spec version: 1.0.0
  */
+export type ByEmailsAllOf = {
+  emails?: string[];
+};
+
+export type ByEmails = Recipient & ByEmailsAllOf & Required<Pick<Recipient & ByEmailsAllOf, 'emails'>>;
+
+export type ByTargetAllOfTarget = 'ALL' | 'MARKETING_CONSENT';
+export type ByTargetAllOf = {
+  target?: ByTargetAllOfTarget;
+};
+
+export type ByTarget = Recipient & ByTargetAllOf & Required<Pick<Recipient & ByTargetAllOf, 'target'>>;
+
+export type ByUserIdsAllOf = {
+  userIds?: string[];
+};
+
+export type ByUserIds = Recipient & ByUserIdsAllOf & Required<Pick<Recipient & ByUserIdsAllOf, 'userIds'>>;
+
+export type NotificationRequestRecipient = ByEmails | ByTarget | ByUserIds;
+
+export interface NotificationRequest {
+  title: string;
+  message: string;
+  path?: string;
+  recipient: NotificationRequestRecipient;
+}
+
+export interface Recipient {
+  recipientType: string;
+}
+
+export interface NotificationAcceptedResponse {
+  requestId: string;
+}
+
 /**
  * 게시글 콘텐츠 분류
  */
-export type Category =
-  | 'DEVELOP'
-  | 'DESIGN'
-  | 'MARKETING'
-  | 'PM'
-  | 'EMPLOYMENT'
-  | 'EXTERNAL_ACTIVITY';
+export type Category = 'DEVELOP' | 'DESIGN' | 'MARKETING' | 'PM' | 'EMPLOYMENT' | 'EXTERNAL_ACTIVITY';
 export interface CreateArticleRequest {
   /** 탭에 해당하는 space id를 입력해주세요. 선택지를 모를 경우 API로 조회 */
   spaceId: number;
   /** 게시글 제목 */
   title: string;
-  category: Category;
+  category?: Category;
   /** 게시글 요약 */
   summary?: string;
   /** 게시글 본문 */
@@ -134,7 +164,7 @@ export interface UpdateArticleRequest {
   spaceId: number;
   /** 게시글 제목 */
   title?: string;
-  category: Category;
+  category?: Category;
   /** 게시글 요약 */
   summary?: string;
   /** 게시글 본문 */
@@ -147,11 +177,18 @@ export interface CommentUpdateRequest {
   content: string;
 }
 
-export type MyInfoResponseRole =
-  | 'GUEST'
-  | 'ASSOCIATE_MEMBER'
-  | 'FULL_MEMBER'
-  | 'ADMIN';
+export interface NotificationLogResponse {
+  startTime: Date;
+  endTime?: Date;
+  status: string;
+  author: string;
+  target: string;
+  title: string;
+  message: string;
+  path?: string;
+}
+
+export type MyInfoResponseRole = 'GUEST' | 'ASSOCIATE_MEMBER' | 'FULL_MEMBER' | 'ADMIN';
 export interface MyInfoResponse {
   id: string;
   email: string;
@@ -178,17 +215,17 @@ export interface PageArticleListItem {
 }
 
 export interface PageableObject {
-  unpaged?: boolean;
   paged?: boolean;
   pageNumber?: number;
   pageSize?: number;
+  unpaged?: boolean;
   offset?: number;
   sort?: SortObject;
 }
 
 export interface SortObject {
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
   empty?: boolean;
 }
 
@@ -256,3 +293,9 @@ export type UploadImageBody = {
 export type FindArticleParams = {
   nonMemberId?: string;
 };
+
+export type GetAllLogParams = {
+  notificationType: GetAllLogNotificationType;
+};
+
+export type GetAllLogNotificationType = 'BACKOFFICE';
