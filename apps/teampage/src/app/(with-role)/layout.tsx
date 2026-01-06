@@ -11,7 +11,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={null}>
       <ClientProvider>
-        <div className="min-h-full flex flex-col mx-40">
+        <div className="min-h-full flex flex-col mx-40 max-md:mx-2">
           <BackofficeHeader />
           <main className="flex-1 w-full flex flex-col items-center">{children}</main>
         </div>

@@ -1,9 +1,22 @@
 'use client';
 import { useState } from 'react';
 import { TabButton } from '@/shared/component/TabButton';
+import { PushNotificationForm } from './PushNotificationForm';
+import { PushNotificationHistory } from './PushNotificationHistory';
+import { PushNotificationPreview } from './PushNotificationPreview';
 
 const TABS = ['푸시 알림', '배너 관리', '상단 공지'] as const;
 const ACTIVE_TAB_INDEX = 0; // '푸시 알림'만 활성화
+
+type TargetType = 'all' | 'marketing' | 'test';
+
+export interface PushNotificationFormData {
+  title: string;
+  message: string;
+  deeplink: string;
+  target: TargetType;
+  testEmails: string;
+}
 
 export default function BackofficePage() {
   const [selectedTab, setSelectedTab] = useState<number>(ACTIVE_TAB_INDEX);
@@ -15,8 +28,13 @@ export default function BackofficePage() {
     }
   };
 
+  const handleSubmit = (data: PushNotificationFormData) => {
+    // TODO: 발송 로직 구현
+    alert(JSON.stringify(data));
+  };
+
   return (
-    <div className="flex flex-col gap-16 mb-8 sm:mb-60 w-full">
+    <div className="flex flex-col gap-16 mb-8 max-md:mb-40 w-full">
       {/* 탭 네비게이션 */}
       <div className="flex items-center gap-10 border-b border-gray-200 pb-4">
         {TABS.map((tab, idx) => (
@@ -34,9 +52,15 @@ export default function BackofficePage() {
       {/* 탭 콘텐츠 영역 */}
       <div className="w-full">
         {selectedTab === ACTIVE_TAB_INDEX && (
-          <div className="flex flex-col gap-4">
-            {/* 푸시 알림 콘텐츠 영역 */}
-            <p className="text-body-18-m text-gray-600">푸시 알림 관리 콘텐츠가 여기에 표시됩니다.</p>
+          <div className="flex flex-col gap-12">
+            {/* 메인 콘텐츠 영역: 왼쪽 예시 이미지 + 오른쪽 폼 */}
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+              <PushNotificationPreview />
+              <PushNotificationForm onSubmit={handleSubmit} />
+            </div>
+
+            {/* 하단: 푸시 알림 내역 테이블 */}
+            <PushNotificationHistory />
           </div>
         )}
       </div>
