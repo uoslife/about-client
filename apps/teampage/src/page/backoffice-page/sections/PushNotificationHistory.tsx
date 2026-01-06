@@ -1,6 +1,8 @@
 import { Text } from '@/shared/component/Text';
+import { useGetAllLog } from '@uoslife/api';
 
 export function PushNotificationHistory() {
+  const { data: notificationLogs } = useGetAllLog({ notificationType: 'BACKOFFICE' });
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
@@ -49,47 +51,40 @@ export function PushNotificationHistory() {
               </tr>
             </thead>
             <tbody>
-              {/* 예시 데이터 */}
-              <tr className="border-b border-grey-200 hover:bg-grey-50">
-                <td className="px-6 py-4">
-                  <Text variant="body-14-m" color="grey-700" as="span">
-                    25.10.30 17:00
-                  </Text>
-                </td>
-                <td className="px-6 py-4">
-                  <Text variant="body-14-m" color="grey-700" as="span">
-                    김은서
-                  </Text>
-                </td>
-                <td className="px-6 py-4">
-                  <Text variant="body-14-m" color="grey-700" as="span">
-                    마케팅 수신 동의 유저
-                  </Text>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-grey-400 rounded"></div>
+              {notificationLogs?.map((item) => (
+                <tr className="border-b border-grey-200 hover:bg-grey-50" key={item.startTime.toISOString()}>
+                  <td className="px-6 py-4">
                     <Text variant="body-14-m" color="grey-700" as="span">
-                      마케팅 푸시 예시입니다
+                      {item.startTime.toLocaleString()}
                     </Text>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-col gap-1">
+                  </td>
+                  <td className="px-6 py-4">
                     <Text variant="body-14-m" color="grey-700" as="span">
-                      (광고) 내용을 입력하세요
+                      {item.author}
                     </Text>
-                    <Text variant="body-12-m" color="grey-500" as="span">
-                      (수신거부: 더보기&gt;설정&gt;알림관리)
+                  </td>
+                  <td className="px-6 py-4">
+                    <Text variant="body-14-m" color="grey-700" as="span">
+                      {item.target}
                     </Text>
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <Text variant="body-14-m" color="grey-700" as="span">
-                    uoslife://timetable/post/1234564
-                  </Text>
-                </td>
-              </tr>
+                  </td>
+                  <td className="px-6 py-4">
+                    <Text variant="body-14-m" color="grey-700" as="span">
+                      {item.title}
+                    </Text>
+                  </td>
+                  <td className="px-6 py-4">
+                    <Text variant="body-14-m" color="grey-700" as="span">
+                      {item.message}
+                    </Text>
+                  </td>
+                  <td className="px-6 py-4">
+                    <Text variant="body-14-m" color="grey-700" as="span">
+                      {item.path}
+                    </Text>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
