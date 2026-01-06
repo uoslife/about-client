@@ -6,27 +6,17 @@ interface TabButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   clicked: boolean;
 }
 
-export function TabButton({
-  children,
-  color = 'light',
-  clicked,
-  className,
-  ...props
-}: TabButtonProps) {
-  const styles: Record<
-    'light' | 'dark',
-    { default: string; clicked: string; textColor: ColorValue }
-  > = {
+export function TabButton({ children, color = 'light', clicked, className, ...props }: TabButtonProps) {
+  const styles: Record<'light' | 'dark', { default: string; clicked: string; textColor: ColorValue }> = {
     light: {
-      default: 'text-[#72727c] hover:bg-[#e1e1e7] hover:text-[#303037]',
-      clicked: 'bg-[#222227] text-white',
-      textColor: clicked ? 'white' : 'grey-600',
+      default: 'text-[#8E8E93] hover:bg-[#E1E1E7] hover:text-[#54545C]',
+      clicked: 'text-black',
+      textColor: clicked ? 'black' : 'grey-600',
     },
     dark: {
-      default:
-        'bg-[#303037] text-white hover:bg-[#d5d5dc] hover:text-[#54545c]',
-      clicked: 'bg-[#f7f7f9] text-[#222227]',
-      textColor: clicked ? 'grey-900' : 'white',
+      default: 'bg-[#8E8E93] hover:bg-[#E1E1E7] hover:text-[#54545C]',
+      clicked: 'text-black',
+      textColor: clicked ? 'black' : 'grey-600',
     },
   };
 
@@ -36,7 +26,7 @@ export function TabButton({
   return (
     <button
       type="button"
-      className={`flex items-center h-8 sm:h-11 justify-center px-3 sm:px-[26px] py-0 rounded-[22px] transition-colors ${stateClass} ${className || ''}`}
+      className={`flex items-center justify-center px-2 ${stateClass} ${className || ''}`}
       {...props}
     >
       <Text

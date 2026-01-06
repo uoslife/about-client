@@ -12,7 +12,7 @@ export function BackofficeHeader() {
   const hasAccess = role === 'ADMIN' || role === 'FULL_MEMBER';
 
   return (
-    <header className="w-full h-[64px] sticky top-0 z-50 px-4 sm:px-10 py-4 bg-white">
+    <header className="w-full h-[64px] sticky top-10 z-50 my-10 bg-white">
       <div className="flex flex-row items-center justify-between">
         {/* 로고 + 타이틀 */}
         <Link href="/" className="flex flex-row items-center gap-4">
@@ -27,7 +27,7 @@ export function BackofficeHeader() {
         </Link>
         {/* 권한 확인  */}
         <div className="flex flex-row items-center gap-4">
-          <div>
+          <div className="flex flex-row items-center gap-2">
             <Text variant="body-18-m" color="grey-700">
               {session?.user?.name || '시대생'}
             </Text>
