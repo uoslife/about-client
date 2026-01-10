@@ -13,7 +13,6 @@ export const useUser = () => {
 
   return {
     role: me?.role,
-    userId: me?.id,
     isLoading,
   };
 };
