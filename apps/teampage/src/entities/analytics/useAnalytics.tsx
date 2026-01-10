@@ -4,6 +4,7 @@ import { AmlitudeEventNameMapper, AmplitudeEventName } from './AmplitudeEventPar
 import { AmplitudeEventParameterMap } from './AmplitudeEventParameterMap';
 import { makeBaseProperty } from './utils/makeBaseProperty';
 import { useUser } from '../api/useUser';
+import ReactGA from 'react-ga4';
 
 declare global {
   interface Window {
@@ -35,15 +36,24 @@ const AnalyticsContext = createContext<{
 );
 
 const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const { role, isLoading } = useUser();
-  if (!process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY) {
-    throw new Error('AMPLITUDE_API_KEY is not set');
-  }
+  const { role, isLoading, userId } = useUser();
+
   useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY || !process.env.NEXT_PUBLIC_GA4_TRACKING_ID) {
+      throw new Error('AMPLITUDE_API_KEY is not set');
+    }
+    // Amplitude 초기화
     amplitude.init(process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY!, {
       autocapture: true,
     });
-  }, []);
+    // ReactGA 초기화
+    ReactGA.initialize([
+      {
+        trackingId: process.env.NEXT_PUBLIC_GA4_TRACKING_ID,
+        gaOptions: { userId: userId },
+      },
+    ]);
+  }, [userId]);
 
   /**
    * 기본속성
@@ -73,6 +83,7 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => 
       const isProduction = process.env.NODE_ENV === 'production';
       if (!isProduction) return;
       amplitude.logEvent(AmlitudeEventNameMapper[eventName], properties);
+      ReactGA.event(AmlitudeEventNameMapper[eventName], properties);
     },
     [role, isLoading],
   );
