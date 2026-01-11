@@ -23,6 +23,7 @@
     "next-auth": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
+    "react-ga4": "^2.1.0",
     "react-hook-form": "^7.53.0",
     "react-markdown": "^10.1.0",
     "react-syntax-highlighter": "^15.6.6",
