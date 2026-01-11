@@ -64,6 +64,7 @@ jobs:
           echo "NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET=$NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET" >> apps/teampage/.env
           echo "NEXT_PUBLIC_KEYCLOAK_ISSUER=$NEXT_PUBLIC_KEYCLOAK_ISSUER" >> apps/teampage/.env
           echo "NEXT_PUBLIC_AMPLITUDE_API_KEY=$NEXT_PUBLIC_AMPLITUDE_API_KEY" >> apps/teampage/.env
+          echo "NEXT_PUBLIC_GA4_TRACKING_ID=$NEXT_PUBLIC_GA4_TRACKING_ID" >> apps/teampage/.env
           echo "NEXT_PUBLIC_NEXTAUTH_URL=$NEXT_PUBLIC_NEXTAUTH_URL" >> apps/teampage/.env
         env:
           NOTION_API_KEY: ${{ secrets.NOTION_API_KEY }}
@@ -77,6 +78,7 @@ jobs:
           NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET: ${{ secrets.KEYCLOAK_CLIENT_SECRET }}
           NEXT_PUBLIC_KEYCLOAK_ISSUER: ${{ secrets.KEYCLOAK_ISSUER }}
           NEXT_PUBLIC_AMPLITUDE_API_KEY: ${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
+          NEXT_PUBLIC_GA4_TRACKING_ID: ${{ secrets.NEXT_PUBLIC_GA4_TRACKING_ID }}
           NEXT_PUBLIC_NEXTAUTH_URL: ${{ secrets.NEXT_PUBLIC_NEXTAUTH_URL }}
 
       - name: Setup Docker Buildx
@@ -111,6 +113,7 @@ jobs:
             NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
             NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
             NEXT_PUBLIC_AMPLITUDE_API_KEY=${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
+            NEXT_PUBLIC_GA4_TRACKING_ID=${{ secrets.NEXT_PUBLIC_GA4_TRACKING_ID }}
             NEXT_PUBLIC_NEXTAUTH_URL=${{ secrets.NEXT_PUBLIC_NEXTAUTH_URL }}
           tags: |
             ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}

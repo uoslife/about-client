@@ -39,6 +39,7 @@ jobs:
           echo "NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET=dummy" >> apps/teampage/.env
           echo "NEXT_PUBLIC_KEYCLOAK_ISSUER=dummy" >> apps/teampage/.env
           echo "NEXT_PUBLIC_AMPLITUDE_API_KEY=dummy" >> apps/teampage/.env
+          echo "NEXT_PUBLIC_GA4_TRACKING_ID=dummy" >> apps/teampage/.env
           echo "NEXT_PUBLIC_NEXTAUTH_URL=dummy" >> apps/teampage/.env
 
       - name: Install dependencies
