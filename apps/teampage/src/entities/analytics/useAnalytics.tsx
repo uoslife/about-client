@@ -40,7 +40,7 @@ const AnalyticsContextProvider: React.FC<PropsWithChildren> = ({ children }) => 
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY || !process.env.NEXT_PUBLIC_GA4_TRACKING_ID) {
-      throw new Error('AMPLITUDE_API_KEY is not set');
+      throw new Error('AMPLITUDE_API_KEY or GA4_TRACKING_ID is not set');
     }
     // Amplitude 초기화
     amplitude.init(process.env.NEXT_PUBLIC_AMPLITUDE_API_KEY!, {
