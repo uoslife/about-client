@@ -144,7 +144,11 @@ export default function BackofficePage() {
             {/* 메인 콘텐츠 영역: 왼쪽 예시 이미지 + 오른쪽 폼 */}
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
               <PushNotificationPreview />
-              <PushNotificationForm ref={formRef} onSubmit={handleSubmit} />
+              <PushNotificationForm
+                ref={formRef}
+                onSubmit={handleSubmit}
+                isLoading={sendNotificationMutation.isPending}
+              />
             </div>
 
             {/* 하단: 푸시 알림 내역 테이블 */}

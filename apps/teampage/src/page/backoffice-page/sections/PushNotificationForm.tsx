@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 interface PushNotificationFormProps {
   onSubmit: (data: PushNotificationFormData) => void;
+  isLoading: boolean;
 }
 
 export interface PushNotificationFormRef {
@@ -22,7 +23,7 @@ const LINK = {
 };
 
 export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNotificationFormProps>(
-  ({ onSubmit }, ref) => {
+  ({ onSubmit, isLoading }, ref) => {
     const {
       register,
       handleSubmit,
@@ -278,9 +279,10 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-8 py-3 bg-primary-ui text-white rounded-lg hover:bg-primary-brand transition-colors text-body-18-b"
+              disabled={isLoading}
+              className="px-8 py-3 bg-primary-ui text-white rounded-lg hover:bg-primary-brand transition-colors text-body-18-b disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              발송하기
+              {isLoading ? '발송 중' : '발송하기'}
             </button>
           </div>
         </form>
