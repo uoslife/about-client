@@ -41,6 +41,7 @@ jobs:
           echo "NEXT_PUBLIC_AMPLITUDE_API_KEY=dummy" >> apps/teampage/.env
           echo "NEXT_PUBLIC_GA4_TRACKING_ID=dummy" >> apps/teampage/.env
           echo "NEXT_PUBLIC_NEXTAUTH_URL=dummy" >> apps/teampage/.env
+          echo "NEXT_PUBLIC_API_BASE_URL=https://apis.uoslife.team" >> apps/teampage/.env
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -1,4 +1,4 @@
-name: Deployment (Kubernetes)
+name: Deployment (Kubernetes - Manual)
 
 run-name: Deploy to ${{ inputs.environment }} by @${{ github.actor }}
 
@@ -79,6 +79,7 @@ jobs:
             NEXT_PUBLIC_AMPLITUDE_API_KEY=${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
             NEXT_PUBLIC_GA4_TRACKING_ID=${{ secrets.NEXT_PUBLIC_GA4_TRACKING_ID }}
             NEXT_PUBLIC_NEXTAUTH_URL=${{ secrets.NEXT_PUBLIC_NEXTAUTH_URL }}
+            NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
           tags: >
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }},
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
