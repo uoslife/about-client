@@ -60,9 +60,15 @@ jobs:
           cache-to: 'type=gha,mode=max'
           build-args: |
             NODE_ENV=production
+            NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+            NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
+            KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}
+            KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+            KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
             NEXT_PUBLIC_AMPLITUDE_API_KEY=${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
             NEXT_PUBLIC_GA4_TRACKING_ID=${{ secrets.NEXT_PUBLIC_GA4_TRACKING_ID }}
-            NEXT_PUBLIC_NEXTAUTH_URL=${{ secrets.NEXT_PUBLIC_NEXTAUTH_URL }}
             NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL_PROD }}
           tags: >
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }},
