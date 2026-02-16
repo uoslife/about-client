@@ -8,7 +8,6 @@ export default defineConfig({
   teampage: {
     input: teampageInput,
     output: {
-      baseUrl: 'https://apis.uoslife.team',
       client: 'react-query',
       httpClient: 'axios',
       mode: 'split',
