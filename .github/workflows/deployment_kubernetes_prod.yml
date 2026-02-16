@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GIT_PROJECT_NAME: uoslife-client
+      GIT_PROJECT_NAME: about-client
 
       # AWS
       AWS_REGION: ap-northeast-2

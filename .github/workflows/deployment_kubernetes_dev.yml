@@ -28,7 +28,7 @@ jobs:
 
     env:
       GIT_REF: ${{ inputs.ref == 'HEAD' && github.ref || format('refs/tags/{0}', inputs.ref) }}
-      GIT_PROJECT_NAME: uoslife-client
+      GIT_PROJECT_NAME: about-client
 
       # AWS
       AWS_REGION: ap-northeast-2
