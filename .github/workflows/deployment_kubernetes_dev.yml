@@ -36,7 +36,7 @@ jobs:
 
       # Elastic Container Registry
       ECR_REGISTRY: 010928206252.dkr.ecr.ap-northeast-2.amazonaws.com
-      ECR_REPOSITORY: uoslife-v2/uoslife-client
+      ECR_REPOSITORY: teampage/client
 
     steps:
       - name: Clone Repository
