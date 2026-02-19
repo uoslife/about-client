@@ -64,7 +64,7 @@ export const sendNotification = (
 ) => {
   return apiInstance<NotificationAcceptedResponse>(
     {
-      url: `https://apis.uoslife.team/notifications`,
+      url: `/notifications`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: notificationRequest,
@@ -138,14 +138,11 @@ export const searchArticles = (
   options?: SecondParameter<typeof apiInstance>,
   signal?: AbortSignal,
 ) => {
-  return apiInstance<PageArticleListItem>(
-    { url: `https://apis.uoslife.team/articles`, method: 'GET', params, signal },
-    options,
-  );
+  return apiInstance<PageArticleListItem>({ url: `/articles`, method: 'GET', params, signal }, options);
 };
 
 export const getSearchArticlesQueryKey = (params?: SearchArticlesParams) => {
-  return [`https://apis.uoslife.team/articles`, ...(params ? [params] : [])] as const;
+  return [`/articles`, ...(params ? [params] : [])] as const;
 };
 
 export const getSearchArticlesInfiniteQueryOptions = <
@@ -460,7 +457,7 @@ export const createArticle = (
 ) => {
   return apiInstance<ArticleDetailResponse>(
     {
-      url: `https://apis.uoslife.team/articles`,
+      url: `/articles`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: createArticleRequest,
@@ -530,7 +527,7 @@ export const useCreateArticle = <TError = ErrorType<unknown>, TContext = unknown
 };
 
 export const truncateWithKids = (options?: SecondParameter<typeof apiInstance>) => {
-  return apiInstance<null>({ url: `https://apis.uoslife.team/articles`, method: 'DELETE' }, options);
+  return apiInstance<null>({ url: `/articles`, method: 'DELETE' }, options);
 };
 
 export const getTruncateWithKidsMutationOptions = <TError = ErrorType<unknown>, TContext = unknown>(options?: {
@@ -575,7 +572,7 @@ export const addReaction = (
 ) => {
   return apiInstance<ReactionResponse>(
     {
-      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/likes`,
+      url: `/articles/${encodeURIComponent(String(articleId))}/likes`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: reactionRequest,
@@ -652,17 +649,13 @@ export const useAddReaction = <
 
 export const findComment = (articleId: number, options?: SecondParameter<typeof apiInstance>, signal?: AbortSignal) => {
   return apiInstance<CommentResponse[]>(
-    {
-      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
-      method: 'GET',
-      signal,
-    },
+    { url: `/articles/${encodeURIComponent(String(articleId))}/comments`, method: 'GET', signal },
     options,
   );
 };
 
 export const getFindCommentQueryKey = (articleId?: number) => {
-  return [`https://apis.uoslife.team/articles/${articleId}/comments`] as const;
+  return [`/articles/${articleId}/comments`] as const;
 };
 
 export const getFindCommentInfiniteQueryOptions = <
@@ -966,7 +959,7 @@ export const createComment = (
 ) => {
   return apiInstance<CommentResponse>(
     {
-      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments`,
+      url: `/articles/${encodeURIComponent(String(articleId))}/comments`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: commentCreateRequest,
@@ -1043,7 +1036,7 @@ export const uploadThumbnailImage = (
 ) => {
   return apiInstance<ImageUploadResponse>(
     {
-      url: `https://apis.uoslife.team/articles/uploadThumbnailImage`,
+      url: `/articles/uploadThumbnailImage`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: uploadThumbnailImageBody,
@@ -1121,7 +1114,7 @@ export const uploadImage = (
 ) => {
   return apiInstance<ImageUploadResponse>(
     {
-      url: `https://apis.uoslife.team/articles/uploadImage`,
+      url: `/articles/uploadImage`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: uploadImageBody,
@@ -1198,18 +1191,13 @@ export const findArticle = (
   signal?: AbortSignal,
 ) => {
   return apiInstance<ArticleDetailResponse>(
-    {
-      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
-      method: 'GET',
-      params,
-      signal,
-    },
+    { url: `/articles/${encodeURIComponent(String(articleId))}`, method: 'GET', params, signal },
     options,
   );
 };
 
 export const getFindArticleQueryKey = (articleId?: number, params?: FindArticleParams) => {
-  return [`https://apis.uoslife.team/articles/${articleId}`, ...(params ? [params] : [])] as const;
+  return [`/articles/${articleId}`, ...(params ? [params] : [])] as const;
 };
 
 export const getFindArticleInfiniteQueryOptions = <
@@ -1523,10 +1511,7 @@ export function useFindArticleSuspense<TData = Awaited<ReturnType<typeof findArt
 }
 
 export const deleteArticle = (articleId: number, options?: SecondParameter<typeof apiInstance>) => {
-  return apiInstance<null>(
-    { url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`, method: 'DELETE' },
-    options,
-  );
+  return apiInstance<null>({ url: `/articles/${encodeURIComponent(String(articleId))}`, method: 'DELETE' }, options);
 };
 
 export const getDeleteArticleMutationOptions = <TError = ErrorType<unknown>, TContext = unknown>(options?: {
@@ -1572,7 +1557,7 @@ export const updateArticle = (
 ) => {
   return apiInstance<ArticleDetailResponse>(
     {
-      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}`,
+      url: `/articles/${encodeURIComponent(String(articleId))}`,
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       data: updateArticleRequest,
@@ -1643,7 +1628,7 @@ export const useUpdateArticle = <TError = ErrorType<unknown>, TContext = unknown
 export const deleteComment = (articleId: number, commentId: number, options?: SecondParameter<typeof apiInstance>) => {
   return apiInstance<null>(
     {
-      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
+      url: `/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
       method: 'DELETE',
     },
     options,
@@ -1717,7 +1702,7 @@ export const updateComment = (
 ) => {
   return apiInstance<CommentResponse>(
     {
-      url: `https://apis.uoslife.team/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
+      url: `/articles/${encodeURIComponent(String(articleId))}/comments/${encodeURIComponent(String(commentId))}`,
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       data: commentUpdateRequest,
@@ -1790,14 +1775,11 @@ export const getAllLog = (
   options?: SecondParameter<typeof apiInstance>,
   signal?: AbortSignal,
 ) => {
-  return apiInstance<NotificationLogResponse[]>(
-    { url: `https://apis.uoslife.team/notifications/logs`, method: 'GET', params, signal },
-    options,
-  );
+  return apiInstance<NotificationLogResponse[]>({ url: `/notifications/logs`, method: 'GET', params, signal }, options);
 };
 
 export const getGetAllLogQueryKey = (params?: GetAllLogParams) => {
-  return [`https://apis.uoslife.team/notifications/logs`, ...(params ? [params] : [])] as const;
+  return [`/notifications/logs`, ...(params ? [params] : [])] as const;
 };
 
 export const getGetAllLogInfiniteQueryOptions = <
@@ -2083,11 +2065,11 @@ export function useGetAllLogSuspense<TData = Awaited<ReturnType<typeof getAllLog
 }
 
 export const me = (options?: SecondParameter<typeof apiInstance>, signal?: AbortSignal) => {
-  return apiInstance<MyInfoResponse>({ url: `https://apis.uoslife.team/auth/me`, method: 'GET', signal }, options);
+  return apiInstance<MyInfoResponse>({ url: `/auth/me`, method: 'GET', signal }, options);
 };
 
 export const getMeQueryKey = () => {
-  return [`https://apis.uoslife.team/auth/me`] as const;
+  return [`/auth/me`] as const;
 };
 
 export const getMeInfiniteQueryOptions = <
@@ -2319,7 +2301,7 @@ export function useMeSuspense<TData = Awaited<ReturnType<typeof me>>, TError = E
 }
 
 export const truncate = (options?: SecondParameter<typeof apiInstance>) => {
-  return apiInstance<null>({ url: `https://apis.uoslife.team/articles/comments`, method: 'DELETE' }, options);
+  return apiInstance<null>({ url: `/articles/comments`, method: 'DELETE' }, options);
 };
 
 export const getTruncateMutationOptions = <TError = ErrorType<unknown>, TContext = unknown>(options?: {

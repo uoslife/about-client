@@ -201,8 +201,8 @@ export interface MyInfoResponse {
 }
 
 export interface PageArticleListItem {
-  totalElements?: number;
   totalPages?: number;
+  totalElements?: number;
   pageable?: PageableObject;
   numberOfElements?: number;
   size?: number;
@@ -215,17 +215,17 @@ export interface PageArticleListItem {
 }
 
 export interface PageableObject {
+  unpaged?: boolean;
   paged?: boolean;
   pageNumber?: number;
   pageSize?: number;
-  unpaged?: boolean;
   offset?: number;
   sort?: SortObject;
 }
 
 export interface SortObject {
-  sorted?: boolean;
   unsorted?: boolean;
+  sorted?: boolean;
   empty?: boolean;
 }
 

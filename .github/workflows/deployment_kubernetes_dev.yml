@@ -16,7 +16,6 @@ on:
         type: choice
         options:
           - dev
-          - prod
       ref:
         description: '배포 대상 브랜치/태그'
         required: true
@@ -29,7 +28,7 @@ jobs:
 
     env:
       GIT_REF: ${{ inputs.ref == 'HEAD' && github.ref || format('refs/tags/{0}', inputs.ref) }}
-      GIT_PROJECT_NAME: uoslife-client
+      GIT_PROJECT_NAME: about-client
 
       # AWS
       AWS_REGION: ap-northeast-2
@@ -37,7 +36,7 @@ jobs:
 
       # Elastic Container Registry
       ECR_REGISTRY: 010928206252.dkr.ecr.ap-northeast-2.amazonaws.com
-      ECR_REPOSITORY: uoslife-v2/uoslife-client
+      ECR_REPOSITORY: teampage/client
 
     steps:
       - name: Clone Repository
@@ -76,10 +75,16 @@ jobs:
           cache-to: 'type=gha,mode=max'
           build-args: |
             NODE_ENV=production
+            NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+            NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
+            KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}
+            KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+            KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
             NEXT_PUBLIC_AMPLITUDE_API_KEY=${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
             NEXT_PUBLIC_GA4_TRACKING_ID=${{ secrets.NEXT_PUBLIC_GA4_TRACKING_ID }}
-            NEXT_PUBLIC_NEXTAUTH_URL=${{ secrets.NEXT_PUBLIC_NEXTAUTH_URL }}
-            NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
+            NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL_DEV }}
           tags: >
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }},
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
