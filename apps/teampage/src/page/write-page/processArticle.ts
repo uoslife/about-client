@@ -11,6 +11,9 @@ import {
 // import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://apis.uoslife.team';
+
 export type CreateArticleInput = Omit<CreateArticleRequest, 'thumbnailUrl'> & {
   thumbnailFile?: File | null;
 };
@@ -75,7 +78,7 @@ const uploadSingleImageToServer = (
     formData.append('file', imageFile);
     formData.append('spaceId', spaceId.toString());
 
-    fetch('https://apis.uoslife.team/articles/uploadImage', {
+    fetch(`${API_BASE_URL}/articles/uploadImage`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -116,7 +119,7 @@ const uploadThumbnailToServer = (
     formData.append('file', imageFile);
     formData.append('spaceId', spaceId.toString());
 
-    fetch('https://apis.uoslife.team/articles/uploadThumbnailImage', {
+    fetch(`${API_BASE_URL}/articles/uploadThumbnailImage`, {
       method: 'POST',
       body: formData,
       headers: {
