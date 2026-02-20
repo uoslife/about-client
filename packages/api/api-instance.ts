@@ -8,7 +8,7 @@ import { getAccessToken } from './src/authToken';
 const DEFAULT_TIMEOUT_MS = 10 * 1000;
 
 export const AXIOS_INSTANCE = Axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://about-api.uoslife.com',
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://apis.uoslife.team',
   timeout: DEFAULT_TIMEOUT_MS,
 });
 

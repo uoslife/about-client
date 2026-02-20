@@ -1,7 +1,7 @@
 import { defineConfig, type Options } from 'orval';
 
 const teampageInput: Options['input'] = {
-  target: 'https://about-api.uoslife.com/v3/api-docs',
+  target: 'https://apis.uoslife.team/v3/api-docs',
 };
 
 export default defineConfig({
