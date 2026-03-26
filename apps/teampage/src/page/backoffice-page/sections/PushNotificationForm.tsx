@@ -1,6 +1,10 @@
 'use client';
 import { useForm, Controller } from 'react-hook-form';
-import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
+import { useState, useEffect, useImperativeHandle, forwardRef, type InputHTMLAttributes } from 'react';
+import { offset } from '@floating-ui/react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import './push-notification-datepicker.css';
 import { Text } from '@/shared/component/Text';
 import type { PushNotificationFormData } from '../BackOfficePage';
 import Image from 'next/image';
@@ -22,6 +26,46 @@ const LINK = {
     'https://www.notion.so/uoslife/2d5de257e4b180eb9589e34ccd21cc66?v=2d5de257e4b181b6bd6b000c97e2f813&source=copy_link',
 };
 
+const HOURS = Array.from({ length: 24 }, (_, idx) => String(idx).padStart(2, '0'));
+const MINUTES = Array.from({ length: 12 }, (_, idx) => String(idx * 5).padStart(2, '0'));
+
+/** 로컬 날짜만 YYYY-MM-DD로 (타임존 이슈 완화용 정오 기준) */
+const formatYmd = (d: Date) => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+};
+
+const parseYmdToLocalNoon = (ymd: string) => new Date(`${ymd}T12:00:00`);
+
+type ScheduleDateInputProps = InputHTMLAttributes<HTMLInputElement>;
+
+const ScheduleDateCustomInput = forwardRef<HTMLInputElement, ScheduleDateInputProps>(
+  function ScheduleDateCustomInput({ className, onKeyDown, ...props }, ref) {
+    return (
+      <div className="relative w-full">
+        <input
+          ref={ref}
+          type="text"
+          autoComplete="off"
+          className={`w-full pl-4 pr-12 py-3 border border-grey-300 rounded-lg bg-white outline-none focus:border-primary-ui focus:ring-1 focus:ring-primary-ui text-body-16-m text-grey-900 placeholder:text-grey-500 ${className ?? ''}`}
+          onKeyDown={(e) => {
+            onKeyDown?.(e);
+            if (e.ctrlKey || e.metaKey || e.altKey) return;
+            if (e.key.length === 1) e.preventDefault();
+          }}
+          {...props}
+        />
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center" aria-hidden>
+          <Image src="/svg/calendar.svg" alt="" width={24} height={24} />
+        </span>
+      </div>
+    );
+  },
+);
+ScheduleDateCustomInput.displayName = 'ScheduleDateCustomInput';
+
 export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNotificationFormProps>(
   ({ onSubmit, isLoading }, ref) => {
     const {
@@ -39,6 +83,12 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
         title: '',
         message: '',
         path: '',
+        delivery: {
+          type: 'IMMEDIATE',
+          scheduleDate: '',
+          scheduleHour: '00',
+          scheduleMinute: '00',
+        },
         recipient: {
           recipientType: 'TARGET',
           emails: [],
@@ -49,6 +99,7 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
 
     const recipientType = watch('recipient.recipientType');
     const target = watch('recipient.target');
+    const deliveryType = watch('delivery.type');
 
     const selectedTargetOption = recipientType === 'EMAILS' ? 'EMAILS' : target || 'ALL';
 
@@ -60,6 +111,12 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
           title: '',
           message: '',
           path: '',
+          delivery: {
+            type: 'IMMEDIATE',
+            scheduleDate: '',
+            scheduleHour: '00',
+            scheduleMinute: '00',
+          },
           recipient: {
             recipientType: 'TARGET',
             emails: [],
@@ -108,6 +165,15 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
 
         data.recipient.emails = emailArray;
       }
+
+      if (data.delivery.type === 'SCHEDULED' && !data.delivery.scheduleDate) {
+        setError('delivery.scheduleDate', {
+          type: 'manual',
+          message: '예약 날짜를 선택하세요.',
+        });
+        return;
+      }
+
       onSubmit(data);
     };
 
@@ -273,6 +339,110 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
               <Text variant="body-12-m" color="grey-600" as="span">
                 {(errors.recipient as any).message}
               </Text>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            <Text variant="body-18-m" color="grey-900">
+              발송 시간 설정
+            </Text>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                checked={deliveryType === 'IMMEDIATE'}
+                onChange={() => {
+                  setValue('delivery.type', 'IMMEDIATE');
+                  clearErrors('delivery.scheduleDate');
+                }}
+                className="w-5 h-5 text-primary-ui focus:ring-primary-ui"
+              />
+              <Text variant="body-16-m" color="grey-900">
+                즉시 발송
+              </Text>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="radio"
+                checked={deliveryType === 'SCHEDULED'}
+                onChange={() => setValue('delivery.type', 'SCHEDULED')}
+                className="w-5 h-5 text-primary-ui focus:ring-primary-ui"
+              />
+              <Text variant="body-16-m" color="grey-900">
+                예약 발송
+              </Text>
+            </label>
+
+            {deliveryType === 'SCHEDULED' && (
+              <div className="border border-grey-300 rounded-lg p-4">
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Text variant="body-14-m" color="grey-700">
+                      날짜
+                    </Text>
+                    <Controller
+                      name="delivery.scheduleDate"
+                      control={control}
+                      render={({ field }) => (
+                        <DatePicker
+                          selected={field.value ? parseYmdToLocalNoon(field.value) : null}
+                          onChange={(date) => {
+                            field.onChange(date ? formatYmd(date) : '');
+                            clearErrors('delivery.scheduleDate');
+                          }}
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          ref={field.ref}
+                          dateFormat="yyyy.MM.dd"
+                          placeholderText="년/월/일"
+                          customInput={<ScheduleDateCustomInput />}
+                          calendarClassName="push-notification-datepicker-calendar"
+                          showPopperArrow={false}
+                          wrapperClassName="w-full"
+                          popperPlacement="bottom-start"
+                          popperModifiers={[offset(12)]}
+                          popperClassName="z-[100]"
+                        />
+                      )}
+                    />
+                    {errors.delivery?.scheduleDate && (
+                      <Text variant="body-12-m" color="grey-600" as="span">
+                        {errors.delivery.scheduleDate.message}
+                      </Text>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <Text variant="body-14-m" color="grey-700">
+                      시간
+                    </Text>
+                    <div className="flex items-center gap-2">
+                      <select
+                        {...register('delivery.scheduleHour')}
+                        className="px-4 py-3 border border-grey-300 rounded-lg outline-none focus:border-primary-ui focus:ring-1 focus:ring-primary-ui text-body-16-m"
+                      >
+                        {HOURS.map((hour) => (
+                          <option key={hour} value={hour}>
+                            {hour}
+                          </option>
+                        ))}
+                      </select>
+                      <Text variant="body-16-m" color="grey-700">
+                        :
+                      </Text>
+                      <select
+                        {...register('delivery.scheduleMinute')}
+                        className="px-4 py-3 border border-grey-300 rounded-lg outline-none focus:border-primary-ui focus:ring-1 focus:ring-primary-ui text-body-16-m"
+                      >
+                        {MINUTES.map((minute) => (
+                          <option key={minute} value={minute}>
+                            {minute}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
 

@@ -1,11 +1,15 @@
 'use client';
-import { useState, useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { TabButton } from '@/shared/component/TabButton';
 import { PushNotificationForm, type PushNotificationFormRef } from './sections/PushNotificationForm';
 import { PushNotificationHistory } from './sections/PushNotificationHistory';
 import { PushNotificationPreview } from './sections/PushNotificationPreview';
 import {
+  getGetScheduledNotificationsQueryKey,
+  useCancelScheduledNotification,
+  useGetAllLog,
+  useGetScheduledNotifications,
   useSendNotification,
   type NotificationRequest,
   getGetAllLogQueryKey,
@@ -25,6 +29,12 @@ export interface PushNotificationFormData {
   title: string;
   message: string;
   path: string;
+  delivery: {
+    type: 'IMMEDIATE' | 'SCHEDULED';
+    scheduleDate: string;
+    scheduleHour: string;
+    scheduleMinute: string;
+  };
   recipient: {
     recipientType: TargetType;
     emails?: string[];
@@ -37,6 +47,9 @@ export default function BackofficePage() {
   const { toast } = useToast();
   const { open: openConfirmModal } = useConfirmModal();
   const sendNotificationMutation = useSendNotification();
+  const { data: notificationLogs = [] } = useGetAllLog({ notificationType: 'BACKOFFICE' });
+  const { data: scheduledNotifications = [] } = useGetScheduledNotifications();
+  const cancelScheduledNotificationMutation = useCancelScheduledNotification();
   const formRef = useRef<PushNotificationFormRef>(null);
   const queryClient = useQueryClient();
   const { session } = useAuth();
@@ -48,11 +61,19 @@ export default function BackofficePage() {
     }
   };
 
+  const getScheduledAtIso = (data: PushNotificationFormData) => {
+    if (data.delivery.type !== 'SCHEDULED') return undefined;
+    const { scheduleDate, scheduleHour, scheduleMinute } = data.delivery;
+    return new Date(`${scheduleDate}T${scheduleHour}:${scheduleMinute}:00`).toISOString();
+  };
+
   const convertToNotificationRequest = (data: PushNotificationFormData): NotificationRequest => {
+    const scheduledAt = getScheduledAtIso(data);
     const request: NotificationRequest = {
       title: data.title,
       message: data.message,
       path: data.path || undefined,
+      scheduledAt: scheduledAt ? new Date(scheduledAt) : undefined,
       recipient:
         data.recipient.recipientType === 'EMAILS'
           ? {
@@ -67,7 +88,7 @@ export default function BackofficePage() {
     return request;
   };
 
-  const sendNotification = (data: PushNotificationFormData) => {
+  const sendNotification = (data: PushNotificationFormData, options?: { onSuccessMessage?: string }) => {
     const request = convertToNotificationRequest(data);
     const queryKey = getGetAllLogQueryKey({ notificationType: 'BACKOFFICE' });
 
@@ -75,17 +96,21 @@ export default function BackofficePage() {
       { data: request },
       {
         onSuccess: () => {
-          toast('발송이 완료되었습니다.');
+          toast(
+            options?.onSuccessMessage ||
+              (data.delivery.type === 'SCHEDULED' ? '예약 발송이 등록되었습니다.' : '발송이 완료되었습니다.'),
+          );
           if (formRef.current) {
             formRef.current.resetForm();
           }
 
+          queryClient.invalidateQueries({ queryKey: getGetScheduledNotificationsQueryKey() });
           queryClient.setQueryData<NotificationLogResponse[]>(queryKey, (oldData) => {
             if (!oldData) return oldData;
 
             const newLog: NotificationLogResponse = {
-              startTime: new Date(),
-              status: 'DONE',
+              startTime: getScheduledAtIso(data) ? new Date(getScheduledAtIso(data)!) : new Date(),
+              status: data.delivery.type === 'SCHEDULED' ? 'RESERVED' : 'DONE',
               author: session?.user?.name || '시대생',
               target:
                 data.recipient.recipientType === 'EMAILS' || data.recipient.target === 'MARKETING_CONSENT'
@@ -106,7 +131,39 @@ export default function BackofficePage() {
     );
   };
 
+  const handleDeleteReserved = (id: number) => {
+    openConfirmModal({
+      title: '예약 발송을 삭제하시겠습니까?',
+      confirmText: '삭제',
+      cancelText: '취소',
+      variant: 'danger',
+      onConfirm: () => {
+        cancelScheduledNotificationMutation.mutate(
+          { id },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: getGetScheduledNotificationsQueryKey() });
+              toast('예약 내역이 삭제되었습니다.');
+            },
+            onError: () => {
+              toast('예약 내역 삭제에 실패했습니다.');
+            },
+          },
+        );
+      },
+    });
+  };
+
   const handleSubmit = (data: PushNotificationFormData) => {
+    if (data.delivery.type === 'SCHEDULED') {
+      const scheduledAt = new Date(getScheduledAtIso(data)!);
+      const now = new Date();
+      if (scheduledAt <= now) {
+        toast('현재 시간보다 이른 시간으로 예약할 수 없습니다. 발송에 실패했습니다.');
+        return;
+      }
+    }
+
     if (data.recipient.recipientType === 'TARGET') {
       openConfirmModal({
         title: '실제 유저 대상으로 발송하시겠습니까?',
@@ -152,7 +209,11 @@ export default function BackofficePage() {
             </div>
 
             {/* 하단: 푸시 알림 내역 테이블 */}
-            <PushNotificationHistory />
+            <PushNotificationHistory
+              notificationLogs={notificationLogs}
+              scheduledNotifications={scheduledNotifications}
+              onDeleteReserved={handleDeleteReserved}
+            />
           </div>
         )}
       </div>
