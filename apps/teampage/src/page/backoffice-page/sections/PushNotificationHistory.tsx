@@ -69,14 +69,13 @@ export function PushNotificationHistory({
             <tbody>
               {scheduledNotifications?.length > 0 &&
                 scheduledNotifications?.map((item) => {
-                  const scheduledAt =
-                    item.scheduledAt instanceof Date ? item.scheduledAt : new Date(item.scheduledAt);
+                  const scheduledAt = item.scheduledAt instanceof Date ? item.scheduledAt : new Date(item.scheduledAt);
                   const timeKey = `${item.id}-${scheduledAt.toISOString()}`;
 
                   return (
                     <tr className="border-b border-grey-200 hover:bg-grey-50" key={timeKey}>
                       <td className="px-6 py-4">
-                        <Text variant="body-14-m" color="grey-700" as="span">
+                        <Text variant="body-14-m" color="primary-brand" as="span">
                           {scheduledAt.toLocaleString()}
                         </Text>
                       </td>
