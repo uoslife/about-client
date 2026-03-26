@@ -31,6 +31,7 @@ export interface NotificationRequest {
   message: string;
   path?: string;
   recipient: NotificationRequestRecipient;
+  scheduledAt?: Date;
 }
 
 export interface Recipient {
@@ -38,7 +39,8 @@ export interface Recipient {
 }
 
 export interface NotificationAcceptedResponse {
-  requestId: string;
+  id?: number;
+  scheduledAt?: Date;
 }
 
 /**
@@ -177,6 +179,18 @@ export interface CommentUpdateRequest {
   content: string;
 }
 
+export interface ScheduledNotificationResponse {
+  id: number;
+  title: string;
+  message: string;
+  path?: string;
+  author: string;
+  type: string;
+  scheduledAt: Date;
+  status: string;
+  createdAt: Date;
+}
+
 export interface NotificationLogResponse {
   startTime: Date;
   endTime?: Date;
@@ -215,17 +229,17 @@ export interface PageArticleListItem {
 }
 
 export interface PageableObject {
-  unpaged?: boolean;
   paged?: boolean;
   pageNumber?: number;
   pageSize?: number;
+  unpaged?: boolean;
   offset?: number;
   sort?: SortObject;
 }
 
 export interface SortObject {
-  unsorted?: boolean;
   sorted?: boolean;
+  unsorted?: boolean;
   empty?: boolean;
 }
 
