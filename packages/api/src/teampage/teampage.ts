@@ -44,6 +44,7 @@ import type {
   PageArticleListItem,
   ReactionRequest,
   ReactionResponse,
+  ScheduledNotificationResponse,
   SearchArticlesParams,
   UpdateArticleRequest,
   UploadImageBody,
@@ -1770,6 +1771,315 @@ export const useUpdateComment = <TError = ErrorType<unknown>, TContext = unknown
   return useMutation(mutationOptions, queryClient);
 };
 
+export const getScheduledNotifications = (options?: SecondParameter<typeof apiInstance>, signal?: AbortSignal) => {
+  return apiInstance<ScheduledNotificationResponse[]>(
+    { url: `/notifications/scheduled`, method: 'GET', signal },
+    options,
+  );
+};
+
+export const getGetScheduledNotificationsQueryKey = () => {
+  return [`/notifications/scheduled`] as const;
+};
+
+export const getGetScheduledNotificationsInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof getScheduledNotifications>>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+  request?: SecondParameter<typeof apiInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetScheduledNotificationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getScheduledNotifications>>> = ({ signal }) =>
+    getScheduledNotifications(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof getScheduledNotifications>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetScheduledNotificationsInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getScheduledNotifications>>
+>;
+export type GetScheduledNotificationsInfiniteQueryError = ErrorType<unknown>;
+
+export function useGetScheduledNotificationsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getScheduledNotifications>>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScheduledNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof getScheduledNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetScheduledNotificationsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getScheduledNotifications>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScheduledNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof getScheduledNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetScheduledNotificationsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getScheduledNotifications>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useGetScheduledNotificationsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof getScheduledNotifications>>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetScheduledNotificationsInfiniteQueryOptions(options);
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchGetScheduledNotificationsInfiniteQuery = async <
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  queryClient: QueryClient,
+  options?: {
+    query?: Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getGetScheduledNotificationsInfiniteQueryOptions(options);
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+};
+
+export const getGetScheduledNotificationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+  request?: SecondParameter<typeof apiInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetScheduledNotificationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getScheduledNotifications>>> = ({ signal }) =>
+    getScheduledNotifications(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getScheduledNotifications>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetScheduledNotificationsQueryResult = NonNullable<Awaited<ReturnType<typeof getScheduledNotifications>>>;
+export type GetScheduledNotificationsQueryError = ErrorType<unknown>;
+
+export function useGetScheduledNotifications<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>> &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScheduledNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof getScheduledNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetScheduledNotifications<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>> &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getScheduledNotifications>>,
+          TError,
+          Awaited<ReturnType<typeof getScheduledNotifications>>
+        >,
+        'initialData'
+      >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetScheduledNotifications<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useGetScheduledNotifications<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetScheduledNotificationsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
+export const prefetchGetScheduledNotificationsQuery = async <
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  queryClient: QueryClient,
+  options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+): Promise<QueryClient> => {
+  const queryOptions = getGetScheduledNotificationsQueryOptions(options);
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+};
+
+export const getGetScheduledNotificationsSuspenseQueryOptions = <
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+  request?: SecondParameter<typeof apiInstance>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetScheduledNotificationsQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof getScheduledNotifications>>> = ({ signal }) =>
+    getScheduledNotifications(requestOptions, signal);
+
+  return { queryKey, queryFn, ...queryOptions } as UseSuspenseQueryOptions<
+    Awaited<ReturnType<typeof getScheduledNotifications>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetScheduledNotificationsSuspenseQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getScheduledNotifications>>
+>;
+export type GetScheduledNotificationsSuspenseQueryError = ErrorType<unknown>;
+
+export function useGetScheduledNotificationsSuspense<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options: {
+    query: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetScheduledNotificationsSuspense<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetScheduledNotificationsSuspense<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+export function useGetScheduledNotificationsSuspense<
+  TData = Awaited<ReturnType<typeof getScheduledNotifications>>,
+  TError = ErrorType<unknown>,
+>(
+  options?: {
+    query?: Partial<UseSuspenseQueryOptions<Awaited<ReturnType<typeof getScheduledNotifications>>, TError, TData>>;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseSuspenseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+  const queryOptions = getGetScheduledNotificationsSuspenseQueryOptions(options);
+
+  const query = useSuspenseQuery(queryOptions, queryClient) as UseSuspenseQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
+
+  query.queryKey = queryOptions.queryKey;
+
+  return query;
+}
+
 export const getAllLog = (
   params: GetAllLogParams,
   options?: SecondParameter<typeof apiInstance>,
@@ -2299,6 +2609,66 @@ export function useMeSuspense<TData = Awaited<ReturnType<typeof me>>, TError = E
 
   return query;
 }
+
+export const cancelScheduledNotification = (id: number, options?: SecondParameter<typeof apiInstance>) => {
+  return apiInstance<null>(
+    { url: `/notifications/scheduled/${encodeURIComponent(String(id))}`, method: 'DELETE' },
+    options,
+  );
+};
+
+export const getCancelScheduledNotificationMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof cancelScheduledNotification>>,
+    TError,
+    { id: number },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<Awaited<ReturnType<typeof cancelScheduledNotification>>, TError, { id: number }, TContext> => {
+  const mutationKey = ['cancelScheduledNotification'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof cancelScheduledNotification>>, { id: number }> = (
+    props,
+  ) => {
+    const { id } = props ?? {};
+
+    return cancelScheduledNotification(id, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type CancelScheduledNotificationMutationResult = NonNullable<
+  Awaited<ReturnType<typeof cancelScheduledNotification>>
+>;
+
+export type CancelScheduledNotificationMutationError = ErrorType<unknown>;
+
+export const useCancelScheduledNotification = <TError = ErrorType<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof cancelScheduledNotification>>,
+      TError,
+      { id: number },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<Awaited<ReturnType<typeof cancelScheduledNotification>>, TError, { id: number }, TContext> => {
+  const mutationOptions = getCancelScheduledNotificationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
 
 export const truncate = (options?: SecondParameter<typeof apiInstance>) => {
   return apiInstance<null>({ url: `/articles/comments`, method: 'DELETE' }, options);
