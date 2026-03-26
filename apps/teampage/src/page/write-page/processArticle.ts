@@ -1,13 +1,5 @@
 import type { CreateArticleRequest } from '@uoslife/api';
-import {
-  catchError,
-  forkJoin,
-  from,
-  map,
-  Observable,
-  of,
-  switchMap,
-} from 'rxjs';
+import { catchError, forkJoin, from, map, Observable, of, switchMap } from 'rxjs';
 // import sharp from 'sharp';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -53,16 +45,10 @@ const extractImageString = (content: string): string[] => {
   const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
   const matches = Array.from(content.matchAll(imageRegex));
 
-  return matches
-    .map((match) => match[2])
-    .filter((url) => url.startsWith('data:image'));
+  return matches.map((match) => match[2]).filter((url) => url.startsWith('data:image'));
 };
 
-const uploadSingleImageToServer = (
-  imageFile: File,
-  accessToken: string,
-  spaceId: number,
-): Observable<string> => {
+const uploadSingleImageToServer = (imageFile: File, accessToken: string, spaceId: number): Observable<string> => {
   return new Observable((observer) => {
     // const arrayBuffer = await imageFile.arrayBuffer();
     // const buffer = Buffer.from(arrayBuffer);
@@ -75,7 +61,7 @@ const uploadSingleImageToServer = (
     formData.append('file', imageFile);
     formData.append('spaceId', spaceId.toString());
 
-    fetch('https://apis.uoslife.team/articles/uploadImage', {
+    fetch('https://about-api.uoslife.com/articles/uploadImage', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -84,9 +70,7 @@ const uploadSingleImageToServer = (
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error(
-            `Upload failed: ${response.status} ${response.statusText}`,
-          );
+          throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
         }
         return response.json();
       })
@@ -106,17 +90,13 @@ const uploadSingleImageToServer = (
 };
 
 // 썸네일 업로드 함수 (Observable 반환)
-const uploadThumbnailToServer = (
-  imageFile: File,
-  accessToken: string,
-  spaceId: number,
-): Observable<string> => {
+const uploadThumbnailToServer = (imageFile: File, accessToken: string, spaceId: number): Observable<string> => {
   return new Observable((observer) => {
     const formData = new FormData();
     formData.append('file', imageFile);
     formData.append('spaceId', spaceId.toString());
 
-    fetch('https://apis.uoslife.team/articles/uploadThumbnailImage', {
+    fetch('https://about-api.uoslife.com/articles/uploadThumbnailImage', {
       method: 'POST',
       body: formData,
       headers: {
@@ -125,9 +105,7 @@ const uploadThumbnailToServer = (
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error(
-            `Thumbnail upload failed: ${response.status} ${response.statusText}`,
-          );
+          throw new Error(`Thumbnail upload failed: ${response.status} ${response.statusText}`);
         }
         return response.json();
       })
@@ -147,10 +125,7 @@ const uploadThumbnailToServer = (
   });
 };
 
-const replaceAllImageUrls = (
-  content: string,
-  fileMappings: Array<{ oldString: string; newUrl: string }>,
-): string => {
+const replaceAllImageUrls = (content: string, fileMappings: Array<{ oldString: string; newUrl: string }>): string => {
   let updatedContent = content;
 
   fileMappings.forEach(({ oldString, newUrl }) => {
@@ -174,11 +149,7 @@ const processOnlyThumbnail = (
     });
   }
 
-  return uploadThumbnailToServer(
-    thumbnailFile,
-    accessToken,
-    articleData.spaceId,
-  ).pipe(
+  return uploadThumbnailToServer(thumbnailFile, accessToken, articleData.spaceId).pipe(
     map((thumbnailUrl) => ({
       ...restData,
       thumbnailUrl,
@@ -186,10 +157,7 @@ const processOnlyThumbnail = (
   );
 };
 
-export const processArticle = (
-  data: CreateArticleInput,
-  accessToken: string,
-) => {
+export const processArticle = (data: CreateArticleInput, accessToken: string) => {
   return from([data]).pipe(
     switchMap((articleData) => {
       const imageStrings = extractImageString(articleData.content);
@@ -211,11 +179,7 @@ export const processArticle = (
       const imageUploads$ = forkJoin(imageFiles$).pipe(
         switchMap((files) => {
           const uploadObservables = files.map((file) =>
-            uploadSingleImageToServer(
-              file.file,
-              accessToken,
-              data.spaceId,
-            ).pipe(
+            uploadSingleImageToServer(file.file, accessToken, data.spaceId).pipe(
               map((serverImageUrl) => ({
                 oldString: file.oldString,
                 newUrl: addHttpsPrifix(serverImageUrl),
@@ -229,11 +193,7 @@ export const processArticle = (
 
       // 썸네일 업로드
       const thumbnailUpload$ = articleData.thumbnailFile
-        ? uploadThumbnailToServer(
-            articleData.thumbnailFile,
-            accessToken,
-            data.spaceId,
-          ).pipe(
+        ? uploadThumbnailToServer(articleData.thumbnailFile, accessToken, data.spaceId).pipe(
             catchError((error) => {
               console.error('Thumbnail upload failed:', error);
               return of(undefined);
