@@ -11,7 +11,7 @@ export type ByEmailsAllOf = {
 
 export type ByEmails = Recipient & ByEmailsAllOf & Required<Pick<Recipient & ByEmailsAllOf, 'emails'>>;
 
-export type ByTargetAllOfTarget = 'ALL' | 'MARKETING_CONSENT';
+export type ByTargetAllOfTarget = 'ALL' | 'MARKETING_CONSENT' | 'CAFETERIA_CONSENT';
 export type ByTargetAllOf = {
   target?: ByTargetAllOfTarget;
 };

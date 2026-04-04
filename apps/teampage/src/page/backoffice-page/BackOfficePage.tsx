@@ -11,6 +11,7 @@ import {
   useGetAllLog,
   useGetScheduledNotifications,
   useSendNotification,
+  type ByTargetAllOfTarget,
   type NotificationRequest,
   getGetAllLogQueryKey,
   type NotificationLogResponse,
@@ -23,7 +24,7 @@ const TABS = ['푸시 알림', '배너 관리', '상단 공지'] as const;
 const ACTIVE_TAB_INDEX = 0; // '푸시 알림'만 활성화
 
 type TargetType = 'TARGET' | 'EMAILS';
-type Target = 'ALL' | 'MARKETING_CONSENT' | 'CAFETERIA_CONSENT';
+type Target = ByTargetAllOfTarget;
 
 export interface PushNotificationFormData {
   title: string;
