@@ -41,29 +41,33 @@ const parseYmdToLocalNoon = (ymd: string) => new Date(`${ymd}T12:00:00`);
 
 type ScheduleDateInputProps = InputHTMLAttributes<HTMLInputElement>;
 
-const ScheduleDateCustomInput = forwardRef<HTMLInputElement, ScheduleDateInputProps>(
-  function ScheduleDateCustomInput({ className, onKeyDown, ...props }, ref) {
-    return (
-      <div className="relative w-full">
-        <input
-          ref={ref}
-          type="text"
-          autoComplete="off"
-          className={`w-full pl-4 pr-12 py-3 border border-grey-300 rounded-lg bg-white outline-none focus:border-primary-ui focus:ring-1 focus:ring-primary-ui text-body-16-m text-grey-900 placeholder:text-grey-500 ${className ?? ''}`}
-          onKeyDown={(e) => {
-            onKeyDown?.(e);
-            if (e.ctrlKey || e.metaKey || e.altKey) return;
-            if (e.key.length === 1) e.preventDefault();
-          }}
-          {...props}
-        />
-        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center" aria-hidden>
-          <Image src="/svg/calendar.svg" alt="" width={24} height={24} />
-        </span>
-      </div>
-    );
-  },
-);
+const ScheduleDateCustomInput = forwardRef<HTMLInputElement, ScheduleDateInputProps>(function ScheduleDateCustomInput(
+  { className, onKeyDown, ...props },
+  ref,
+) {
+  return (
+    <div className="relative w-full">
+      <input
+        ref={ref}
+        type="text"
+        autoComplete="off"
+        className={`w-full pl-4 pr-12 py-3 border border-grey-300 rounded-lg bg-white outline-none focus:border-primary-ui focus:ring-1 focus:ring-primary-ui text-body-16-m text-grey-900 placeholder:text-grey-500 ${className ?? ''}`}
+        onKeyDown={(e) => {
+          onKeyDown?.(e);
+          if (e.ctrlKey || e.metaKey || e.altKey) return;
+          if (e.key.length === 1) e.preventDefault();
+        }}
+        {...props}
+      />
+      <span
+        className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center"
+        aria-hidden
+      >
+        <Image src="/svg/calendar.svg" alt="" width={24} height={24} />
+      </span>
+    </div>
+  );
+});
 ScheduleDateCustomInput.displayName = 'ScheduleDateCustomInput';
 
 export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNotificationFormProps>(
@@ -281,6 +285,21 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
                       />
                       <Text variant="body-16-m" color="grey-900">
                         마케팅 수신 동의 유저 *광고 표기 필수
+                      </Text>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="radio"
+                        checked={selectedTargetOption === 'CAFETERIA_CONSENT'}
+                        onChange={() => {
+                          setValue('recipient.recipientType', 'TARGET');
+                          setValue('recipient.target', 'CAFETERIA_CONSENT');
+                          setValue('recipient.emails', undefined);
+                        }}
+                        className="w-5 h-5 text-primary-ui focus:ring-primary-ui"
+                      />
+                      <Text variant="body-16-m" color="grey-900">
+                        학식 수신동의 유저
                       </Text>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer">
