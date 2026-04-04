@@ -11,6 +11,7 @@ import {
   useGetAllLog,
   useGetScheduledNotifications,
   useSendNotification,
+  type ByTargetAllOfTarget,
   type NotificationRequest,
   getGetAllLogQueryKey,
   type NotificationLogResponse,
@@ -23,7 +24,7 @@ const TABS = ['푸시 알림', '배너 관리', '상단 공지'] as const;
 const ACTIVE_TAB_INDEX = 0; // '푸시 알림'만 활성화
 
 type TargetType = 'TARGET' | 'EMAILS';
-type Target = 'ALL' | 'MARKETING_CONSENT';
+type Target = ByTargetAllOfTarget;
 
 export interface PushNotificationFormData {
   title: string;
@@ -113,7 +114,9 @@ export default function BackofficePage() {
               status: data.delivery.type === 'SCHEDULED' ? 'RESERVED' : 'DONE',
               author: session?.user?.name || '시대생',
               target:
-                data.recipient.recipientType === 'EMAILS' || data.recipient.target === 'MARKETING_CONSENT'
+                data.recipient.recipientType === 'EMAILS' ||
+                data.recipient.target === 'MARKETING_CONSENT' ||
+                data.recipient.target === 'CAFETERIA_CONSENT'
                   ? 'TARGET'
                   : 'ALL',
               title: data.title,

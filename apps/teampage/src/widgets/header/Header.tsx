@@ -45,10 +45,10 @@ export default function Header() {
   const { isMobile } = useDevice();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleCloseMenu = () => {
+  const handleCloseMenu = useCallback(() => {
     if (!isMobile) return;
     setIsMenuOpen(false);
-  };
+  }, [isMobile]);
 
   const renderLink = useCallback(
     (route: { path: string; name: string }) => {
@@ -76,7 +76,7 @@ export default function Header() {
         </div>
       );
     },
-    [pathname, ROUTE.OUR_STORY.path],
+    [pathname, ROUTE.OUR_STORY.path, handleCloseMenu],
   );
 
   return (
