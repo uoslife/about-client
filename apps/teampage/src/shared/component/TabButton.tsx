@@ -14,9 +14,9 @@ export function TabButton({ children, color = 'light', clicked, className, ...pr
       textColor: clicked ? 'black' : 'grey-600',
     },
     dark: {
-      default: 'bg-[#8E8E93] hover:bg-[#E1E1E7] hover:text-[#54545C]',
-      clicked: 'text-black',
-      textColor: clicked ? 'black' : 'grey-600',
+      default: 'px-4 rounded-[22px] bg-grey-800 hover:bg-grey-200 hover:text-grey-700',
+      clicked: 'px-4 rounded-[22px] grey-900 bg-grey-50',
+      textColor: clicked ? 'grey-900' : 'grey-600',
     },
   };
 

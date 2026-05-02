@@ -127,7 +127,7 @@ export function Section02() {
 
         <div className="flex w-2/3 flex-col items-center gap-[60px] md:mx-auto pb-40 max-md:gap-[24px] max-md:px-[16px] max-md:w-[100%] max-md:pb-[60px]">
           <h2
-            className="text-[40px] text-center leading-[140%] font-bold text-[#222227] max-md:leading-[160%] max-md:text-[20px]
+            className="text-[40px] text-center leading-[140%] font-bold text-[#222227] max-md:text-[20px]
         max-md:leading-[160%]"
           >
             6기와 활동을 함께할 멘토
@@ -136,7 +136,7 @@ export function Section02() {
             {People.map((person, idx) => (
               <div
                 key={idx}
-                className="flex flex-col items-center rounded-2xl bg-white py-6 px-9 shadow-md justify-center items-center gap-7 rounded-[20px] border-[1.5px] border-white bg-white shadow-[0_0_16px_0_rgba(70,134,255,0.12)] max-md:py-[12px] max-md:px-[24px] max-md:gap-[12px]"
+                className="flex flex-col rounded-2xl py-6 px-9 justify-center items-center gap-7 border-[1.5px] border-white shadow-[0_0_16px_0_rgba(70,134,255,0.12)] max-md:py-[12px] max-md:px-[24px] max-md:gap-[12px]"
               >
                 <Image
                   src={person.src}
