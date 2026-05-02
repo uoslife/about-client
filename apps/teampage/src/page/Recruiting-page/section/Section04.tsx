@@ -82,7 +82,7 @@ function ScheduleRow({ entry }: { entry: RecruitingScheduleEntry }) {
 export function Section04() {
   return (
     <div
-      className="flex flex-col items-start self-stretch gap-40 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(70,134,255,0.07)_80%,rgba(255,255,255,0.07)_100%)] px-80 pt-20 pb-[200px]
+      className="flex flex-col items-start self-stretch gap-40 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(70,134,255,0.07)_80%,rgba(255,255,255,0.07)_100%)] px-44 pt-20 pb-[200px]
     max-lg:gap-[3.75rem] max-lg:w-full max-lg:pt-7 max-lg:px-4 max-lg:pb-[4.5rem]"
     >
       <h3
@@ -121,7 +121,7 @@ export function Section04() {
             </p>
           </div>
         </div>
-        <div className="flex items-start gap-[15.0625rem] self-stretch max-md:flex-col max-md:gap-4 max-md:self-stretch">
+        <div className="flex items-start justify-between self-stretch max-md:flex-col max-md:gap-1 max-md:self-stretch">
           <h4 className="text-[#222227] font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
             {recruitingSectionTitles.fields.line1}
             <br className="hidden md:block" /> {recruitingSectionTitles.fields.line2}
@@ -130,11 +130,11 @@ export function Section04() {
             <RecruitmentField />
           </div>
         </div>
-        <div className="flex items-start gap-[17.8125rem] max-md:flex-col max-md:gap-4 max-md:self-stretch">
+        <div className="flex items-start w-full justify-between max-md:flex-col max-md:self-stretch">
           <h4 className="text-[#222227] whitespace-nowrap font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
             {recruitingSectionTitles.schedule}
           </h4>
-          <div className="flex flex-col items-start gap-10 max-md:items-start max-md:gap-5 max-md:self-stretch">
+          <div className="flex flex-col items-start w-[73%] gap-10 max-md:items-start max-md:gap-5 max-md:self-stretch">
             {recruitingSchedule.map((entry, index) => (
               <Fragment key={`${entry.kind}-${entry.title}`}>
                 <ScheduleRow entry={entry} />

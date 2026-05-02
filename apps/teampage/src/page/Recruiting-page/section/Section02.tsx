@@ -65,7 +65,7 @@ export function Section02() {
     <>
       <div
         className={twMerge(
-          'flex items-start w-[100%] flex-row gap-[13.25rem] pb-60 px-80 pt-[100px] max-lg:flex-col max-lg:px-[16px] max-lg:gap-7 max-lg:w-[100%] max-lg:justify-center max-lg:pt-[80px] max-lg:pb-[120px]',
+          'flex items-start w-[100%] flex-row gap-[13.25rem] pb-60 px-20 pt-[100px] max-lg:flex-col max-lg:px-[16px] max-lg:gap-7 max-lg:w-[100%] max-lg:justify-center max-lg:pt-[80px] max-lg:pb-[120px]',
         )}
       >
         <div className="flex flex-col items-start gap-5">
@@ -125,7 +125,7 @@ export function Section02() {
           </div>
         </div>
 
-        <div className="flex w-2/3 flex-col items-center gap-[60px]  md:mx-auto pb-40 max-md:gap-[24px] max-md:px-[16px] max-md:w-[100%] max-md:pb-[60px]">
+        <div className="flex w-2/3 flex-col items-center gap-[60px] md:mx-auto pb-40 max-md:gap-[24px] max-md:px-[16px] max-md:w-[100%] max-md:pb-[60px]">
           <h2
             className="text-[40px] text-center leading-[140%] font-bold text-[#222227] max-md:leading-[160%] max-md:text-[20px]
         max-md:leading-[160%]"

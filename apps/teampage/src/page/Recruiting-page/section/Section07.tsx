@@ -4,8 +4,8 @@ import Image from 'next/image';
 export function Section07() {
   return (
     <>
-      <div className="flex flex-col items-start gap-20 self-stretch py-60 px-80 max-md:px-4 max-md:py-[84px] max-md:gap-7 max-xl:px-[10%] ">
-        <h2 className="text-[#222227] font-pretendard text-[72px] font-bold leading-[120%] self-stretch max-md:text-[32px] font-bold max-md:leading-[140%]">
+      <div className="flex flex-col items-start gap-20 self-stretch py-60 px-20 max-md:px-4 max-md:py-[84px] max-md:gap-7 max-xl:px-[10%] ">
+        <h2 className="text-[#222227] font-pretendard text-[72px] leading-[120%] self-stretch max-md:text-[32px] font-bold max-md:leading-[140%]">
           더 궁금한 게 있다면
           <br />
           아래를 통해 문의해 주세요
@@ -22,9 +22,7 @@ export function Section07() {
               className="self-stretch opacity-95 text-[#222227] font-['Pretendard'] text-[40px] font-bold leading-[140%] max-md:text-xl max-md:leading-[160%]
             "
             >
-              <span className="text-[#4686FF]">UOSLIFE</span>에 궁금한 점이나
-              <br />
-              의견이 있다면?
+              <span className="text-[#4686FF]">UOSLIFE</span>에 궁금한 점이나 의견이 있다면?
             </p>
 
             <div className="flex items-center gap-2 max-md:gap-1 max-md:self-stretch">
@@ -48,9 +46,7 @@ export function Section07() {
             className="flex h-[400px] p-12 flex-col justify-between items-start flex-1 rounded-[20px] bg-white/80 shadow-[0_0_16px_0_rgba(70,134,255,0.12)] max-md:h-60 max-md:p-4 max-md:rounded-lg"
           >
             <p className="self-stretch opacity-95 text-[#222227] font-['Pretendard'] text-[40px] font-bold leading-[140%] max-md:text-xl max-md:leading-[160%]">
-              <span className="text-[#4686FF]">UOSLIFE</span>의 실시간 소식을
-              <br />
-              알고 싶다면?
+              <span className="text-[#4686FF]">UOSLIFE</span>의 실시간 소식을 알고 싶다면?
             </p>
             <div
               className="flex items-center gap-2
