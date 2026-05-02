@@ -29,20 +29,20 @@ export function recruitingApplyButtonLabel(): string {
  */
 export const recruitingDates = {
   documentSubmission: {
-    open: '11월 24일(월)',
-    due: '11월 30일(일)',
+    open: '5월 4일(월)',
+    due: '5월 10일(일)',
     dueTimeNote: '오후 11시 59분 까지',
   },
-  firstRoundResult: '12월 2일(화)',
+  firstRoundResult: '5월 17일(일)',
   secondInterview: {
-    start: '12월 3일(수)',
-    end: '12월 6일(토)',
+    start: '5월 27일(수)',
+    end: '5월 30일(토)',
   },
-  finalResult: '12월 7일(일)',
-  onboarding: '12월 28일(일)',
+  finalResult: '5월 31일(일)',
+  onboarding: '6월 27일(토)',
   workshop: {
-    start: '1월 3일(토)',
-    end: '1월 4일(일)',
+    start: '7월 11일(토)',
+    end: '7월 12일(일)',
   },
 } as const;
 
