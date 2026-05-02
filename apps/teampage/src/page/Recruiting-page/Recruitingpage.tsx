@@ -10,8 +10,6 @@ import { Section07 } from './section/Section07';
 import { Recruitbutton } from './section/Recruitbutton';
 import { useSendViewAmplitudeEvent } from '@/entities/analytics/useSendViewAmplitudeEvent';
 
-export const ISINRANGE = false;
-
 export default function RecruitingPage() {
   const ref5 = useRef<HTMLDivElement>(null);
   const [showButton, setShowButton] = useState(true);

@@ -12,6 +12,17 @@ export const recruitingBrand = {
   cohortLabel: '6기 모집',
 } as const;
 
+export const recruitingCallToAction = {
+  applyFormUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeBv_mC-gD4WdQAbYZ6RPHDmuiHLey44AaU5XBeDgxLkSqcKQ/viewform',
+  notifyFormUrl: 'http://forms.gle/JntWWCzKjzRwZbaJ7',
+  notifyLabel: '다음 모집 알림 받기',
+} as const;
+
+/** 지원하기 버튼 라벨 — `cohortLabel`(예: `6기 모집`)과 단일 소스 */
+export function recruitingApplyButtonLabel(): string {
+  return `${recruitingBrand.cohortLabel.replace(/\s*모집\s*$/, '').trim()} 지원하기`;
+}
+
 /**
  * 일정·히어로 등 모든 노출 일자의 단일 소스.
  * 표기 형식: `M월 D일(요일)` — 요일 없는 짧은 문구는 `recruitingDateWithoutWeekday`로 파생합니다.
@@ -34,6 +45,49 @@ export const recruitingDates = {
     end: '1월 4일(일)',
   },
 } as const;
+
+/**
+ * 서류 접수(`documentSubmission`) 일정이 적용되는 연도 — 한국 시간(KST) 기준 달력 연도.
+ * 매 모집 시즌 바뀔 때 월·일과 함께 이 값도 맞춰 수정합니다.
+ */
+export const recruitingApplicationSeasonYear = 2026;
+
+function parseMonthDayFromRecruitingLabel(label: string): { month: number; day: number } {
+  const matched = label.match(/(\d+)\s*월\s*(\d+)\s*일/);
+  if (!matched) {
+    throw new Error(`Invalid recruiting date label: ${label}`);
+  }
+  return { month: Number(matched[1]), day: Number(matched[2]) };
+}
+
+/** 한국 시간 시·분을 해당 순간의 UTC `Date`로 변환 */
+function recruitingInstantKST(
+  year: number,
+  month: number,
+  day: number,
+  hour = 0,
+  minute = 0,
+  second = 0,
+  ms = 0,
+): Date {
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const msStr = String(ms).padStart(3, '0');
+  return new Date(`${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:${pad(second)}.${msStr}+09:00`);
+}
+
+/**
+ * 현재 시각이 서류 접수 기간 안인지 — 시작일 00:00 ~ 마감일 23:59:59.999 KST.
+ * `recruitingDates.documentSubmission`과 `recruitingApplicationSeasonYear`만 수정하면 버튼 분기가 따라갑니다.
+ */
+export function isRecruitingApplicationActive(now: Date = new Date()): boolean {
+  const year = recruitingApplicationSeasonYear;
+  const { month: openM, day: openD } = parseMonthDayFromRecruitingLabel(recruitingDates.documentSubmission.open);
+  const { month: dueM, day: dueD } = parseMonthDayFromRecruitingLabel(recruitingDates.documentSubmission.due);
+  const start = recruitingInstantKST(year, openM, openD, 0, 0, 0, 0);
+  const end = recruitingInstantKST(year, dueM, dueD, 23, 59, 59, 999);
+  const t = now.getTime();
+  return t >= start.getTime() && t <= end.getTime();
+}
 
 /** `11월 24일(월)` → `11월 24일` — 히어로 기간 문구 등에 사용 */
 export function recruitingDateWithoutWeekday(dayLabel: string): string {
