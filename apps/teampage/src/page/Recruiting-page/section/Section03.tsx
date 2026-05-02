@@ -1,12 +1,22 @@
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
-export function Section03() {
-  const logos = Array.from({ length: 11 }, (_, i) => `/svg/logo/${i + 1}.svg`);
+import { recruitingSection03 } from '@/page/Recruiting-page/config';
 
-  // 모바일용 2줄 분할
-  const firstRow = logos.slice(0, 6); // 5개
-  const secondRow = logos.slice(6); // 4개
+export function Section03() {
+  const { logoSvgCount, carousel } = recruitingSection03;
+  const logos = Array.from({ length: logoSvgCount }, (_, i) => `/svg/logo/${i + 1}.svg`);
+
+  const firstRow = logos.slice(0, 6);
+  const secondRow = logos.slice(6);
+
+  const desk = carousel.desktop;
+  const r1 = carousel.mobileRow1;
+  const r2 = carousel.mobileRow2;
+
+  const desktopTranslate = `calc((-${desk.tilePx}px - ${desk.gapPx}px) * ${desk.loopTiles})`;
+  const mobileRow1Translate = `calc((-${r1.tilePx}px - ${r1.gapPx}px) * ${r1.loopTiles})`;
+  const mobileRow2Start = `calc((-${r2.tilePx}px - ${r2.gapPx}px) * ${r2.loopTiles})`;
 
   return (
     <div
@@ -15,26 +25,23 @@ export function Section03() {
       )}
     >
       <div className="flex flex-col items-center gap-8 self-stretch max-md:gap-[12px]">
-        {/* 제목 */}
         <h2
           className="text-[#222227] text-center font-['Pretendard'] text-[40px] font-bold leading-[140%]
-         max-md:text-[20px] max-md:leading-[160%]        
+          max-md:text-[20px] max-md:leading-[160%]        
         "
         >
-          Alumni Network
+          {recruitingSection03.title}
         </h2>
         <p
           className="text-[#303037] text-center font-['Pretendard'] text-xl font-medium leading-[160%] max-md:text-[14px] max-md:px-4
         "
         >
-          네이버, 카카오페이, 라인, 리멤버 등 국내 최고의 IT 회사부터 SKT, 현대자동차, NH투자증권, 한국은행 등 유수의
-          대기업/금융권까지
+          {recruitingSection03.description}
           <br className="hidden lg:block" />
-          다양한 업계의 구성원이 지속적인 시너지를 주고 받을 수 있는 관계를 만들어갑니다.
+          {recruitingSection03.descriptionContinued}
         </p>
       </div>
 
-      {/* 데스크톱: 1줄 캐러셀 (왼쪽으로 이동) */}
       <div className="relative w-full overflow-hidden max-md:hidden">
         <div className="carousel-track flex gap-[20px]">
           {[...logos, ...logos].map((src, idx) => (
@@ -49,9 +56,7 @@ export function Section03() {
         </div>
       </div>
 
-      {/* 모바일: 2줄 캐러셀 (반대 방향) */}
       <div className="relative w-full overflow-hidden md:hidden flex flex-col gap-[12px]">
-        {/* 첫 번째 줄 (왼쪽으로 이동) */}
         <div className="carousel-track-left flex gap-[12px]">
           {[...firstRow, ...firstRow].map((src, idx) => (
             <div
@@ -64,7 +69,6 @@ export function Section03() {
           ))}
         </div>
 
-        {/* 두 번째 줄 (오른쪽으로 이동) */}
         <div className="carousel-track-right flex gap-[12px]">
           {[...secondRow, ...secondRow].map((src, idx) => (
             <div
@@ -84,7 +88,7 @@ export function Section03() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc((-200px - 20px) * 9));
+            transform: translateX(${desktopTranslate});
           }
         }
 
@@ -93,13 +97,13 @@ export function Section03() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc((-120px - 12px) * 5));
+            transform: translateX(${mobileRow1Translate});
           }
         }
 
         @keyframes scroll-right-mobile-second {
           0% {
-            transform: translateX(calc((-120px - 12px) * 4));
+            transform: translateX(${mobileRow2Start});
           }
           100% {
             transform: translateX(0);
@@ -107,17 +111,17 @@ export function Section03() {
         }
 
         .carousel-track {
-          animation: scroll-left 20s linear infinite;
+          animation: scroll-left ${desk.durationSec}s linear infinite;
           will-change: transform;
         }
 
         .carousel-track-left {
-          animation: scroll-left-mobile-first 15s linear infinite;
+          animation: scroll-left-mobile-first ${r1.durationSec}s linear infinite;
           will-change: transform;
         }
 
         .carousel-track-right {
-          animation: scroll-right-mobile-second 15s linear infinite;
+          animation: scroll-right-mobile-second ${r2.durationSec}s linear infinite;
           will-change: transform;
         }
       `}</style>

@@ -1,6 +1,9 @@
 'use client';
 
 import { forwardRef } from 'react';
+
+import { recruitingSection06 } from '@/page/Recruiting-page/config';
+
 import { Recruitbutton } from './Recruitbutton';
 
 export const Section06 = forwardRef<HTMLDivElement, any>((_, ref) => {
@@ -12,11 +15,11 @@ export const Section06 = forwardRef<HTMLDivElement, any>((_, ref) => {
       <div className="flex flex-col items-center gap-12 max-md:gap-7">
         <div className="flex flex-col items-center gap-3 max-md:gap-3">
           <h3 className="text-center font-bold text-[4.5rem] leading-[120%] bg-gradient-to-r from-black via-blue-600 to-blue-200 bg-clip-text text-transparent max-md:text-[2rem] max-md:leading-[140%]">
-            모집 기간이 <br />
-            종료되었어요
+            {recruitingSection06.headlineLine1} <br />
+            {recruitingSection06.headlineLine2}
           </h3>
           <p className="text-center text-[#54545C] text-[1.125rem] font-medium leading-[160%] max-md:text-sm w-[100%] max-md:w-[80%]">
-            다음 모집 알림을 받으면 빠르게 지원할 수 있어요!
+            {recruitingSection06.description}
           </p>
         </div>
         <Recruitbutton />
