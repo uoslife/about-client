@@ -1,17 +1,20 @@
-import { ISINRANGE } from '../Recruitingpage';
+import {
+  isRecruitingApplicationActive,
+  recruitingApplyButtonLabel,
+  recruitingCallToAction,
+} from '@/page/Recruiting-page/config';
 import { useAnalytics } from '@/entities/analytics/useAnalytics';
 
 export function Recruitbutton({ className = '' }) {
   const { trackEvent } = useAnalytics();
-  const status = false ? '6기 지원하기' : '다음 모집 알림 받기';
+  const applicationActive = isRecruitingApplicationActive();
+  const label = applicationActive ? recruitingApplyButtonLabel() : recruitingCallToAction.notifyLabel;
   return (
     <button
       onClick={() => {
         trackEvent('CLICK_RECRUIT_BUTTON', undefined);
         window.open(
-          ISINRANGE
-            ? 'https://docs.google.com/forms/d/e/1FAIpQLSeBv_mC-gD4WdQAbYZ6RPHDmuiHLey44AaU5XBeDgxLkSqcKQ/viewform'
-            : 'http://forms.gle/JntWWCzKjzRwZbaJ7',
+          applicationActive ? recruitingCallToAction.applyFormUrl : recruitingCallToAction.notifyFormUrl,
           '_blank',
         );
       }}
@@ -19,7 +22,7 @@ export function Recruitbutton({ className = '' }) {
       max-md:h-12 max-md:px-7 max-md:rounded-lg`}
     >
       <span className="text-white text-2xl font-bold leading-[150%] max-md:text-base max-md:leading-[160%]">
-        {status}
+        {label}
       </span>
     </button>
   );

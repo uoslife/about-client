@@ -2,7 +2,7 @@
 import { useAuth } from '@entities/auth/useAuth';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Text } from '@/shared/component/Text';
 import { usePathname } from 'next/navigation';
@@ -44,6 +44,11 @@ export default function Header() {
   const pathname = usePathname();
   const { isMobile } = useDevice();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [ourStoryMenuOpen, setOurStoryMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setOurStoryMenuOpen(false);
+  }, [pathname]);
 
   const handleCloseMenu = useCallback(() => {
     if (!isMobile) return;
@@ -52,11 +57,49 @@ export default function Header() {
 
   const renderLink = useCallback(
     (route: { path: string; name: string }) => {
-      const isShowOurStoryMenu = route.path === ROUTE.OUR_STORY.path;
-      const isActive = pathname === route.path;
+      const isOurStory = route.name === 'Our Story';
+      const isActive = isOurStory ? pathname === '/career' || pathname === '/moments' : pathname === route.path;
+
+      if (isOurStory) {
+        return (
+          <div className="relative group" key={route.path}>
+            <button
+              type="button"
+              className="w-full"
+              aria-expanded={ourStoryMenuOpen}
+              aria-haspopup="true"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOurStoryMenuOpen((open) => !open);
+              }}
+            >
+              <div
+                className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
+                data-name={`GNB_Tap_${route.name}`}
+              >
+                <p
+                  className={twMerge(
+                    'text-body-18-b whitespace-pre cursor-pointer transition-colors text-left',
+                    isActive ? 'text-primary-ui' : 'hover:text-primary-ui text-gray-800',
+                  )}
+                >
+                  {route.name}
+                </p>
+              </div>
+            </button>
+            <OurStoryMenu
+              forceOpen={ourStoryMenuOpen}
+              onItemNavigate={() => {
+                setOurStoryMenuOpen(false);
+                handleCloseMenu();
+              }}
+            />
+          </div>
+        );
+      }
 
       return (
-        <div className={`relative ${isShowOurStoryMenu ? 'group' : ''} `} key={route.path}>
+        <div className="relative" key={route.path}>
           <Link href={route.path} className="w-full group" onClick={handleCloseMenu}>
             <div
               className="content-stretch flex items-center justify-center px-[10px] py-[12px]"
@@ -72,11 +115,10 @@ export default function Header() {
               </p>
             </div>
           </Link>
-          <OurStoryMenu />
         </div>
       );
     },
-    [pathname, ROUTE.OUR_STORY.path, handleCloseMenu],
+    [pathname, handleCloseMenu, ourStoryMenuOpen],
   );
 
   return (
@@ -270,17 +312,22 @@ export default function Header() {
   );
 }
 
-function OurStoryMenu() {
+function OurStoryMenu({ forceOpen, onItemNavigate }: { forceOpen: boolean; onItemNavigate?: () => void }) {
   return (
-    <div className="hidden group-hover:block top-full w-40 bg-white box-border flex-col gap-2 items-start justify-start p-[12px] rounded-2xl shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)] absolute transform translate-x-[-22%]">
-      <Link href="/career" className="w-full group/career">
+    <div
+      className={twMerge(
+        'absolute top-full left-0 w-40 gap-2 items-start justify-start bg-white box-border p-[12px] rounded-2xl shadow-[0px_0px_12px_0px_rgba(18,18,18,0.1)] z-[60]',
+        forceOpen ? 'flex flex-col' : 'hidden group-hover:flex flex-col',
+      )}
+    >
+      <Link href="/career" className="w-full group/career" onClick={() => onItemNavigate?.()}>
         <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
           <Text variant="body-18-m" className="group-hover/career:text-primary-ui">
             Career
           </Text>
         </div>
       </Link>
-      <Link href="/moments" className="w-full group/moments">
+      <Link href="/moments" className="w-full group/moments" onClick={() => onItemNavigate?.()}>
         <div className="box-border content-stretch flex flex-row gap-2.5 h-11 items-center justify-center px-4 py-1.5 relative rounded-[40px] w-full hover:bg-gray-100">
           <Text variant="body-18-m" className="group-hover/moments:text-primary-ui">
             Moments
