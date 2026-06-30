@@ -1,0 +1,134 @@
+name: Deploy to Kubernetes
+
+run-name: 'Deploy ${{ inputs.deploy_name }} to ${{ inputs.deploy_env }} by @${{ github.actor }}'
+
+permissions:
+  id-token: write
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_name:
+        description: 'Deploy name'
+        required: true
+        type: string
+      deploy_env:
+        description: 'Deploy env, optional'
+        required: false
+        type: string
+
+concurrency:
+  group: deploy-k8s-${{ inputs.deploy_name }}-${{ inputs.deploy_env }}
+  cancel-in-progress: false
+
+env:
+  DEPLOY_NAME: ${{ inputs.deploy_name }}
+  DEPLOY_ENV: ${{ inputs.deploy_env }}
+  AWS_REGION: ap-northeast-2
+  AWS_ROLE: arn:aws:iam::010928206252:role/uoslife-v2025--deployment
+  ECR_REGISTRY: 010928206252.dkr.ecr.ap-northeast-2.amazonaws.com
+  ECR_REPOSITORY: teampage/client
+
+jobs:
+  resolve-env:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Generate Version
+        id: version
+        run: echo "version=test-$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: resolve-env
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.resolve-env.outputs.version }}
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ env.AWS_ROLE }}
+          role-session-name: GithubDeployment
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          file: ./apps/teampage/Dockerfile
+          context: .
+          push: true
+          target: runner
+          platforms: linux/amd64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NODE_ENV=production
+            NOTION_API_KEY=${{ secrets.NOTION_API_KEY }}
+            NOTION_PEOPLE_DATABASE_ID=${{ secrets.NOTION_PEOPLE_DATABASE_ID }}
+            KEYCLOAK_CLIENT_ID=${{ secrets.KEYCLOAK_CLIENT_ID }}
+            KEYCLOAK_CLIENT_SECRET=${{ secrets.KEYCLOAK_CLIENT_SECRET }}
+            KEYCLOAK_ISSUER=${{ secrets.KEYCLOAK_ISSUER }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+            NEXT_PUBLIC_AMPLITUDE_API_KEY=${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
+            NEXT_PUBLIC_GA4_TRACKING_ID=${{ secrets.NEXT_PUBLIC_GA4_TRACKING_ID }}
+            NEXT_PUBLIC_API_BASE_URL=https://${{ env.DEPLOY_NAME }}-api${{ inputs.deploy_env && inputs.deploy_env || '' }}.uoslife.com
+          tags: |
+            ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
+
+  deploy:
+    needs: [resolve-env, build]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.resolve-env.outputs.version }}
+    steps:
+      - name: Checkout GitOps Repository
+        uses: actions/checkout@v4
+        with:
+          repository: uoslife/gitops
+          ref: main
+          ssh-key: ${{ secrets.GITOPS_SSH_KEY }}
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Resolve Kustomize Directory
+        id: kustomize-dir
+        run: |
+          if [ -n "${{ env.DEPLOY_ENV }}" ] && [ -d "projects/${{ env.DEPLOY_NAME }}-client/overlays/${{ env.DEPLOY_ENV }}" ]; then
+            echo "path=projects/${{ env.DEPLOY_NAME }}-client/overlays/${{ env.DEPLOY_ENV }}" >> "$GITHUB_OUTPUT"
+          elif [ -d "projects/${{ env.DEPLOY_NAME }}-client/overlays" ]; then
+            echo "path=projects/${{ env.DEPLOY_NAME }}-client/overlays" >> "$GITHUB_OUTPUT"
+          else
+            echo "Kustomize directory not found: projects/${{ env.DEPLOY_NAME }}-client/overlays/${{ env.DEPLOY_ENV }} or projects/${{ env.DEPLOY_NAME }}-client/overlays" >&2
+            exit 1
+          fi
+
+      - name: Update Image Tag
+        run: |
+          cd "${{ steps.kustomize-dir.outputs.path }}"
+          kustomize edit set image ${{ env.ECR_REPOSITORY }}=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
+
+      - name: Validate Kustomize Build
+        run: kustomize build "${{ steps.kustomize-dir.outputs.path }}" > /dev/null
+
+      - name: Commit and Push
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"
+          git add .
+          git commit -m "projects(${{ env.DEPLOY_NAME }}-client): deploy ${{ env.DEPLOY_ENV }} to ${{ env.VERSION }} (${SHORT_SHA})"
+          git pull --rebase origin main
+          git push
