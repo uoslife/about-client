@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: Generate Version
         id: version
-        run: echo "version=test-$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(date +'%Y%m%d%H%M%S')" >> "$GITHUB_OUTPUT"
 
   build:
     needs: resolve-env
