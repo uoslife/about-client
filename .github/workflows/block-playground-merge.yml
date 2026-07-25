@@ -1,0 +1,35 @@
+name: Block playground branch merge
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: read
+
+jobs:
+  validate-source-branch:
+    name: Validate source branch
+    runs-on: ubuntu-latest
+
+    steps:
+      # github.head_ref는 환경 변수로만 전달해 스크립트 인젝션을 방지한다.
+      # fork PR에서도 pull_request 이벤트는 read-only 토큰으로 실행되며,
+      # head_ref는 fork 쪽 브랜치 이름이므로 동일한 기준으로 판별된다.
+      - name: Block plan/playground
+        env:
+          HEAD_BRANCH: ${{ github.head_ref }}
+        run: |
+          if [ "$HEAD_BRANCH" = "plan/playground" ]; then
+            echo "::error::plan/playground 브랜치는 main 또는 dev에 병합할 수 없습니다."
+            exit 1
+          fi
+
+          echo "Allowed source branch: $HEAD_BRANCH"
