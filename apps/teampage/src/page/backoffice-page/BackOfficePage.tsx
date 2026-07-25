@@ -2,6 +2,7 @@
 import { useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { TabButton } from '@/shared/component/TabButton';
+import { BannerManagementPlaceholder } from './sections/BannerManagementPlaceholder';
 import { PushNotificationForm, type PushNotificationFormRef } from './sections/PushNotificationForm';
 import { PushNotificationHistory } from './sections/PushNotificationHistory';
 import { PushNotificationPreview } from './sections/PushNotificationPreview';
@@ -21,7 +22,10 @@ import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { useAuth } from '@/entities/auth/useAuth';
 
 const TABS = ['푸시 알림', '배너 관리', '상단 공지'] as const;
-const ACTIVE_TAB_INDEX = 0; // '푸시 알림'만 활성화
+const PUSH_NOTIFICATION_TAB_INDEX = 0;
+const BANNER_MANAGEMENT_TAB_INDEX = 1;
+// '상단 공지'는 아직 더미 기능이라 비활성 상태로 둔다.
+const ACTIVE_TAB_INDICES: number[] = [PUSH_NOTIFICATION_TAB_INDEX, BANNER_MANAGEMENT_TAB_INDEX];
 
 type TargetType = 'TARGET' | 'EMAILS';
 type Target = ByTargetAllOfTarget;
@@ -44,7 +48,7 @@ export interface PushNotificationFormData {
 }
 
 export default function BackofficePage() {
-  const [selectedTab, setSelectedTab] = useState<number>(ACTIVE_TAB_INDEX);
+  const [selectedTab, setSelectedTab] = useState<number>(PUSH_NOTIFICATION_TAB_INDEX);
   const { toast } = useToast();
   const { open: openConfirmModal } = useConfirmModal();
   const sendNotificationMutation = useSendNotification();
@@ -56,8 +60,8 @@ export default function BackofficePage() {
   const { session } = useAuth();
 
   const handleTabClick = (index: number) => {
-    // TODO: '배너 관리'와 '상단 공지'는 더미 기능이므로 클릭해도 아무 일도 일어나지 않음 추후 기능 추가
-    if (index === ACTIVE_TAB_INDEX) {
+    // TODO: '상단 공지'는 아직 더미 기능이므로 클릭해도 아무 일도 일어나지 않음 추후 기능 추가
+    if (ACTIVE_TAB_INDICES.includes(index)) {
       setSelectedTab(index);
     }
   };
@@ -190,7 +194,7 @@ export default function BackofficePage() {
             key={idx}
             clicked={selectedTab === idx}
             onClick={() => handleTabClick(idx)}
-            className={idx !== ACTIVE_TAB_INDEX ? 'cursor-not-allowed opacity-50 text-[#8E8E93]' : 'text-black'}
+            className={!ACTIVE_TAB_INDICES.includes(idx) ? 'cursor-not-allowed opacity-50 text-[#8E8E93]' : 'text-black'}
           >
             {tab}
           </TabButton>
@@ -199,7 +203,7 @@ export default function BackofficePage() {
 
       {/* 탭 콘텐츠 영역 */}
       <div className="w-full">
-        {selectedTab === ACTIVE_TAB_INDEX && (
+        {selectedTab === PUSH_NOTIFICATION_TAB_INDEX && (
           <div className="flex flex-col gap-12">
             {/* 메인 콘텐츠 영역: 왼쪽 예시 이미지 + 오른쪽 폼 */}
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
@@ -219,6 +223,8 @@ export default function BackofficePage() {
             />
           </div>
         )}
+
+        {selectedTab === BANNER_MANAGEMENT_TAB_INDEX && <BannerManagementPlaceholder />}
       </div>
     </div>
   );
