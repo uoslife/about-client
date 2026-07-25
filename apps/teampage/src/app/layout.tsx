@@ -1,6 +1,7 @@
 import '@shared/styles/global.css';
 import type { Metadata } from 'next';
 import metaData from '@/shared/const/seo.config';
+import { MockInit } from '@/mocks/MockInit';
 
 export const metadata: Metadata = {
   metadataBase: new URL(metaData.siteUrl),
@@ -52,7 +53,10 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <MockInit />
+        {children}
+      </body>
     </html>
   );
 }
