@@ -4,13 +4,14 @@ import { authOptions } from '../auth';
 import { ClientProvider } from '../provider/client-provider';
 import Header from '@/widgets/header/Header';
 import { Footer } from '@/widgets/footer/Footer';
+import { isMockAuthEnabled, MOCK_SESSION } from '@/shared/mocks/session';
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = (await getServerSession(authOptions)) as SessionType;
+  const session = isMockAuthEnabled() ? MOCK_SESSION : ((await getServerSession(authOptions)) as SessionType);
 
   return (
     <SessionProvider session={session}>
