@@ -48,10 +48,10 @@ const formatYmd = (d: Date) => {
 
 const parseYmdToLocalNoon = (ymd: string) => new Date(`${ymd}T12:00:00`);
 
-const USER_IDS_FILE_ACCEPTED_EXTENSIONS = ['.csv', '.txt'];
+const USER_IDS_FILE_ACCEPTED_EXTENSIONS = ['.csv'];
 const USER_IDS_FILE_MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
-/** CSV/TXT 파일 내용에서 유저 ID를 추출한다. 줄바꿈 또는 쉼표로 구분된 값을 모두 인식하고 중복은 제거한다. */
+/** CSV 파일 내용에서 유저 ID를 추출한다. 줄바꿈 또는 쉼표로 구분된 값을 모두 인식하고 중복은 제거한다. */
 const parseUserIdsFromText = (text: string): { ids: string[]; duplicateCount: number } => {
   const raw = text
     .split(/\r?\n|,/)
@@ -150,7 +150,7 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
       const lowerName = file.name.toLowerCase();
       const hasValidExtension = USER_IDS_FILE_ACCEPTED_EXTENSIONS.some((ext) => lowerName.endsWith(ext));
       if (!hasValidExtension) {
-        setUserIdsFileError('CSV 또는 TXT 파일만 업로드할 수 있습니다.');
+        setUserIdsFileError('CSV 파일만 업로드할 수 있습니다.');
         return;
       }
       if (file.size > USER_IDS_FILE_MAX_SIZE_BYTES) {
@@ -528,7 +528,7 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
                       <label className="cursor-pointer">
                         <input
                           type="file"
-                          accept=".csv,.txt"
+                          accept=".csv"
                           onChange={handleUserIdsFileInputChange}
                           className="hidden"
                         />
@@ -554,7 +554,7 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
                   )}
                 </div>
                 <Text variant="body-12-m" color="grey-500" as="span">
-                  CSV 또는 TXT 파일, 한 줄(또는 쉼표로 구분)에 유저 ID를 하나씩 입력해주세요.
+                  CSV 파일, 한 줄(또는 쉼표로 구분)에 유저 ID를 하나씩 입력해주세요.
                 </Text>
                 {userIdsFileError && (
                   <Text variant="body-12-m" color="grey-600" as="span">

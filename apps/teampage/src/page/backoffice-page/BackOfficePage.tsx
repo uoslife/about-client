@@ -215,7 +215,7 @@ export default function BackofficePage() {
       const actionText =
         data.delivery.type === 'SCHEDULED'
           ? `${data.delivery.scheduleHour}시 ${data.delivery.scheduleMinute}분에 발송 예약하시겠습니까?`
-          : '발송하시겠습니까?';
+          : '지금 발송하시겠습니까?';
 
       openConfirmModal({
         title: `${recipientText} ${actionText}`,
