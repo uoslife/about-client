@@ -4,9 +4,12 @@ import KeycloakProvider from 'next-auth/providers/keycloak';
 import { getAccessTokenByRefreshToken, isTokenExpired } from '@/shared/utils/jwt';
 
 const getAuthOptions = (): NextAuthOptions => {
-  const clientId = process.env.KEYCLOAK_CLIENT_ID;
-  const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET;
-  const issuer = process.env.KEYCLOAK_ISSUER;
+  // 로컬 프로토타이핑(MOCK_AUTH=true)에서는 실제 Keycloak 없이도 NextAuth가 초기화되도록
+  // 더미 값을 채운다. 실제 로그인 플로우는 타지 않고, 세션은 mock 세션으로 대체된다.
+  const isMockAuth = process.env.MOCK_AUTH === 'true';
+  const clientId = process.env.KEYCLOAK_CLIENT_ID ?? (isMockAuth ? 'mock-client-id' : undefined);
+  const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET ?? (isMockAuth ? 'mock-client-secret' : undefined);
+  const issuer = process.env.KEYCLOAK_ISSUER ?? (isMockAuth ? 'http://localhost:9999/mock-realm' : undefined);
 
   if (!clientId || !clientSecret || !issuer) {
     throw new Error('Missing Keycloak configuration');
@@ -70,7 +73,7 @@ const getAuthOptions = (): NextAuthOptions => {
         };
       },
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: process.env.NEXTAUTH_SECRET ?? (isMockAuth ? 'mock-nextauth-secret-do-not-use-in-prod' : undefined),
   };
 };
 

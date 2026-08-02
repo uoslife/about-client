@@ -1,10 +1,49 @@
+import { useEffect, useState } from 'react';
 import { Text } from '@/shared/component/Text';
 import type { NotificationLogResponse, ScheduledNotificationResponse } from '@uoslife/api';
+import { getTargetFile, TARGET_FILE_RETENTION_DAYS, type StoredTargetFile } from '@/shared/storage/targetFileStore';
 
 interface PushNotificationHistoryProps {
   notificationLogs: NotificationLogResponse[];
   scheduledNotifications: ScheduledNotificationResponse[];
   onDeleteReserved: (id: number) => void;
+}
+
+/** 파일로 유저 지정한 발송/예약 건이면, 보관된 원본 파일을 다운로드하는 링크를 보여준다. */
+function TargetFileLink({ storeId }: { storeId: number }) {
+  const [file, setFile] = useState<StoredTargetFile | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    getTargetFile(storeId).then((found) => {
+      if (active) setFile(found ?? null);
+    });
+    return () => {
+      active = false;
+    };
+  }, [storeId]);
+
+  if (!file) return null;
+
+  const handleDownload = () => {
+    const url = URL.createObjectURL(file.blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.fileName;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleDownload}
+      title={`보관 기간 ${TARGET_FILE_RETENTION_DAYS}일. 원본 파일을 내려받습니다.`}
+      className="block text-body-12-m text-primary-ui hover:underline"
+    >
+      원본 파일
+    </button>
+  );
 }
 
 export function PushNotificationHistory({
@@ -88,6 +127,7 @@ export function PushNotificationHistory({
                         <Text variant="body-14-m" color="grey-700" as="span">
                           {item.type}
                         </Text>
+                        <TargetFileLink storeId={item.id} />
                       </td>
                       <td className="px-6 py-4">
                         <Text variant="body-14-m" color="grey-700" as="span">
@@ -197,6 +237,7 @@ export function PushNotificationHistory({
                         <Text variant="body-14-m" color="grey-700" as="span">
                           {item.target}
                         </Text>
+                        <TargetFileLink storeId={startTime.getTime()} />
                       </td>
                       <td className="px-6 py-4">
                         <Text variant="body-14-m" color="grey-700" as="span">

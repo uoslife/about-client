@@ -4,13 +4,14 @@ import { BackofficeHeader } from '@/widgets/backoffice-header/BackOfficeHeader';
 import { RoleGuard } from './RoleGuard';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth';
+import { isMockAuthEnabled, MOCK_SESSION } from '@/shared/mocks/session';
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = (await getServerSession(authOptions)) as SessionType;
+  const session = isMockAuthEnabled() ? MOCK_SESSION : ((await getServerSession(authOptions)) as SessionType);
   return (
     <SessionProvider session={session}>
       <ClientProvider>

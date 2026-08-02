@@ -6,6 +6,7 @@ import { ConfirmModalProvider } from '@/shared/component/confirm-modal/ConfirmMo
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { DeviceProvider } from '@/shared/provider/DeviceProvider';
+import { MSWProvider } from '@/shared/mocks/MSWProvider';
 
 const DimRenderer = dynamic(
   () =>
@@ -25,8 +26,10 @@ export const ClientProvider = ({ children }: { children: React.ReactNode }) => {
         <ToastProvider>
           <DeviceProvider>
             <ConfirmModalProvider>
-              {children}
-              <DimRenderer />
+              <MSWProvider>
+                {children}
+                <DimRenderer />
+              </MSWProvider>
             </ConfirmModalProvider>
           </DeviceProvider>
         </ToastProvider>
