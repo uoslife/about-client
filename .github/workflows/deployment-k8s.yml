@@ -98,6 +98,8 @@ jobs:
             NEXT_PUBLIC_AMPLITUDE_API_KEY=${{ secrets.NEXT_PUBLIC_AMPLITUDE_API_KEY }}
             NEXT_PUBLIC_GA4_TRACKING_ID=${{ secrets.NEXT_PUBLIC_GA4_TRACKING_ID }}
             NEXT_PUBLIC_API_BASE_URL=${{ env.DEPLOY_ENV == 'prod' && secrets.NEXT_PUBLIC_API_BASE_URL_PROD || secrets.NEXT_PUBLIC_API_BASE_URL_DEV }}
+            NEXT_PUBLIC_NEXTAUTH_URL=${{ env.DEPLOY_ENV == 'prod' && 'https://uoslife.team' || 'https://about.dev.uoslife.com' }}
+            NEXT_PUBLIC_KEYCLOAK_ISSUER=https://auth.uoslife.com/auth/realms/INTERNAL
           tags: |
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.VERSION }}
             ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
