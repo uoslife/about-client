@@ -108,7 +108,7 @@ export function PushNotificationHistory({
                         <button
                           type="button"
                           onClick={() => onDeleteReserved(item.id)}
-                          className="text-body-14-m text-error-main hover:underline"
+                          className="text-body-14-m text-danger-ui hover:underline"
                         >
                           삭제
                         </button>

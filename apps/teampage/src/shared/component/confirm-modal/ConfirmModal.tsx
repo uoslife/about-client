@@ -10,7 +10,7 @@ interface ConfirmModalProps {
   onConfirm: () => void;
   onOutsideClick?: () => void;
   title: string;
-  description?: string;
+  description?: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
   variant?: 'default' | 'danger';
@@ -110,6 +110,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
                   <Text
                     variant="body-16-m"
                     color="grey-700"
+                    as="div"
                     className="leading-[1.6] sm:text-[16px] text-[14px] w-full sm:w-auto"
                   >
                     {description}

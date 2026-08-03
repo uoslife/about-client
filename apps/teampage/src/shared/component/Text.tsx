@@ -49,7 +49,8 @@ export type ColorValue =
   | 'primary-ui'
   | 'primary-brand'
   | 'primary-gradiant'
-  | 'primary-gradiant-minified';
+  | 'primary-gradiant-minified'
+  | 'danger-ui';
 
 interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   variant: TextVariant | { [key: string]: TextVariant };
@@ -70,6 +71,7 @@ const colorToClassMap: Record<ColorValue, string> = {
   'grey-700': 'text-grey-700',
   'grey-800': 'text-grey-800',
   'grey-900': 'text-grey-900',
+  'danger-ui': 'text-danger-ui',
   'primary-ui': 'text-primary-ui',
   'primary-brand': 'text-primary-brand',
   'primary-gradiant':

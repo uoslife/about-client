@@ -111,3 +111,25 @@
 .push-notification-datepicker-calendar .react-datepicker__navigation--next {
   right: 12px;
 }
+
+/* -----------------------------------------------------------------------------
+ * 달력이 열릴 때 레이아웃이 밀리는 문제
+ *
+ * react-datepicker 는 input 과 나란히 tab-loop(포커스 트랩)와 popper 를 렌더한다.
+ * 둘 다 기본이 static 이라, 부모가 flex 행이면 새 항목으로 참여해 형제 요소의
+ * 폭·간격 배분이 다시 계산된다. 그래서 열자마자 "~" 가 밀려났다.
+ *
+ * 둘을 흐름에서 빼내 wrapper 기준으로 띄운다. wrapper 는 고정 폭이므로
+ * 열림/닫힘에 따라 행의 레이아웃이 변하지 않는다.
+ * -------------------------------------------------------------------------- */
+.react-datepicker-wrapper {
+  position: relative;
+}
+
+.react-datepicker__tab-loop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+}
