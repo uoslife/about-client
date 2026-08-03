@@ -242,6 +242,28 @@ export interface FlagVersionsResponse {
   private: FlagVersion[];
 }
 
+/** 실패 응답의 본문. 라우트 핸들러들이 `{ message }` 로 통일해 내려준다. */
+export interface FlagsApiErrorBody {
+  message?: string;
+}
+
+/**
+ * 저장 요청.
+ *
+ * etags 는 이 문서를 읽었을 때의 값이다. 서버가 If-Match 로 되돌려보내, 그 사이
+ * 다른 사람이 저장했으면 409 가 된다.
+ */
+export interface SaveFlagsVariables {
+  mode: 'draft' | 'publish';
+  etags: Etags;
+  bundle: FlagsBundle;
+}
+
+export interface RollbackFlagsVariables {
+  scope: 'public' | 'private';
+  versionId: string;
+}
+
 export const EMPTY_BUNDLE: FlagsBundle = {
   schemaVersion: SCHEMA_VERSION,
   enabled: true,

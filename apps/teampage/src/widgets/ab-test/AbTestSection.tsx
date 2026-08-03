@@ -1,12 +1,19 @@
 'use client';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
 import type { FlagVersion, MergedExperiment } from '@/entities/flags';
-import { EMPTY_BUNDLE } from '@/entities/flags';
-import { removeExperiment, upsertExperiment } from '@/entities/flags';
-import { FlagsApiError, useFlagVersions, useFlags, useRollbackFlags, useSaveFlags } from '@/entities/flags';
+import {
+  EMPTY_BUNDLE,
+  FlagsApiError,
+  flagVersionsQueryOptions,
+  flagsQueryOptions,
+  removeExperiment,
+  upsertExperiment,
+} from '@/entities/flags';
+import { useRollbackFlags, useSaveFlags } from '@/features/flags';
 import { AbTestEditor } from './AbTestEditor';
 import { AbTestHistory } from './AbTestHistory';
 import { AbTestList } from './AbTestList';
@@ -18,10 +25,12 @@ export function AbTestSection() {
   const { toast } = useToast();
   const { open: openConfirmModal } = useConfirmModal();
 
-  const { data, isLoading, isError, error } = useFlags();
+  const { data, isLoading, isError, error } = useQuery(flagsQueryOptions());
+  // 이력은 그 화면에 들어갔을 때만 읽는다 — enabled 는 화면 사정이므로 여기서 붙인다.
+  const versionsQuery = useQuery({ ...flagVersionsQueryOptions(), enabled: view.type === 'history' });
+
   const saveFlags = useSaveFlags();
   const rollbackFlags = useRollbackFlags();
-  const versionsQuery = useFlagVersions(view.type === 'history');
 
   const bundle = data?.bundle ?? EMPTY_BUNDLE;
   const etags = data?.etags ?? { public: null, private: null };
