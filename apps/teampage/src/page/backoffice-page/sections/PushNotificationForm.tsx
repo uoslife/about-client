@@ -4,7 +4,7 @@ import { useState, useEffect, useImperativeHandle, forwardRef, type InputHTMLAtt
 import { offset } from '@floating-ui/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './push-notification-datepicker.css';
+import '@/shared/styles/datepicker.css';
 import { Text } from '@/shared/component/Text';
 import type { PushNotificationFormData } from '../BackOfficePage';
 import Image from 'next/image';

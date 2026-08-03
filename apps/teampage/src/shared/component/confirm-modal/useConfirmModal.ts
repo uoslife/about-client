@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, type ReactNode } from 'react';
 import {
   useConfirmModalActions,
   useConfirmModalState,
@@ -11,7 +11,7 @@ export const useConfirmModal = () => {
   const open = useCallback(
     (options: {
       title: string;
-      description?: string;
+      description?: ReactNode;
       confirmText?: string;
       cancelText?: string;
       variant?: 'default' | 'danger';

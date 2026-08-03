@@ -25,6 +25,10 @@ const config: Config = {
         'primary-ui': '#0F6EFB',
         'primary-brand': '#4686FF',
         'primary-lighter-alt': '#E9F3FF',
+        // 폼 검증·위험 동작 표기용. 기존 코드가 text-error-main 을 쓰고 있었으나
+        // 팔레트에 없어 실제로는 적용되지 않고 있었다.
+        'danger-ui': '#E5484D',
+        'danger-lighter': '#FFF5F5',
       },
       fontFamily: {
         extrabold: ['Pretendard-ExtraBold', 'sans-serif'],
