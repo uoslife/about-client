@@ -12,7 +12,7 @@ import { ConfirmModal } from './ConfirmModal';
 interface ConfirmModalState {
   isVisible: boolean;
   title: string;
-  description?: string;
+  description?: React.ReactNode;
   confirmText?: string;
   cancelText?: string;
   variant?: 'default' | 'danger';
