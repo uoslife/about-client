@@ -46,6 +46,7 @@ import type {
   ReactionResponse,
   ScheduledNotificationResponse,
   SearchArticlesParams,
+  SendNotificationByCsvBody,
   UpdateArticleRequest,
   UploadImageBody,
   UploadImageParams,
@@ -130,6 +131,88 @@ export const useSendNotification = <TError = ErrorType<unknown>, TContext = unkn
   TContext
 > => {
   const mutationOptions = getSendNotificationMutationOptions(options);
+
+  return useMutation(mutationOptions, queryClient);
+};
+
+export const sendNotificationByCsv = (
+  sendNotificationByCsvBody: BodyType<SendNotificationByCsvBody>,
+  options?: SecondParameter<typeof apiInstance>,
+  signal?: AbortSignal,
+) => {
+  const formData = new FormData();
+  if (sendNotificationByCsvBody.notificationCsvRequest !== undefined) {
+    formData.append(`notificationCsvRequest`, JSON.stringify(sendNotificationByCsvBody.notificationCsvRequest));
+  }
+  formData.append(`file`, sendNotificationByCsvBody.file);
+
+  return apiInstance<NotificationAcceptedResponse>(
+    {
+      url: `/notifications/csv`,
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data' },
+      data: formData,
+      signal,
+    },
+    options,
+  );
+};
+
+export const getSendNotificationByCsvMutationOptions = <TError = ErrorType<unknown>, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof sendNotificationByCsv>>,
+    TError,
+    { data: BodyType<SendNotificationByCsvBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof apiInstance>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof sendNotificationByCsv>>,
+  TError,
+  { data: BodyType<SendNotificationByCsvBody> },
+  TContext
+> => {
+  const mutationKey = ['sendNotificationByCsv'];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof sendNotificationByCsv>>,
+    { data: BodyType<SendNotificationByCsvBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return sendNotificationByCsv(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SendNotificationByCsvMutationResult = NonNullable<Awaited<ReturnType<typeof sendNotificationByCsv>>>;
+export type SendNotificationByCsvMutationBody = BodyType<SendNotificationByCsvBody>;
+export type SendNotificationByCsvMutationError = ErrorType<unknown>;
+
+export const useSendNotificationByCsv = <TError = ErrorType<unknown>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof sendNotificationByCsv>>,
+      TError,
+      { data: BodyType<SendNotificationByCsvBody> },
+      TContext
+    >;
+    request?: SecondParameter<typeof apiInstance>;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof sendNotificationByCsv>>,
+  TError,
+  { data: BodyType<SendNotificationByCsvBody> },
+  TContext
+> => {
+  const mutationOptions = getSendNotificationByCsvMutationOptions(options);
 
   return useMutation(mutationOptions, queryClient);
 };
