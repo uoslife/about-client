@@ -142,7 +142,12 @@ export const sendNotificationByCsv = (
 ) => {
   const formData = new FormData();
   if (sendNotificationByCsvBody.notificationCsvRequest !== undefined) {
-    formData.append(`notificationCsvRequest`, JSON.stringify(sendNotificationByCsvBody.notificationCsvRequest));
+    formData.append(`notificationCsvRequest`, 
+      new Blob(
+        [JSON.stringify(sendNotificationByCsvBody.notificationCsvRequest)],
+        { type: 'application/json' },
+      ),
+    );
   }
   formData.append(`file`, sendNotificationByCsvBody.file);
 
