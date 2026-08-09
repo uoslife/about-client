@@ -1,18 +1,28 @@
 'use client';
 import { useForm, Controller } from 'react-hook-form';
-import { useState, useEffect, useImperativeHandle, forwardRef, type InputHTMLAttributes } from 'react';
+import {
+  useState,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+  type InputHTMLAttributes,
+  type DragEvent,
+  type ChangeEvent,
+} from 'react';
 import { offset } from '@floating-ui/react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '@/shared/styles/datepicker.css';
 import { Text } from '@/shared/component/Text';
-import type { PushNotificationFormData } from '../BackOfficePage';
+import { useToast } from '@/shared/component/toast';
+import type { PushNotificationFormData, PushNotificationPreviewData } from '../BackOfficePage';
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface PushNotificationFormProps {
   onSubmit: (data: PushNotificationFormData) => void;
   isLoading: boolean;
+  onPreviewChange?: (preview: PushNotificationPreviewData) => void;
 }
 
 export interface PushNotificationFormRef {
@@ -38,6 +48,25 @@ const formatYmd = (d: Date) => {
 };
 
 const parseYmdToLocalNoon = (ymd: string) => new Date(`${ymd}T12:00:00`);
+
+const CSV_FILE_ACCEPTED_EXTENSION = '.csv';
+const CSV_FILE_MAX_SIZE_BYTES = 5 * 1024 * 1024;
+
+// 실제 발송 대상 파싱은 서버(/notifications/csv)가 원본 파일을 그대로 받아 처리한다.
+// 여기서는 업로드 UX(인원수 확인, 중복 안내, 헤더 행 스킵)를 위해 클라이언트에서도 동일 규칙으로 미리 계산한다.
+const parseCsvPreview = (text: string) => {
+  const rawLines = text.split(/\r\n|\n|\r/);
+  const hasHeaderRow = (rawLines[0]?.trim().toLowerCase() ?? '') === 'id';
+  const contentLines = hasHeaderRow ? rawLines.slice(1) : rawLines;
+
+  const rawIds = contentLines
+    .flatMap((line) => line.split(','))
+    .map((id) => id.trim())
+    .filter((id) => id.length > 0);
+  const uniqueIds = Array.from(new Set(rawIds));
+
+  return { count: uniqueIds.length, duplicateCount: rawIds.length - uniqueIds.length };
+};
 
 type ScheduleDateInputProps = InputHTMLAttributes<HTMLInputElement>;
 
@@ -71,7 +100,7 @@ const ScheduleDateCustomInput = forwardRef<HTMLInputElement, ScheduleDateInputPr
 ScheduleDateCustomInput.displayName = 'ScheduleDateCustomInput';
 
 export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNotificationFormProps>(
-  ({ onSubmit, isLoading }, ref) => {
+  ({ onSubmit, isLoading, onPreviewChange }, ref) => {
     const {
       register,
       handleSubmit,
@@ -103,11 +132,27 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
 
     const recipientType = watch('recipient.recipientType');
     const target = watch('recipient.target');
+    const csvPreviewCount = watch('recipient.csvPreviewCount');
     const deliveryType = watch('delivery.type');
 
-    const selectedTargetOption = recipientType === 'EMAILS' ? 'EMAILS' : target || 'ALL';
+    useEffect(() => {
+      const subscription = watch((value) => {
+        onPreviewChange?.({
+          title: value.title || '',
+          message: value.message || '',
+          isMarketing: value.recipient?.recipientType === 'TARGET' && value.recipient?.target === 'MARKETING_CONSENT',
+        });
+      });
+      return () => subscription.unsubscribe();
+    }, [watch, onPreviewChange]);
 
+    const selectedTargetOption =
+      recipientType === 'EMAILS' ? 'EMAILS' : recipientType === 'CSV_FILE' ? 'CSV_FILE' : target || 'ALL';
+
+    const { toast } = useToast();
     const [emailInput, setEmailInput] = useState('');
+    const [csvFileName, setCsvFileName] = useState('');
+    const [isDraggingCsvFile, setIsDraggingCsvFile] = useState(false);
 
     useImperativeHandle(ref, () => ({
       resetForm: () => {
@@ -128,6 +173,7 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
           },
         });
         setEmailInput('');
+        setCsvFileName('');
       },
     }));
 
@@ -135,7 +181,77 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
       if (recipientType !== 'EMAILS') {
         setEmailInput('');
       }
+      if (recipientType !== 'CSV_FILE') {
+        setCsvFileName('');
+      }
     }, [recipientType]);
+
+    const readCsvFile = (file: File) => {
+      if (!file.name.toLowerCase().endsWith(CSV_FILE_ACCEPTED_EXTENSION)) {
+        setError('recipient.file', { type: 'manual', message: 'CSV 파일만 업로드할 수 있습니다.' });
+        return;
+      }
+      if (file.size > CSV_FILE_MAX_SIZE_BYTES) {
+        setError('recipient.file', { type: 'manual', message: '파일 크기는 5MB를 초과할 수 없습니다.' });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const { count, duplicateCount } = parseCsvPreview(String(reader.result || ''));
+        if (count === 0) {
+          const message = '파일에서 유효한 유저 정보를 찾을 수 없습니다.';
+          setError('recipient.file', { type: 'manual', message });
+          toast(message);
+          return;
+        }
+        clearErrors('recipient.file');
+        setValue('recipient.file', file);
+        setValue('recipient.csvPreviewCount', count);
+        setCsvFileName(file.name);
+        if (duplicateCount > 0) {
+          toast(`${duplicateCount}개의 중복을 제외하였습니다.`);
+        }
+      };
+      reader.onerror = () => {
+        setError('recipient.file', { type: 'manual', message: '파일을 읽는 중 오류가 발생했습니다.' });
+      };
+      reader.readAsText(file);
+    };
+
+    const handleCsvFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) readCsvFile(file);
+      e.target.value = '';
+    };
+
+    const handleCsvDrop = (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDraggingCsvFile(false);
+      const file = e.dataTransfer.files?.[0];
+      if (file) readCsvFile(file);
+    };
+
+    const handleCsvDragOver = (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+    };
+
+    const handleCsvDragEnter = (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDraggingCsvFile(true);
+    };
+
+    const handleCsvDragLeave = (e: DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      setIsDraggingCsvFile(false);
+    };
+
+    const handleRemoveCsvFile = () => {
+      setValue('recipient.file', undefined);
+      setValue('recipient.csvPreviewCount', undefined);
+      setCsvFileName('');
+      clearErrors('recipient.file');
+    };
 
     const handleFormSubmit = (data: PushNotificationFormData) => {
       if (data.recipient.recipientType === 'EMAILS') {
@@ -168,6 +284,14 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
         }
 
         data.recipient.emails = emailArray;
+      }
+
+      if (data.recipient.recipientType === 'CSV_FILE' && !data.recipient.file) {
+        setError('recipient.file', {
+          type: 'manual',
+          message: 'CSV 파일을 업로드하세요.',
+        });
+        return;
       }
 
       if (data.delivery.type === 'SCHEDULED' && !data.delivery.scheduleDate) {
@@ -305,6 +429,21 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         type="radio"
+                        checked={selectedTargetOption === 'CSV_FILE'}
+                        onChange={() => {
+                          setValue('recipient.recipientType', 'CSV_FILE');
+                          setValue('recipient.target', undefined);
+                          setValue('recipient.emails', undefined);
+                        }}
+                        className="w-5 h-5 text-primary-ui focus:ring-primary-ui"
+                      />
+                      <Text variant="body-16-m" color="grey-900">
+                        파일로 유저 지정
+                      </Text>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="radio"
                         checked={selectedTargetOption === 'EMAILS'}
                         onChange={() => {
                           setValue('recipient.recipientType', 'EMAILS');
@@ -350,6 +489,56 @@ export const PushNotificationForm = forwardRef<PushNotificationFormRef, PushNoti
                 {errors.recipient?.emails && (
                   <Text variant="body-12-m" color="grey-600" as="span">
                     {errors.recipient.emails.message}
+                  </Text>
+                )}
+              </div>
+            )}
+            {/* recipientType이 CSV_FILE일 때 CSV 업로드 */}
+            {recipientType === 'CSV_FILE' && (
+              <div className="mt-2 flex flex-col gap-2">
+                {csvFileName ? (
+                  <div className="flex flex-col items-center justify-center gap-2 bg-grey-100 rounded-lg px-4 py-6 text-center">
+                    <Text variant="body-14-m" color="grey-900">
+                      {csvFileName}
+                    </Text>
+                    <Text variant="body-14-m" color="primary-ui">
+                      총 {csvPreviewCount || 0}명의 유저가 확인되었습니다.
+                    </Text>
+                    <button
+                      type="button"
+                      onClick={handleRemoveCsvFile}
+                      className="mt-1 px-4 py-2 border border-grey-300 rounded-lg bg-white text-body-14-m text-grey-900 hover:bg-grey-100"
+                    >
+                      파일 삭제
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div
+                      onDrop={handleCsvDrop}
+                      onDragOver={handleCsvDragOver}
+                      onDragEnter={handleCsvDragEnter}
+                      onDragLeave={handleCsvDragLeave}
+                      className={`flex flex-col items-center justify-center gap-2 border border-dashed rounded-lg px-4 py-6 text-center transition-colors ${
+                        isDraggingCsvFile ? 'border-primary-ui bg-primary-ui/5' : 'border-grey-300'
+                      }`}
+                    >
+                      <Text variant="body-14-m" color="grey-700">
+                        첨부할 파일을 여기에 끌어다 놓거나, 파일 선택 버튼을 직접 선택해주세요.
+                      </Text>
+                      <label className="cursor-pointer px-4 py-2 border border-grey-300 rounded-lg text-body-14-m text-grey-900 hover:bg-grey-100">
+                        파일 선택
+                        <input type="file" accept=".csv" onChange={handleCsvFileInputChange} className="hidden" />
+                      </label>
+                    </div>
+                    <Text variant="body-12-m" color="grey-600">
+                      CSV 파일, 한 줄(또는 쉼표로 구분)에 유저 ID를 하나씩 입력해주세요.
+                    </Text>
+                  </>
+                )}
+                {errors.recipient?.file && (
+                  <Text variant="body-12-m" color="grey-600" as="span">
+                    {errors.recipient.file.message}
                   </Text>
                 )}
               </div>

@@ -43,6 +43,13 @@ export interface NotificationAcceptedResponse {
   scheduledAt?: Date;
 }
 
+export interface NotificationCsvRequest {
+  title: string;
+  message: string;
+  path?: string;
+  scheduledAt?: Date;
+}
+
 /**
  * 게시글 콘텐츠 분류
  */
@@ -114,6 +121,10 @@ export interface ReactionRequest {
   nonMemberId?: string;
 }
 
+export interface ReactionResponse {
+  isLike: boolean;
+}
+
 export interface ErrorResponse {
   code: string;
   status: number;
@@ -130,10 +141,6 @@ export interface FieldError {
   field: string;
   value?: FieldErrorValue;
   reason: string;
-}
-
-export interface ReactionResponse {
-  isLike: boolean;
 }
 
 export interface CommentCreateRequest {
@@ -242,6 +249,11 @@ export interface SortObject {
   unsorted?: boolean;
   empty?: boolean;
 }
+
+export type SendNotificationByCsvBody = {
+  notificationCsvRequest?: NotificationCsvRequest;
+  file: Blob;
+};
 
 export type SearchArticlesParams = {
   /**

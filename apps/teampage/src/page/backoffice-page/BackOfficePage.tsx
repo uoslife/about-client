@@ -11,8 +11,10 @@ import {
   useGetAllLog,
   useGetScheduledNotifications,
   useSendNotification,
+  useSendNotificationByCsv,
   type ByTargetAllOfTarget,
   type NotificationRequest,
+  type SendNotificationByCsvBody,
   getGetAllLogQueryKey,
   type NotificationLogResponse,
 } from '@uoslife/api';
@@ -27,7 +29,7 @@ const AB_TEST_TAB_INDEX = 1;
 // '배너 관리', '상단 공지'는 아직 더미 탭이라 비활성화한다.
 const ENABLED_TABS = new Set<number>([PUSH_TAB_INDEX, AB_TEST_TAB_INDEX]);
 
-type TargetType = 'TARGET' | 'EMAILS';
+type TargetType = 'TARGET' | 'EMAILS' | 'CSV_FILE';
 type Target = ByTargetAllOfTarget;
 
 export interface PushNotificationFormData {
@@ -44,15 +46,32 @@ export interface PushNotificationFormData {
     recipientType: TargetType;
     emails?: string[];
     target?: Target;
+    file?: File;
+    // 서버가 실제로 파싱하기 전 클라이언트에서 보여주는 추정치일 뿐이라 확정 인원수가 아님
+    csvPreviewCount?: number;
   };
+}
+
+export interface PushNotificationPreviewData {
+  title: string;
+  message: string;
+  isMarketing: boolean;
 }
 
 export default function BackofficePage() {
   const [selectedTab, setSelectedTab] = useState<number>(PUSH_TAB_INDEX);
+  const [preview, setPreview] = useState<PushNotificationPreviewData>({ title: '', message: '', isMarketing: false });
   const { toast } = useToast();
   const { open: openConfirmModal } = useConfirmModal();
   const sendNotificationMutation = useSendNotification();
-  const { data: notificationLogs = [] } = useGetAllLog({ notificationType: 'BACKOFFICE' });
+  const sendNotificationByCsvMutation = useSendNotificationByCsv();
+  // 발송 성공 시 로그 목록에 낙관적으로 새 행을 끼워넣는데(아래 handleSuccess 참고),
+  // refetchOnWindowFocus가 켜져 있으면 탭 전환만으로 서버의 실제 로그로 캐시가 덮어써져
+  // (서버 로그 반영이 지연되는 경우) 방금 끼워넣은 행이 사라져 보이는 문제가 있었다.
+  const { data: notificationLogs = [] } = useGetAllLog(
+    { notificationType: 'BACKOFFICE' },
+    { query: { refetchOnWindowFocus: false } },
+  );
   const { data: scheduledNotifications = [] } = useGetScheduledNotifications();
   const cancelScheduledNotificationMutation = useCancelScheduledNotification();
   const formRef = useRef<PushNotificationFormRef>(null);
@@ -93,49 +112,71 @@ export default function BackofficePage() {
     return request;
   };
 
+  const convertToCsvRequestBody = (data: PushNotificationFormData): SendNotificationByCsvBody => {
+    const scheduledAt = getScheduledAtIso(data);
+    return {
+      notificationCsvRequest: {
+        title: data.title,
+        message: data.message,
+        path: data.path || undefined,
+        scheduledAt: scheduledAt ? new Date(scheduledAt) : undefined,
+      },
+      file: data.recipient.file as File,
+    };
+  };
+
   const sendNotification = (data: PushNotificationFormData, options?: { onSuccessMessage?: string }) => {
-    const request = convertToNotificationRequest(data);
     const queryKey = getGetAllLogQueryKey({ notificationType: 'BACKOFFICE' });
 
-    sendNotificationMutation.mutate(
-      { data: request },
-      {
-        onSuccess: () => {
-          toast(
-            options?.onSuccessMessage ||
-              (data.delivery.type === 'SCHEDULED' ? '예약 발송이 등록되었습니다.' : '발송이 완료되었습니다.'),
-          );
-          if (formRef.current) {
-            formRef.current.resetForm();
-          }
+    const handleSuccess = () => {
+      toast(
+        options?.onSuccessMessage ||
+          (data.delivery.type === 'SCHEDULED' ? '예약 발송이 등록되었습니다.' : '발송이 완료되었습니다.'),
+      );
+      if (formRef.current) {
+        formRef.current.resetForm();
+      }
 
-          queryClient.invalidateQueries({ queryKey: getGetScheduledNotificationsQueryKey() });
-          queryClient.setQueryData<NotificationLogResponse[]>(queryKey, (oldData) => {
-            if (!oldData) return oldData;
+      queryClient.invalidateQueries({ queryKey: getGetScheduledNotificationsQueryKey() });
+      queryClient.setQueryData<NotificationLogResponse[]>(queryKey, (oldData) => {
+        if (!oldData) return oldData;
 
-            const newLog: NotificationLogResponse = {
-              startTime: getScheduledAtIso(data) ? new Date(getScheduledAtIso(data)!) : new Date(),
-              status: data.delivery.type === 'SCHEDULED' ? 'RESERVED' : 'DONE',
-              author: session?.user?.name || '시대생',
-              target:
-                data.recipient.recipientType === 'EMAILS' ||
-                data.recipient.target === 'MARKETING_CONSENT' ||
-                data.recipient.target === 'CAFETERIA_CONSENT'
-                  ? 'TARGET'
-                  : 'ALL',
-              title: data.title,
-              message: data.message,
-              path: data.path || undefined,
-            };
+        const newLog: NotificationLogResponse = {
+          startTime: getScheduledAtIso(data) ? new Date(getScheduledAtIso(data)!) : new Date(),
+          status: data.delivery.type === 'SCHEDULED' ? 'RESERVED' : 'DONE',
+          author: session?.user?.name || '시대생',
+          target:
+            data.recipient.recipientType === 'CSV_FILE'
+              ? data.recipient.file?.name || 'TARGET'
+              : data.recipient.recipientType === 'EMAILS' ||
+                  data.recipient.target === 'MARKETING_CONSENT' ||
+                  data.recipient.target === 'CAFETERIA_CONSENT'
+                ? 'TARGET'
+                : 'ALL',
+          title: data.title,
+          message: data.message,
+          path: data.path || undefined,
+        };
 
-            return [newLog, ...oldData].slice(0, 50);
-          });
-        },
-        onError: () => {
-          toast('발송이 실패하였습니다.');
-        },
-      },
-    );
+        return [newLog, ...oldData].slice(0, 50);
+      });
+    };
+
+    const handleError = () => {
+      toast('발송에 실패하였습니다.');
+    };
+
+    if (data.recipient.recipientType === 'CSV_FILE') {
+      sendNotificationByCsvMutation.mutate(
+        { data: convertToCsvRequestBody(data) },
+        { onSuccess: handleSuccess, onError: handleError },
+      );
+    } else {
+      sendNotificationMutation.mutate(
+        { data: convertToNotificationRequest(data) },
+        { onSuccess: handleSuccess, onError: handleError },
+      );
+    }
   };
 
   const handleDeleteReserved = (id: number) => {
@@ -153,7 +194,7 @@ export default function BackofficePage() {
               toast('예약 내역이 삭제되었습니다.');
             },
             onError: () => {
-              toast('예약 내역 삭제에 실패했습니다.');
+              toast('예약 내역 삭제에 실패하였습니다.');
             },
           },
         );
@@ -174,6 +215,19 @@ export default function BackofficePage() {
     if (data.recipient.recipientType === 'TARGET') {
       openConfirmModal({
         title: '실제 유저 대상으로 발송하시겠습니까?',
+        confirmText: '확인',
+        cancelText: '취소',
+        onConfirm: () => {
+          sendNotification(data);
+        },
+      });
+    } else if (data.recipient.recipientType === 'CSV_FILE') {
+      const count = data.recipient.csvPreviewCount || 0;
+      openConfirmModal({
+        title:
+          data.delivery.type === 'SCHEDULED'
+            ? `${count}명의 유저에게 ${data.delivery.scheduleHour}시 ${data.delivery.scheduleMinute}분에 발송 예약하시겠습니까?`
+            : `${count}명의 유저에게 지금 발송하시겠습니까?`,
         confirmText: '확인',
         cancelText: '취소',
         onConfirm: () => {
@@ -208,11 +262,12 @@ export default function BackofficePage() {
           <div className="flex flex-col gap-12">
             {/* 메인 콘텐츠 영역: 왼쪽 예시 이미지 + 오른쪽 폼 */}
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-              <PushNotificationPreview />
+              <PushNotificationPreview {...preview} />
               <PushNotificationForm
                 ref={formRef}
                 onSubmit={handleSubmit}
-                isLoading={sendNotificationMutation.isPending}
+                isLoading={sendNotificationMutation.isPending || sendNotificationByCsvMutation.isPending}
+                onPreviewChange={setPreview}
               />
             </div>
 
