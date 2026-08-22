@@ -108,6 +108,15 @@ export function BannerList({
   // 게시 중이 한 개뿐인 구좌(다이얼로그 등)에는 순서라는 개념이 없다.
   const isOrdered = live.length > 1;
 
+  /**
+   * 행 목록의 presence 키. 구좌를 바꾸면 presence 째로 언마운트돼 퇴장이 돌지 않는다.
+   *
+   * 키가 없으면 옛 구좌 행이 퇴장하는 동안 자리를 차지한 채 새 행이 아래로 붙어,
+   * 목록이 잠깐 두 배가 됐다가 줄며 덜컥인다. 탭 전환은 항목이 하나씩 사라지는
+   * 사건이 아니라 다른 목록으로 갈아타는 것이라 애니메이션 대상이 아니다.
+   */
+  const presenceKey = scope;
+
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveId(null);
     if (!over || active.id === over.id) return;
@@ -213,7 +222,9 @@ export function BannerList({
               <EmptySection message="게시 중인 배너가 없습니다." />
             ) : !isOrdered ? (
               <ul className="flex flex-col gap-2">
-                <AnimatePresence initial={false}>{live.map((entry, index) => renderRow(entry, 'live', index))}</AnimatePresence>
+                <AnimatePresence initial={false} key={presenceKey}>
+                  {live.map((entry, index) => renderRow(entry, 'live', index))}
+                </AnimatePresence>
               </ul>
             ) : (
               <DndContext
@@ -226,7 +237,7 @@ export function BannerList({
               >
                 <SortableContext items={liveIds} strategy={verticalListSortingStrategy}>
                   <ul className="flex flex-col gap-2">
-                    <AnimatePresence initial={false}>
+                    <AnimatePresence initial={false} key={presenceKey}>
                       {live.map((entry, index) => (
                         <BannerSortableRow key={entry.id} {...rowPropsOf(entry, 'live', index)} />
                       ))}
@@ -250,7 +261,7 @@ export function BannerList({
                 {BANNER_STATE_LABEL.scheduled} {groups.scheduled.length}
               </Text>
               <ul className="flex flex-col gap-2">
-                <AnimatePresence initial={false}>
+                <AnimatePresence initial={false} key={presenceKey}>
                   {groups.scheduled.map((entry, index) => renderRow(entry, 'scheduled', index))}
                 </AnimatePresence>
               </ul>
@@ -280,7 +291,7 @@ export function BannerList({
                     className="overflow-hidden"
                   >
                     <ul className="flex flex-col gap-2">
-                      <AnimatePresence initial={false}>
+                      <AnimatePresence initial={false} key={presenceKey}>
                         {groups.ended.map((entry, index) => renderRow(entry, 'ended', index))}
                       </AnimatePresence>
                     </ul>
