@@ -28,11 +28,11 @@ export const DOC_CACHE_CONTROL = 'max-age=60';
 export const ASSET_CACHE_CONTROL = 'max-age=31536000, immutable';
 
 /** 업로드 허용 타입과 확장자. 키 확장자를 클라이언트 파일명이 아니라 여기서 정한다. */
-export const ASSET_MIME_EXTENSIONS: Record<string, string> = {
+export const ASSET_MIME_EXTENSIONS = {
   'image/webp': 'webp',
   'image/png': 'png',
   'image/jpeg': 'jpg',
-};
+} as const satisfies Record<string, string>;
 
 /** 권장 비율 대비 허용 오차. 리사이즈 반올림으로 1px 씩 어긋나는 것까지 막지 않는다. */
 export const ASPECT_RATIO_TOLERANCE = 0.02;
