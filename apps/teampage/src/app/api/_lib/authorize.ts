@@ -69,10 +69,34 @@ export const authorize = async (): Promise<Authorized> => {
   };
 };
 
+/**
+ * AWS SDK 는 실패 사유를 `name` 에 담는다. 이름만 노출한다 — 버킷·키·자격증명은
+ * 담기지 않고, 이게 없으면 운영자가 500 을 보고도 권한 문제인지 알 수 없다.
+ */
+const awsErrorName = (error: unknown): string | null => {
+  const name = (error as { name?: string })?.name;
+  if (typeof name !== 'string') return null;
+  return /^(AccessDenied|NoSuchBucket|InvalidAccessKeyId|SignatureDoesNotMatch|CredentialsProviderError|ExpiredToken|NetworkingError|TimeoutError)$/.test(
+    name,
+  )
+    ? name
+    : null;
+};
+
 export const toErrorResponse = (error: unknown) => {
   if (error instanceof AuthError) {
     return NextResponse.json({ message: error.message }, { status: error.status });
   }
-  console.error('[api/flags]', error);
+
+  console.error('[api]', error);
+
+  const reason = awsErrorName(error);
+  if (reason) {
+    return NextResponse.json(
+      { message: `저장소에 접근하지 못했습니다. (${reason})`, reason },
+      { status: 502 },
+    );
+  }
+
   return NextResponse.json({ message: '서버 오류가 발생했습니다.' }, { status: 500 });
 };
