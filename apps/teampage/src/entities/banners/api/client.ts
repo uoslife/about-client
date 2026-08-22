@@ -1,17 +1,21 @@
 import type { BannersApiErrorBody } from '../model';
+import type { BannerIssue } from '../lib/validate';
 
 /**
  * 상태 코드를 값으로 들고 다니는 에러.
  *
  * 호출부가 409(다른 사람이 먼저 저장함)를 나머지 실패와 다르게 처리해야 한다.
  * 메시지 문자열을 비교하는 방식이면 서버 문구를 다듬는 순간 조용히 깨진다.
+ *
+ * `issues` 는 path 를 함께 들고 다닌다. 폼이 오류를 해당 입력 아래에 붙이려면
+ * 메시지만으로는 어느 필드인지 알 수 없다.
  */
 export class BannersApiError extends Error {
   status: number;
 
-  issues: string[];
+  issues: BannerIssue[];
 
-  constructor(status: number, message: string, issues: string[] = []) {
+  constructor(status: number, message: string, issues: BannerIssue[] = []) {
     super(message);
     this.name = 'BannersApiError';
     this.status = status;
@@ -46,7 +50,9 @@ export const requestBannersApi = async <T>(input: string, init?: RequestInit): P
     throw new BannersApiError(
       response.status,
       body?.message || '요청에 실패했습니다.',
-      (body?.issues ?? []).map((issue) => issue.message ?? '').filter(Boolean),
+      (body?.issues ?? [])
+        .filter((issue) => issue.message)
+        .map((issue) => ({ path: issue.path ?? '', message: issue.message ?? '' })),
     );
   }
 

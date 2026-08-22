@@ -36,3 +36,14 @@ export const ASSET_MIME_EXTENSIONS = {
 
 /** 권장 비율 대비 허용 오차. 리사이즈 반올림으로 1px 씩 어긋나는 것까지 막지 않는다. */
 export const ASPECT_RATIO_TOLERANCE = 0.02;
+
+/**
+ * 에셋을 서빙하는 CDN 오리진. 문서에는 상대 경로만 저장되므로 화면이 붙인다.
+ *
+ * 환경변수로 열지 않는다 — 매니페스트와 같은 배포를 쓰므로 채널별로 갈릴 값이
+ * 아니고, 비워 두면 썸네일이 조용히 사라진다. 앱 쪽(client `entities/banner/config.ts`)
+ * 도 같은 값을 하드코딩한다.
+ */
+export const ASSET_BASE_URL = 'https://flags.uoslife.com';
+
+export const bannerImageUrl = (key: string) => (key ? `${ASSET_BASE_URL}/${key}` : '');

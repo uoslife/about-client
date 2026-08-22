@@ -19,5 +19,7 @@ export * from './config';
 export * from './lib/documents';
 export * from './lib/validate';
 export * from './lib/summary';
+export * from './lib/schedule';
+export * from './lib/edit';
 export * from './api/client';
 export * from './api/queries';
