@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import { motion } from 'motion/react';
 import { Text } from '@/shared/component/Text';
+import { useBannerMotion } from './bannerMotion';
 
 interface BannerDrawerProps {
   title: string;
@@ -22,6 +24,7 @@ interface BannerDrawerProps {
  */
 export function BannerDrawer({ title, description, footer, width = 'default', onClose, children }: BannerDrawerProps) {
   const [mounted, setMounted] = useState(false);
+  const anim = useBannerMotion();
 
   useEffect(() => setMounted(true), []);
 
@@ -45,8 +48,22 @@ export function BannerDrawer({ title, description, footer, width = 'default', on
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex justify-end">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} aria-hidden />
-      <aside
+      <motion.div
+        variants={anim.scrim}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        transition={anim.transition}
+        className="absolute inset-0 bg-black/40"
+        onClick={onClose}
+        aria-hidden
+      />
+      <motion.aside
+        variants={anim.drawer}
+        initial="hidden"
+        animate="visible"
+        exit="hidden"
+        transition={anim.transition}
         role="dialog"
         aria-modal="true"
         aria-label={title}
@@ -78,7 +95,7 @@ export function BannerDrawer({ title, description, footer, width = 'default', on
         <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
 
         {footer && <div className="border-t border-grey-200 px-6 py-4">{footer}</div>}
-      </aside>
+      </motion.aside>
     </div>,
     document.body,
   );

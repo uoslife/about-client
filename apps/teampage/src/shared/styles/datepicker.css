@@ -133,3 +133,60 @@
   width: 0;
   height: 0;
 }
+
+/* -----------------------------------------------------------------------------
+ * 시각 선택 칼럼 (showTimeSelect)
+ *
+ * react-datepicker 는 시각 칼럼을 px 고정 폭으로 그리고 헤더 높이를 날짜 쪽과
+ * 따로 계산한다. 캘린더 헤더가 12px 패딩으로 커져 있어 두 헤더의 밑선이 어긋난다.
+ * -------------------------------------------------------------------------- */
+.push-notification-datepicker-calendar .react-datepicker__time-container {
+  border-left: 1px solid #e1e1e7;
+  width: 92px;
+}
+
+.push-notification-datepicker-calendar .react-datepicker__time-container .react-datepicker__time-box {
+  width: 92px;
+}
+
+.push-notification-datepicker-calendar .react-datepicker-time__header {
+  font-size: 14px;
+  font-weight: 700;
+  color: #222227;
+  padding-bottom: 8px;
+}
+
+.push-notification-datepicker-calendar .react-datepicker__time {
+  background-color: #fff;
+}
+
+.push-notification-datepicker-calendar .react-datepicker__time-list {
+  padding: 4px 0;
+}
+
+.push-notification-datepicker-calendar .react-datepicker__time-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: auto !important;
+  margin: 2px 6px;
+  padding: 6px 0 !important;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #222227;
+}
+
+.push-notification-datepicker-calendar .react-datepicker__time-list-item:hover {
+  background-color: #e9f3ff !important;
+  color: #0f6efb;
+}
+
+.push-notification-datepicker-calendar .react-datepicker__time-list-item--selected {
+  background-color: #0f6efb !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.push-notification-datepicker-calendar .react-datepicker__time-list-item--disabled {
+  color: #d5d5dc !important;
+}

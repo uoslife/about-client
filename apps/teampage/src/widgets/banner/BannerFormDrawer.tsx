@@ -21,7 +21,9 @@ import {
   type LandingType,
 } from '@/entities/banners';
 import { useUploadBannerAsset } from '@/features/banners';
+import { BannerChoiceGroup } from './BannerChoiceGroup';
 import { BannerConditionEditor, type ConditionRow } from './BannerConditionEditor';
+import { BannerDateTimeField } from './BannerDateTimeField';
 import { BannerDrawer } from './BannerDrawer';
 import {
   BannerField,
@@ -241,30 +243,22 @@ export function BannerFormDrawer({
         <BannerField
           label="구좌"
           required
-          htmlFor="banner-placement"
           aside={isLive ? <BannerLockedBadge reason="게시가 시작된 뒤에는 구좌를 옮길 수 없습니다." /> : undefined}
           hint="이미지의 권장 크기와 용량 제한이 구좌에서 옵니다."
           error={errorOf('placement')}
         >
-          <div className="flex flex-wrap gap-3">
-            {placements.map(([id, item]) => (
-              <label key={id} className="flex items-center gap-2 text-body-14-m text-grey-800">
-                <input
-                  type="radio"
-                  name="banner-placement"
-                  value={id}
-                  disabled={isReadOnly || isLive}
-                  checked={placement === id}
-                  onChange={() => {
-                    setPlacement(id);
-                    setImage(null);
-                    setUploadedUrl('');
-                  }}
-                />
-                {item.name}
-              </label>
-            ))}
-          </div>
+          <BannerChoiceGroup
+            mode="single"
+            label="구좌"
+            value={placement}
+            disabled={isReadOnly || isLive}
+            options={placements.map(([id, item]) => ({ value: id, label: item.name }))}
+            onChange={(id) => {
+              setPlacement(id);
+              setImage(null);
+              setUploadedUrl('');
+            }}
+          />
         </BannerField>
 
         <BannerField
@@ -325,20 +319,17 @@ export function BannerFormDrawer({
 
         <BannerField label="이동 링크" error={errorOf('landing')}>
           <div className="flex flex-col gap-2">
-            <div className="flex gap-3">
-              {([...LANDING_TYPES, 'none'] as LandingMode[]).map((mode) => (
-                <label key={mode} className="flex items-center gap-2 text-body-14-m text-grey-800">
-                  <input
-                    type="radio"
-                    name="banner-landing"
-                    disabled={isReadOnly}
-                    checked={landingMode === mode}
-                    onChange={() => setLandingMode(mode)}
-                  />
-                  {LANDING_LABEL[mode]}
-                </label>
-              ))}
-            </div>
+            <BannerChoiceGroup
+              mode="single"
+              label="이동 링크 유형"
+              value={landingMode}
+              disabled={isReadOnly}
+              options={([...LANDING_TYPES, 'none'] as LandingMode[]).map((mode) => ({
+                value: mode,
+                label: LANDING_LABEL[mode],
+              }))}
+              onChange={(mode) => setLandingMode(mode as LandingMode)}
+            />
             {landingMode !== 'none' && (
               <input
                 type="text"
@@ -355,47 +346,36 @@ export function BannerFormDrawer({
         <BannerField
           label="게시"
           required
-          aside={isLive ? <BannerLockedBadge reason="게시 중에는 시작 일시를 바꿀 수 없습니다." /> : undefined}
-          hint="KST 기준으로 저장됩니다."
+          hint="KST 기준으로 저장됩니다. 게시 중에 시작 일시를 미래로 옮기면 게시 예정으로 되돌아갑니다."
           error={errorOf('schedule', 'scheduledEndAt') ?? serverErrorOf('startAt')}
         >
           <div className="flex flex-col gap-3">
-            {!isLive && (
-              <div className="flex gap-3">
-                {(['now', 'scheduled'] as const).map((mode) => (
-                  <label key={mode} className="flex items-center gap-2 text-body-14-m text-grey-800">
-                    <input
-                      type="radio"
-                      name="banner-publish"
-                      disabled={isReadOnly}
-                      checked={publishMode === mode}
-                      onChange={() => setPublishMode(mode)}
-                    />
-                    {mode === 'now' ? '즉시 게시' : '예약 게시'}
-                  </label>
-                ))}
-              </div>
-            )}
+            <BannerChoiceGroup
+              mode="single"
+              label="게시 방식"
+              value={publishMode}
+              disabled={isReadOnly}
+              options={[
+                { value: 'now', label: '즉시 게시' },
+                { value: 'scheduled', label: '예약 게시' },
+              ]}
+              onChange={(mode) => setPublishMode(mode as 'now' | 'scheduled')}
+            />
             <div className="flex flex-wrap items-center gap-3">
-              <input
-                type="datetime-local"
-                aria-label="게시 시작 일시"
-                value={isLive && original ? isoToKstLocal(original.startAt) : startLocal}
-                readOnly={isReadOnly || isLive}
-                disabled={publishMode === 'now' && !isLive}
-                onChange={(event) => setStartLocal(event.target.value)}
-                className={`${isReadOnly || isLive ? bannerReadOnlyClass : bannerInputClass} max-w-[240px]`}
+              <BannerDateTimeField
+                ariaLabel="게시 시작 일시"
+                value={startLocal}
+                disabled={isReadOnly || publishMode === 'now'}
+                onChange={setStartLocal}
               />
-              <Text variant="body-14-m" color="grey-600" as="span">
+              <Text variant="body-14-m" color="grey-500" as="span">
                 →
               </Text>
-              <input
-                type="datetime-local"
-                aria-label="게시 종료 일시"
+              <BannerDateTimeField
+                ariaLabel="게시 종료 일시"
                 value={endLocal}
-                readOnly={isReadOnly}
-                onChange={(event) => setEndLocal(event.target.value)}
-                className={`${isReadOnly ? bannerReadOnlyClass : bannerInputClass} max-w-[240px]`}
+                disabled={isReadOnly}
+                onChange={setEndLocal}
               />
             </div>
           </div>
@@ -403,20 +383,17 @@ export function BannerFormDrawer({
 
         <BannerField label="노출 조건" error={errorOf('conditions')}>
           <div className="flex flex-col gap-3">
-            <div className="flex gap-3">
-              {(['all', 'custom'] as const).map((mode) => (
-                <label key={mode} className="flex items-center gap-2 text-body-14-m text-grey-800">
-                  <input
-                    type="radio"
-                    name="banner-condition"
-                    disabled={isReadOnly}
-                    checked={conditionMode === mode}
-                    onChange={() => setConditionMode(mode)}
-                  />
-                  {mode === 'all' ? '전체' : '조건 지정'}
-                </label>
-              ))}
-            </div>
+            <BannerChoiceGroup
+              mode="single"
+              label="노출 조건 방식"
+              value={conditionMode}
+              disabled={isReadOnly}
+              options={[
+                { value: 'all', label: '전체' },
+                { value: 'custom', label: '조건 지정' },
+              ]}
+              onChange={(mode) => setConditionMode(mode as 'all' | 'custom')}
+            />
             {conditionMode === 'custom' && (
               <BannerConditionEditor doc={doc} rows={rows} readOnly={isReadOnly} onChange={setRows} />
             )}

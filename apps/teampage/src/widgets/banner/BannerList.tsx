@@ -1,5 +1,18 @@
 'use client';
-import { useState, type DragEvent } from 'react';
+import { useState } from 'react';
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core';
+import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { AnimatePresence, motion } from 'motion/react';
 import { Text } from '@/shared/component/Text';
 import {
   BANNER_STATE_LABEL,
@@ -13,10 +26,11 @@ import {
   type DraftPrivateDoc,
 } from '@/entities/banners';
 import { bannerGhostButtonClass, bannerPrimaryButtonClass } from './BannerField';
-import { BannerRow } from './BannerRow';
+import { BannerRow, type BannerRowProps } from './BannerRow';
+import { BannerSortableRow } from './BannerSortableRow';
+import { useBannerMotion } from './bannerMotion';
 
 /** `all` 이면 전체 구좌. 그 외에는 구좌 id. */
-export const ALL_SCOPE = 'all';
 
 interface BannerListProps {
   doc: DraftPrivateDoc;
@@ -60,15 +74,21 @@ export function BannerList({
   onOpenVariables,
   onOpenHistory,
 }: BannerListProps) {
+  const anim = useBannerMotion();
   const [isEndedOpen, setIsEndedOpen] = useState(false);
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  // 짧은 이동은 클릭으로 본다. 손잡이가 눌릴 때마다 드래그가 시작되면 포커스를 줄 수 없다.
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const placements = placementEntries(doc);
-  const scopedPlacement = scope === ALL_SCOPE ? null : scope;
 
   const entries: BannerEntry[] = Object.entries(doc.banners)
     .map(([id, banner]) => ({ id, banner }))
-    .filter((entry) => !scopedPlacement || entry.banner.placement === scopedPlacement);
+    .filter((entry) => entry.banner.placement === scope);
 
   const groups = groupByState(entries, now);
   const baseLiveIds = groups.live.map((entry) => entry.id);
@@ -80,29 +100,15 @@ export function BannerList({
   const live = liveIds.map((id) => groups.live.find((entry) => entry.id === id)).filter(Boolean) as BannerEntry[];
 
   const movedCount = liveIds.filter((id, index) => baseLiveIds[index] !== id).length;
-  const isReorderable = Boolean(scopedPlacement);
 
-  const warnedPlacements = allConditionalPlacements(doc, now).filter(
-    (placementId) => !scopedPlacement || placementId === scopedPlacement,
-  );
+  const warnedPlacements = allConditionalPlacements(doc, now).filter((placementId) => placementId === scope);
 
-  /** 순서 번호는 구좌 안에서 셈한다. 전체 탭에서도 구좌별로 1부터다. */
-  const orderNumberOf = (entry: BannerEntry) => {
-    if (scopedPlacement) return live.findIndex((item) => item.id === entry.id) + 1;
-    const sameLive = live.filter((item) => item.banner.placement === entry.banner.placement);
-    return sameLive.findIndex((item) => item.id === entry.id) + 1;
-  };
+  const orderNumberOf = (entry: BannerEntry) => live.findIndex((item) => item.id === entry.id) + 1;
 
-  const handleMove = (index: number, direction: -1 | 1) => {
-    const next = moveInArray(liveIds, index, index + direction);
-    if (next !== liveIds) onOrderChange(next);
-  };
-
-  const handleDrop = (event: DragEvent<HTMLLIElement>, index: number) => {
-    event.preventDefault();
-    if (dragIndex === null) return;
-    const next = moveInArray(liveIds, dragIndex, index);
-    setDragIndex(null);
+  const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    setActiveId(null);
+    if (!over || active.id === over.id) return;
+    const next = moveInArray(liveIds, liveIds.indexOf(String(active.id)), liveIds.indexOf(String(over.id)));
     if (next !== liveIds) onOrderChange(next);
   };
 
@@ -110,27 +116,25 @@ export function BannerList({
     .slice()
     .sort((a, b) => (b.updatedAt ?? '').localeCompare(a.updatedAt ?? ''))[0]?.updatedBy;
 
+  const rowPropsOf = (entry: BannerEntry, state: BannerState, index: number): BannerRowProps => ({
+    id: entry.id,
+    banner: entry.banner,
+    state,
+    placementName: doc.placements[entry.banner.placement]?.name ?? entry.banner.placement,
+    variables: doc.variables,
+    orderNumber: state === 'live' ? orderNumberOf(entry) : null,
+    isMoved: state === 'live' && baseLiveIds[index] !== entry.id,
+    onOpen: () => onOpen(entry.id),
+    onClone: () => onClone(entry.id),
+    onTerminate: () => onTerminate(entry.id),
+    onDelete: () => onDelete(entry.id),
+  });
+
   const renderRow = (entry: BannerEntry, state: BannerState, index: number) => (
-    <BannerRow
-      key={entry.id}
-      id={entry.id}
-      banner={entry.banner}
-      state={state}
-      placementName={doc.placements[entry.banner.placement]?.name ?? entry.banner.placement}
-      variables={doc.variables}
-      orderNumber={state === 'live' ? orderNumberOf(entry) : null}
-      reorderable={state === 'live' && isReorderable}
-      isMoved={state === 'live' && baseLiveIds[index] !== entry.id}
-      onOpen={() => onOpen(entry.id)}
-      onClone={() => onClone(entry.id)}
-      onTerminate={() => onTerminate(entry.id)}
-      onDelete={() => onDelete(entry.id)}
-      onMove={state === 'live' && isReorderable ? (direction) => handleMove(index, direction) : undefined}
-      onDragStart={state === 'live' && isReorderable ? () => setDragIndex(index) : undefined}
-      onDragOver={state === 'live' && isReorderable ? (event) => event.preventDefault() : undefined}
-      onDrop={state === 'live' && isReorderable ? (event) => handleDrop(event, index) : undefined}
-    />
+    <BannerRow key={entry.id} {...rowPropsOf(entry, state, index)} />
   );
+
+  const activeIndex = activeId ? live.findIndex((entry) => entry.id === activeId) : -1;
 
   return (
     <div className={`mx-auto flex w-full max-w-[1120px] flex-col gap-5 ${movedCount > 0 ? 'pb-24' : ''}`}>
@@ -150,20 +154,18 @@ export function BannerList({
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          {[{ id: ALL_SCOPE, name: '전체' }, ...placements.map(([id, placement]) => ({ id, name: placement.name }))].map(
-            (tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => onScopeChange(tab.id)}
-                className={`rounded-full px-4 py-[6px] text-body-14-m transition-colors ${
-                  scope === tab.id ? 'bg-grey-900 text-white' : 'bg-grey-100 text-grey-700 hover:bg-grey-200'
-                }`}
-              >
-                {tab.name}
-              </button>
-            ),
-          )}
+          {placements.map(([id, placement]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onScopeChange(id)}
+              className={`rounded-full px-4 py-[6px] text-body-14-m transition-colors ${
+                scope === id ? 'bg-grey-900 text-white' : 'bg-grey-100 text-grey-700 hover:bg-grey-200'
+              }`}
+            >
+              {placement.name}
+            </button>
+          ))}
         </div>
         <div className="flex items-center gap-2">
           <button type="button" onClick={onOpenPlacements} className={bannerGhostButtonClass}>
@@ -207,12 +209,31 @@ export function BannerList({
             {live.length === 0 ? (
               <EmptySection message="게시 중인 배너가 없습니다." />
             ) : (
-              <ul className="flex flex-col gap-2">{live.map((entry, index) => renderRow(entry, 'live', index))}</ul>
-            )}
-            {!isReorderable && live.length > 1 && (
-              <Text variant="body-12-m" color="grey-600">
-                순서는 구좌 탭에서 바꿀 수 있습니다.
-              </Text>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+                onDragStart={({ active }) => setActiveId(String(active.id))}
+                onDragCancel={() => setActiveId(null)}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext items={liveIds} strategy={verticalListSortingStrategy}>
+                  <ul className="flex flex-col gap-2">
+                    <AnimatePresence initial={false}>
+                      {live.map((entry, index) => (
+                        <BannerSortableRow key={entry.id} {...rowPropsOf(entry, 'live', index)} />
+                      ))}
+                    </AnimatePresence>
+                  </ul>
+                </SortableContext>
+                <DragOverlay>
+                  {activeIndex >= 0 && (
+                    <ul>
+                      <BannerRow {...rowPropsOf(live[activeIndex], 'live', activeIndex)} isOverlay />
+                    </ul>
+                  )}
+                </DragOverlay>
+              </DndContext>
             )}
           </section>
 
@@ -222,7 +243,9 @@ export function BannerList({
                 {BANNER_STATE_LABEL.scheduled} {groups.scheduled.length}
               </Text>
               <ul className="flex flex-col gap-2">
-                {groups.scheduled.map((entry, index) => renderRow(entry, 'scheduled', index))}
+                <AnimatePresence initial={false}>
+                  {groups.scheduled.map((entry, index) => renderRow(entry, 'scheduled', index))}
+                </AnimatePresence>
               </ul>
             </section>
           )}
@@ -237,11 +260,26 @@ export function BannerList({
                 <span aria-hidden>{isEndedOpen ? '▾' : '▸'}</span>
                 {BANNER_STATE_LABEL.ended} {groups.ended.length}
               </button>
-              {isEndedOpen && (
-                <ul className="flex flex-col gap-2">
-                  {groups.ended.map((entry, index) => renderRow(entry, 'ended', index))}
-                </ul>
-              )}
+              {/* 이 화면에서 높이를 애니메이션하는 유일한 자리. 접힌 동안 행이 언마운트돼
+                  숨은 버튼에 포커스가 가지 않는다. */}
+              <AnimatePresence initial={false}>
+                {isEndedOpen && (
+                  <motion.div
+                    variants={anim.collapse}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                    transition={anim.transition}
+                    className="overflow-hidden"
+                  >
+                    <ul className="flex flex-col gap-2">
+                      <AnimatePresence initial={false}>
+                        {groups.ended.map((entry, index) => renderRow(entry, 'ended', index))}
+                      </AnimatePresence>
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </section>
           )}
         </div>
@@ -262,23 +300,32 @@ export function BannerList({
         </button>
       </div>
 
-      {movedCount > 0 && scopedPlacement && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-grey-200 bg-white">
-          <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-4 px-6 py-4">
-            <Text variant="body-14-m" color="grey-700">
-              {doc.placements[scopedPlacement]?.name} 순서 변경 {movedCount}건
-            </Text>
-            <div className="flex items-center gap-3">
-              <button type="button" onClick={onOrderReset} disabled={isSaving} className={bannerGhostButtonClass}>
-                되돌리기
-              </button>
-              <button type="button" onClick={onOrderSave} disabled={isSaving} className={bannerPrimaryButtonClass}>
-                {isSaving ? '저장 중' : '순서 저장'}
-              </button>
+      <AnimatePresence>
+        {movedCount > 0 && (
+          <motion.div
+            variants={anim.bottomBar}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            transition={anim.transition}
+            className="fixed bottom-0 left-0 right-0 z-40 border-t border-grey-200 bg-white"
+          >
+            <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-4 px-6 py-4">
+              <Text variant="body-14-m" color="grey-700">
+                {doc.placements[scope]?.name} 순서 변경 {movedCount}건
+              </Text>
+              <div className="flex items-center gap-3">
+                <button type="button" onClick={onOrderReset} disabled={isSaving} className={bannerGhostButtonClass}>
+                  되돌리기
+                </button>
+                <button type="button" onClick={onOrderSave} disabled={isSaving} className={bannerPrimaryButtonClass}>
+                  {isSaving ? '저장 중' : '순서 저장'}
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

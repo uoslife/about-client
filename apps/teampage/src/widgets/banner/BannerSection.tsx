@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { AnimatePresence } from 'motion/react';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
@@ -10,6 +11,7 @@ import {
   bannerVersionsQueryOptions,
   bannersQueryOptions,
   nowIso,
+  placementEntries,
   removeBanner,
   removePlacement,
   removeVariable,
@@ -28,7 +30,7 @@ import {
 import { useRollbackBanners, useSaveBanners } from '@/features/banners';
 import { BannerFormDrawer } from './BannerFormDrawer';
 import { BannerHistoryDrawer } from './BannerHistoryDrawer';
-import { ALL_SCOPE, BannerList } from './BannerList';
+import { BannerList } from './BannerList';
 import { PlacementDrawer } from './PlacementDrawer';
 import { VariableDrawer } from './VariableDrawer';
 
@@ -44,7 +46,7 @@ const CLOCK_INTERVAL_MS = 30_000;
 
 export function BannerSection() {
   const [view, setView] = useState<View>({ type: 'list' });
-  const [scope, setScope] = useState<string>(ALL_SCOPE);
+  const [scope, setScope] = useState<string>('');
   const [order, setOrder] = useState<string[] | null>(null);
   const [formIssues, setFormIssues] = useState<BannerIssue[]>([]);
   const [now, setNow] = useState(() => new Date());
@@ -65,6 +67,13 @@ export function BannerSection() {
 
   const doc: DraftPrivateDoc = data?.doc ?? EMPTY_PRIVATE_DOC;
   const etag = data?.etag ?? null;
+
+  // 구좌 하나가 항상 선택돼 있어야 한다. 문서가 늦게 오거나 보던 구좌가 사라지면 첫 구좌로.
+  useEffect(() => {
+    if (scope && doc.placements[scope]) return;
+    const [first] = placementEntries(doc);
+    setScope(first?.[0] ?? '');
+  }, [doc, scope]);
 
   /**
    * 문서 전체를 발행한다.
@@ -130,7 +139,7 @@ export function BannerSection() {
     });
 
   const handleSaveOrder = () => {
-    if (!order || scope === ALL_SCOPE) return;
+    if (!order || !scope) return;
     publish(reorderWithinSlots(doc, scope, order), '노출 순서를 저장했습니다.', () => setOrder(null));
   };
 
@@ -146,7 +155,7 @@ export function BannerSection() {
       variant: 'danger',
       onConfirm: () =>
         publish(removePlacement(doc, id), '구좌를 삭제했습니다.', () => {
-          if (scope === id) setScope(ALL_SCOPE);
+          if (scope === id) setScope('');
         }),
     });
 
@@ -225,50 +234,57 @@ export function BannerSection() {
         onOpenHistory={() => setView({ type: 'history' })}
       />
 
-      {view.type === 'form' && (
-        <BannerFormDrawer
-          key={view.bannerKey ?? view.sourceId ?? 'new'}
-          doc={doc}
-          bannerKey={view.bannerKey}
-          source={source ? { ...source, terminatedAt: null } : null}
-          now={now}
-          isSaving={saveBanners.isPending}
-          serverIssues={formIssues}
-          onClose={closeDrawer}
-          onSave={handleSaveBanner}
-          onClone={() => setView({ type: 'form', bannerKey: null, sourceId: view.bannerKey })}
-        />
-      )}
+      {/* 서랍은 언마운트로 닫힌다. 닫힘 전환을 보려면 AnimatePresence 가 필요하고,
+          복제처럼 서랍이 곧바로 갈리는 경우 겹치지 않게 wait 로 이어 붙인다. */}
+      <AnimatePresence mode="wait">
+        {view.type === 'form' && (
+          <BannerFormDrawer
+            key={view.bannerKey ?? view.sourceId ?? 'new'}
+            doc={doc}
+            bannerKey={view.bannerKey}
+            source={source ? { ...source, terminatedAt: null } : null}
+            now={now}
+            isSaving={saveBanners.isPending}
+            serverIssues={formIssues}
+            onClose={closeDrawer}
+            onSave={handleSaveBanner}
+            onClone={() => setView({ type: 'form', bannerKey: null, sourceId: view.bannerKey })}
+          />
+        )}
 
-      {view.type === 'placements' && (
-        <PlacementDrawer
-          doc={doc}
-          isSaving={saveBanners.isPending}
-          onClose={closeDrawer}
-          onSave={handleSavePlacement}
-          onDelete={handleDeletePlacement}
-        />
-      )}
+        {view.type === 'placements' && (
+          <PlacementDrawer
+            key="placements"
+            doc={doc}
+            isSaving={saveBanners.isPending}
+            onClose={closeDrawer}
+            onSave={handleSavePlacement}
+            onDelete={handleDeletePlacement}
+          />
+        )}
 
-      {view.type === 'variables' && (
-        <VariableDrawer
-          doc={doc}
-          isSaving={saveBanners.isPending}
-          onClose={closeDrawer}
-          onSave={handleSaveVariable}
-          onDelete={handleDeleteVariable}
-        />
-      )}
+        {view.type === 'variables' && (
+          <VariableDrawer
+            key="variables"
+            doc={doc}
+            isSaving={saveBanners.isPending}
+            onClose={closeDrawer}
+            onSave={handleSaveVariable}
+            onDelete={handleDeleteVariable}
+          />
+        )}
 
-      {view.type === 'history' && (
-        <BannerHistoryDrawer
-          versions={versionsQuery.data?.versions ?? []}
-          isLoading={versionsQuery.isLoading}
-          isRollingBack={rollbackBanners.isPending}
-          onClose={closeDrawer}
-          onRollback={handleRollback}
-        />
-      )}
+        {view.type === 'history' && (
+          <BannerHistoryDrawer
+            key="history"
+            versions={versionsQuery.data?.versions ?? []}
+            isLoading={versionsQuery.isLoading}
+            isRollingBack={rollbackBanners.isPending}
+            onClose={closeDrawer}
+            onRollback={handleRollback}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

@@ -1,5 +1,6 @@
 'use client';
-import type { DragEvent } from 'react';
+import { forwardRef, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
+import { motion } from 'motion/react';
 import { Text } from '@/shared/component/Text';
 import {
   BANNER_END_KIND_LABEL,
@@ -7,15 +8,16 @@ import {
   describeCondition,
   effectiveEnd,
   endKind,
-  formatKstShort,
+  formatKstRangeParts,
   type Banner,
   type BannerState,
   type BannerVariable,
 } from '@/entities/banners';
 import { BannerChip } from './BannerField';
 import { BannerRowMenu } from './BannerRowMenu';
+import { useBannerMotion } from './bannerMotion';
 
-interface BannerRowProps {
+export interface BannerRowProps {
   id: string;
   banner: Banner;
   state: BannerState;
@@ -23,57 +25,94 @@ interface BannerRowProps {
   variables: Record<string, BannerVariable>;
   /** 구좌 안의 노출 순서. 순서가 없는 섹션(예정·종료)은 null */
   orderNumber: number | null;
-  /** 구좌 탭에서만 순서를 바꿀 수 있다. 전체 탭은 번호만 보여준다. */
-  reorderable: boolean;
   isMoved: boolean;
+  /** 정렬 가능한 행에만 붙는 손잡이. 없으면 자리도 만들지 않는다. */
+  dragHandle?: ReactNode;
+  isDragging?: boolean;
+  /** DragOverlay 로 커서를 따라가는 사본 */
+  isOverlay?: boolean;
+  style?: CSSProperties;
   onOpen: () => void;
   onClone: () => void;
   onTerminate: () => void;
   onDelete: () => void;
-  onMove?: (direction: -1 | 1) => void;
-  onDragStart?: (event: DragEvent<HTMLLIElement>) => void;
-  onDragOver?: (event: DragEvent<HTMLLIElement>) => void;
-  onDrop?: (event: DragEvent<HTMLLIElement>) => void;
 }
 
-export function BannerRow({
-  id,
-  banner,
-  state,
-  placementName,
-  variables,
-  orderNumber,
-  reorderable,
-  isMoved,
-  onOpen,
-  onClone,
-  onTerminate,
-  onDelete,
-  onMove,
-  onDragStart,
-  onDragOver,
-  onDrop,
-}: BannerRowProps) {
+/** 점 6개 그리드. 끌 수 있는 자리라는 신호는 아이콘이 준다. */
+export const BannerDragHandle = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement>>(
+  function BannerDragHandle({ className, ...props }, ref) {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        aria-label="끌어서 순서 변경"
+        className={`shrink-0 cursor-grab touch-none rounded p-1 text-grey-400 outline-none transition-colors hover:bg-grey-100 hover:text-grey-600 focus-visible:ring-2 focus-visible:ring-primary-ui active:cursor-grabbing ${className ?? ''}`}
+        {...props}
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden focusable="false">
+          <circle cx="6" cy="4" r="1.4" />
+          <circle cx="10" cy="4" r="1.4" />
+          <circle cx="6" cy="8" r="1.4" />
+          <circle cx="10" cy="8" r="1.4" />
+          <circle cx="6" cy="12" r="1.4" />
+          <circle cx="10" cy="12" r="1.4" />
+        </svg>
+      </button>
+    );
+  },
+);
+
+export const BannerRow = forwardRef<HTMLLIElement, BannerRowProps>(function BannerRow(
+  {
+    id,
+    banner,
+    state,
+    placementName,
+    variables,
+    orderNumber,
+    isMoved,
+    dragHandle,
+    isDragging,
+    isOverlay,
+    style,
+    onOpen,
+    onClone,
+    onTerminate,
+    onDelete,
+  },
+  ref,
+) {
+  const anim = useBannerMotion();
+  // DragOverlay 사본은 motion 이 transform 을 인라인으로 잡으면 scale 강조가 사라진다.
+  const presence = isOverlay
+    ? {}
+    : {
+        variants: dragHandle ? anim.rowFade : anim.row,
+        initial: 'hidden',
+        animate: 'visible',
+        exit: 'gone',
+        transition: anim.transition,
+      };
   const thumbnail = bannerImageUrl(banner.image.key);
   const conditions = Object.entries(banner.conditions);
+  const period = formatKstRangeParts(banner.startAt, effectiveEnd(banner));
 
   return (
-    <li
-      draggable={reorderable}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
+    <motion.li
+      ref={ref}
+      style={style}
+      {...presence}
       className={`flex items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
         isMoved ? 'border-primary-ui bg-primary-lighter-alt' : 'border-grey-200 bg-white'
+      } ${isDragging ? '!opacity-40' : ''} ${
+        isOverlay
+          ? 'scale-[1.02] cursor-grabbing border-primary-ui shadow-[0_12px_32px_rgba(34,34,39,0.18)] motion-reduce:scale-100'
+          : ''
       }`}
     >
-      {reorderable && (
-        <span className="cursor-grab select-none text-grey-400" aria-hidden title="끌어서 순서 변경">
-          ⠿
-        </span>
-      )}
+      {dragHandle}
       {orderNumber !== null && (
-        <Text variant="body-14-b" color="grey-600" as="span" className="w-4 shrink-0 text-center">
+        <Text variant="body-14-b" color="grey-600" as="span" className="w-4 shrink-0 text-center tabular-nums">
           {orderNumber}
         </Text>
       )}
@@ -101,30 +140,16 @@ export function BannerRow({
         </div>
       </button>
 
-      <Text variant="body-12-m" color="grey-600" as="span" className="shrink-0 whitespace-nowrap">
-        {formatKstShort(banner.startAt)} → {formatKstShort(effectiveEnd(banner))}
-      </Text>
-
-      {reorderable && onMove && (
-        <div className="flex shrink-0 flex-col">
-          <button
-            type="button"
-            aria-label="위로 이동"
-            onClick={() => onMove(-1)}
-            className="rounded px-1 text-body-12-m text-grey-600 transition-colors hover:bg-grey-100 hover:text-grey-900"
-          >
-            ↑
-          </button>
-          <button
-            type="button"
-            aria-label="아래로 이동"
-            onClick={() => onMove(1)}
-            className="rounded px-1 text-body-12-m text-grey-600 transition-colors hover:bg-grey-100 hover:text-grey-900"
-          >
-            ↓
-          </button>
-        </div>
-      )}
+      {/* 칸을 고정한다. 같은 날이라 종료 날짜가 비어도 자리를 남겨야 행끼리 세로로 맞는다. */}
+      <div className="grid shrink-0 grid-cols-[3rem_2.75rem_1.25rem_3rem_2.75rem] items-baseline gap-x-1 whitespace-nowrap text-right tabular-nums">
+        <span className="text-body-14-b text-grey-900">{period.startDate}</span>
+        <span className="text-body-14-m text-grey-600">{period.startTime}</span>
+        <span className="text-body-14-m text-grey-400" aria-hidden>
+          →
+        </span>
+        <span className="text-body-14-b text-grey-900">{period.endDate ?? ''}</span>
+        <span className="text-body-14-m text-grey-600">{period.endTime}</span>
+      </div>
 
       <BannerRowMenu
         key={id}
@@ -134,6 +159,6 @@ export function BannerRow({
         onTerminate={onTerminate}
         onDelete={onDelete}
       />
-    </li>
+    </motion.li>
   );
-}
+});

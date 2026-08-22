@@ -23,14 +23,6 @@ export const isoToKstLocal = (iso: string) => {
   return kst ? kst.toISOString().slice(0, 16) : '';
 };
 
-/** 목록용 축약 표기. `08.17 09:00` */
-export const formatKstShort = (iso: string) => {
-  const kst = toKst(iso);
-  if (!kst) return '-';
-  const text = kst.toISOString();
-  return `${text.slice(5, 7)}.${text.slice(8, 10)} ${text.slice(11, 16)}`;
-};
-
 export const formatKstDateTime = (iso: string) => {
   const kst = toKst(iso);
   if (!kst) return '-';
@@ -40,3 +32,30 @@ export const formatKstDateTime = (iso: string) => {
 
 /** 지금을 그대로 저장 값으로 쓴다. `Z` 도 오프셋이라 스키마를 만족한다. */
 export const nowIso = () => new Date().toISOString();
+
+const kstParts = (iso: string) => {
+  const kst = toKst(iso);
+  if (!kst) return null;
+  const text = kst.toISOString();
+  return { date: `${text.slice(5, 7)}.${text.slice(8, 10)}`, time: text.slice(11, 16) };
+};
+
+export interface KstRangeParts {
+  startDate: string;
+  startTime: string;
+  /** 시작과 같은 날이면 null. 목록에서 날짜를 두 번 읽히지 않게 한다. */
+  endDate: string | null;
+  endTime: string;
+}
+
+/** 목록용 기간 표기. 날짜와 시각을 나눠 돌려주고 위계는 행이 정한다. */
+export const formatKstRangeParts = (startIso: string, endIso: string): KstRangeParts => {
+  const start = kstParts(startIso);
+  const end = kstParts(endIso);
+  return {
+    startDate: start?.date ?? '-',
+    startTime: start?.time ?? '',
+    endDate: end && start && end.date === start.date ? null : (end?.date ?? '-'),
+    endTime: end?.time ?? '',
+  };
+};
