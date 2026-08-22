@@ -62,13 +62,9 @@ export const validateBannersUpdate = (
       return;
     }
 
-    if (state === 'live') {
-      if (before.placement !== after.placement) {
-        issues.push({ path: `banners.${id}.placement`, message: `${before.name}: 게시 중에는 구좌를 바꿀 수 없습니다.` });
-      }
-      if (before.startAt !== after.startAt) {
-        issues.push({ path: `banners.${id}.startAt`, message: `${before.name}: 게시 중에는 시작일을 바꿀 수 없습니다.` });
-      }
+    // 게시 중 시작 일시는 잠그지 않는다. 미래로 옮기면 상태가 게시 예정으로 되돌아간다.
+    if (state === 'live' && before.placement !== after.placement) {
+      issues.push({ path: `banners.${id}.placement`, message: `${before.name}: 게시 중에는 구좌를 바꿀 수 없습니다.` });
     }
   });
 
