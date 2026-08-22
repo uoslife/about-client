@@ -22,12 +22,14 @@ import { useToast } from '@/shared/component/toast';
 import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { useAuth } from '@/entities/auth/useAuth';
 import { AbTestSection } from '@/widgets/ab-test';
+import { BannerSection } from '@/widgets/banner';
 
 const TABS = ['푸시 알림', 'A/B 테스트', '배너 관리', '상단 공지'] as const;
 const PUSH_TAB_INDEX = 0;
 const AB_TEST_TAB_INDEX = 1;
-// '배너 관리', '상단 공지'는 아직 더미 탭이라 비활성화한다.
-const ENABLED_TABS = new Set<number>([PUSH_TAB_INDEX, AB_TEST_TAB_INDEX]);
+const BANNER_TAB_INDEX = 2;
+// '상단 공지'는 아직 더미 탭이라 비활성화한다.
+const ENABLED_TABS = new Set<number>([PUSH_TAB_INDEX, AB_TEST_TAB_INDEX, BANNER_TAB_INDEX]);
 
 type TargetType = 'TARGET' | 'EMAILS' | 'CSV_FILE';
 type Target = ByTargetAllOfTarget;
@@ -79,7 +81,6 @@ export default function BackofficePage() {
   const { session } = useAuth();
 
   const handleTabClick = (index: number) => {
-    // TODO: '배너 관리'와 '상단 공지'는 더미 기능이므로 클릭해도 아무 일도 일어나지 않음 추후 기능 추가
     if (ENABLED_TABS.has(index)) {
       setSelectedTab(index);
     }
@@ -258,6 +259,7 @@ export default function BackofficePage() {
       {/* 탭 콘텐츠 영역 */}
       <div className="w-full">
         {selectedTab === AB_TEST_TAB_INDEX && <AbTestSection />}
+        {selectedTab === BANNER_TAB_INDEX && <BannerSection />}
         {selectedTab === PUSH_TAB_INDEX && (
           <div className="flex flex-col gap-12">
             {/* 메인 콘텐츠 영역: 왼쪽 예시 이미지 + 오른쪽 폼 */}

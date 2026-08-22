@@ -9,13 +9,8 @@ import {
 } from '@/entities/flags';
 import { authorize, toErrorResponse } from '@/app/api/_lib/authorize';
 import { mergeDocs, toPrivateDoc, toPublicDoc } from '@/entities/flags';
-import {
-  PRIVATE_KEY,
-  PUBLIC_KEY,
-  PreconditionFailedError,
-  readJson,
-  writeJsonConditional,
-} from './_lib/s3';
+import { PreconditionFailedError, readJson, writeJsonConditional } from '@/app/api/_lib/s3';
+import { CACHE_CONTROL, PRIVATE_KEY, PUBLIC_KEY } from '@/entities/flags/config';
 
 export const dynamic = 'force-dynamic';
 
@@ -102,8 +97,8 @@ export async function PUT(request: NextRequest) {
 
     try {
       // public을 먼저 쓴다. 실패하면 private은 건드리지 않는다.
-      const nextPublicEtag = nextPublic ? await writeJsonConditional(PUBLIC_KEY, nextPublic, etags.public) : etags.public;
-      const nextPrivateEtag = await writeJsonConditional(PRIVATE_KEY, nextPrivate, etags.private);
+      const nextPublicEtag = nextPublic ? await writeJsonConditional(PUBLIC_KEY, nextPublic, etags.public, CACHE_CONTROL) : etags.public;
+      const nextPrivateEtag = await writeJsonConditional(PRIVATE_KEY, nextPrivate, etags.private, CACHE_CONTROL);
 
       const body: FlagsResponse = {
         bundle: mergeDocs(nextPublic ?? publicResult.data, nextPrivate),

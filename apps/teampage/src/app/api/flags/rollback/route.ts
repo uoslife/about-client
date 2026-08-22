@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { privateDocSchema, publicDocSchema, rollbackPayloadSchema } from '@/entities/flags';
 import { authorize, toErrorResponse } from '@/app/api/_lib/authorize';
-import { PRIVATE_KEY, PUBLIC_KEY, readRaw, writeJson } from '../_lib/s3';
+import { readRaw, writeJson } from '@/app/api/_lib/s3';
+import { CACHE_CONTROL, PRIVATE_KEY, PUBLIC_KEY } from '@/entities/flags/config';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +35,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: '해당 버전이 현재 스키마와 맞지 않아 되돌릴 수 없습니다.' }, { status: 400 });
     }
 
-    const etag = await writeJson(key, JSON.stringify(check.data, null, 2));
+    const etag = await writeJson(key, JSON.stringify(check.data, null, 2), CACHE_CONTROL);
 
     return NextResponse.json({ scope, versionId, etag });
   } catch (error) {

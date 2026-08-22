@@ -11,6 +11,10 @@
   "dependencies": {
     "@amplitude/analytics-browser": "^2.24.0",
     "@aws-sdk/client-s3": "^3.1101.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/modifiers": "^9.0.0",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@floating-ui/react": "^0.27.15",
     "@notion-render/client": "^0.0.2",
     "@notionhq/client": "^4.0.2",
