@@ -15,6 +15,25 @@ export const dynamic = 'force-dynamic';
 const badRequest = (message: string) => NextResponse.json({ message }, { status: 400 });
 
 /**
+ * 업로드된 파일 판정.
+ *
+ * `instanceof File` 을 쓰지 않는다 — File 전역은 Node 20 부터고 런타임은 18 이라
+ * ReferenceError 로 죽는다. 필요한 것은 본문과 타입뿐이라 구조로 확인한다.
+ */
+interface UploadedFile {
+  type: string;
+  name?: string;
+  arrayBuffer: () => Promise<ArrayBuffer>;
+}
+
+const asUploadedFile = (value: unknown): UploadedFile | null => {
+  if (typeof value !== 'object' || value === null) return null;
+  const candidate = value as Partial<UploadedFile>;
+  if (typeof candidate.arrayBuffer !== 'function' || typeof candidate.type !== 'string') return null;
+  return candidate as UploadedFile;
+};
+
+/**
  * 배너 이미지 업로드.
  *
  * 오브젝트는 문서와 별개로 먼저 올라간다 — 발행 전에 미리보기가 되어야 하고,
@@ -26,10 +45,10 @@ export async function POST(request: NextRequest) {
     await authorize();
 
     const form = await request.formData().catch(() => null);
-    const file = form?.get('file');
+    const file = asUploadedFile(form?.get('file'));
     const placementId = form?.get('placement');
 
-    if (!(file instanceof File) || typeof placementId !== 'string') {
+    if (!file || typeof placementId !== 'string') {
       return badRequest('이미지와 구좌를 함께 보내주세요.');
     }
 
@@ -73,7 +92,7 @@ export async function POST(request: NextRequest) {
       width: size.width,
       height: size.height,
       bytes: bytes.byteLength,
-      originalName: file.name,
+      originalName: file.name ?? 'upload',
     };
 
     return NextResponse.json(body);
