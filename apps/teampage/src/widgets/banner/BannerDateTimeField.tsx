@@ -3,6 +3,7 @@ import { forwardRef, type InputHTMLAttributes } from 'react';
 import DatePicker from 'react-datepicker';
 import { offset } from '@floating-ui/react';
 import Image from 'next/image';
+import { BannerTimeInput } from './BannerTimeInput';
 import 'react-datepicker/dist/react-datepicker.css';
 import '@/shared/styles/datepicker.css';
 
@@ -61,17 +62,17 @@ export function BannerDateTimeField({ value, onChange, disabled, ariaLabel }: Ba
     <DatePicker
       selected={parseKstLocal(value)}
       onChange={(date) => onChange(date ? formatKstLocal(date) : '')}
-      showTimeSelect
-      timeIntervals={30}
-      timeCaption="시각"
-      timeFormat="HH:mm"
+      /* 목록이 아니라 입력이다 — 1분 단위면 슬롯이 1440개가 되고, 팝오버가 그만큼 길어진다. */
+      showTimeInput
+      timeInputLabel="시각"
+      customTimeInput={<BannerTimeInput />}
       dateFormat="yyyy.MM.dd HH:mm"
       placeholderText="년/월/일 시:분"
       disabled={disabled}
       customInput={<BannerDateTimeCustomInput aria-label={ariaLabel} />}
       calendarClassName="push-notification-datepicker-calendar"
       showPopperArrow={false}
-      /* 시각 칼럼이 붙어 인풋이 더 넓다. 폭은 고정해 열림/닫힘에 행이 밀리지 않게 한다.
+      /* 폭을 고정한다. 열림/닫힘에 따라 행의 레이아웃이 변하지 않아야 한다.
          tab-loop·popper 를 흐름에서 빼내는 처리는 shared/styles/datepicker.css 에 있다. */
       wrapperClassName="w-[204px] shrink-0"
       popperPlacement="bottom-start"

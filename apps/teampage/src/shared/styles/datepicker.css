@@ -134,59 +134,32 @@
   height: 0;
 }
 
-/* -----------------------------------------------------------------------------
- * 시각 선택 칼럼 (showTimeSelect)
+/* --------------------------------------------------------------------------
+ * 시각 입력 줄 (showTimeInput)
  *
- * react-datepicker 는 시각 칼럼을 px 고정 폭으로 그리고 헤더 높이를 날짜 쪽과
- * 따로 계산한다. 캘린더 헤더가 12px 패딩으로 커져 있어 두 헤더의 밑선이 어긋난다.
+ * 목록 대신 입력이라 달력 아래 한 줄만 차지한다. react-datepicker 의 기본
+ * 레이블·입력 폭이 남아 있으면 커스텀 입력과 어긋나므로 흐름만 다시 잡는다.
  * -------------------------------------------------------------------------- */
-.push-notification-datepicker-calendar .react-datepicker__time-container {
-  border-left: 1px solid #e1e1e7;
-  width: 92px;
-}
-
-.push-notification-datepicker-calendar .react-datepicker__time-container .react-datepicker__time-box {
-  width: 92px;
-}
-
-.push-notification-datepicker-calendar .react-datepicker-time__header {
-  font-size: 14px;
-  font-weight: 700;
-  color: #222227;
-  padding-bottom: 8px;
-}
-
-.push-notification-datepicker-calendar .react-datepicker__time {
-  background-color: #fff;
-}
-
-.push-notification-datepicker-calendar .react-datepicker__time-list {
-  padding: 4px 0;
-}
-
-.push-notification-datepicker-calendar .react-datepicker__time-list-item {
+.push-notification-datepicker-calendar .react-datepicker__input-time-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: auto !important;
-  margin: 2px 6px;
-  padding: 6px 0 !important;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #222227;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 12px 12px;
+  border-top: 1px solid #e1e1e7;
+  float: none;
 }
 
-.push-notification-datepicker-calendar .react-datepicker__time-list-item:hover {
-  background-color: #e9f3ff !important;
-  color: #0f6efb;
-}
-
-.push-notification-datepicker-calendar .react-datepicker__time-list-item--selected {
-  background-color: #0f6efb !important;
-  color: #fff !important;
+.push-notification-datepicker-calendar .react-datepicker-time__caption {
+  font-size: 13px;
   font-weight: 600;
+  color: #54545c;
 }
 
-.push-notification-datepicker-calendar .react-datepicker__time-list-item--disabled {
-  color: #d5d5dc !important;
+/* 커스텀 입력이 자기 폭을 갖는다. 래퍼의 기본 폭·마진이 남으면 줄이 어긋난다. */
+.push-notification-datepicker-calendar .react-datepicker-time__input-container,
+.push-notification-datepicker-calendar .react-datepicker-time__input {
+  display: flex;
+  align-items: center;
+  margin: 0 !important;
 }
