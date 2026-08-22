@@ -31,23 +31,33 @@ export function BannerTimeInput({ value, onChange }: BannerTimeInputProps) {
   const [draft, setDraft] = useState({ hour, minute });
   const minuteRef = useRef<HTMLInputElement>(null);
 
+  /**
+   * blur 는 리렌더 전에 터진다. 시(時) 두 자리를 채워 분으로 포커스를 옮기면 그
+   * 순간 시의 blur 가 도는데, state 로 읽으면 방금 친 숫자가 없는 낡은 값이 커밋된다.
+   */
+  const draftRef = useRef(draft);
+  const write = (next: { hour: string; minute: string }) => {
+    draftRef.current = next;
+    setDraft(next);
+  };
+
   // 달력에서 날짜를 바꾸면 react-datepicker 가 새 value 를 내려준다.
   useEffect(() => {
-    setDraft({ hour, minute });
+    write({ hour, minute });
   }, [hour, minute]);
 
   const commit = (next: { hour: string; minute: string }) => {
     const h = pad(clamp(Number(next.hour) || 0, 23));
     const m = pad(clamp(Number(next.minute) || 0, 59));
-    setDraft({ hour: h, minute: m });
+    write({ hour: h, minute: m });
     onChange?.(`${h}:${m}`);
   };
 
   const step = (unit: 'hour' | 'minute', delta: number) => {
     const max = unit === 'hour' ? 23 : 59;
-    const current = Number(draft[unit]) || 0;
+    const current = Number(draftRef.current[unit]) || 0;
     const wrapped = (current + delta + max + 1) % (max + 1);
-    commit({ ...draft, [unit]: pad(wrapped) });
+    commit({ ...draftRef.current, [unit]: pad(wrapped) });
   };
 
   const onSegmentKeyDown =
@@ -73,11 +83,17 @@ export function BannerTimeInput({ value, onChange }: BannerTimeInputProps) {
           value={draft.hour}
           onChange={(e) => {
             const digits = e.target.value.replace(/\D/g, '').slice(0, 2);
-            setDraft((prev) => ({ ...prev, hour: digits }));
+            const next = { ...draftRef.current, hour: digits };
+
             // 두 자리를 채우면 분으로 넘긴다. 탭을 누르지 않아도 이어 칠 수 있다.
-            if (digits.length === 2) minuteRef.current?.focus();
+            if (digits.length === 2) {
+              commit(next);
+              minuteRef.current?.focus();
+              return;
+            }
+            write(next);
           }}
-          onBlur={() => commit(draft)}
+          onBlur={() => commit(draftRef.current)}
           onKeyDown={onSegmentKeyDown('hour')}
         />
         <span className="text-body-16-m text-grey-500" aria-hidden>
@@ -91,9 +107,12 @@ export function BannerTimeInput({ value, onChange }: BannerTimeInputProps) {
           aria-label="분"
           value={draft.minute}
           onChange={(e) =>
-            setDraft((prev) => ({ ...prev, minute: e.target.value.replace(/\D/g, '').slice(0, 2) }))
+            write({
+              ...draftRef.current,
+              minute: e.target.value.replace(/\D/g, '').slice(0, 2),
+            })
           }
-          onBlur={() => commit(draft)}
+          onBlur={() => commit(draftRef.current)}
           onKeyDown={onSegmentKeyDown('minute')}
         />
       </div>
