@@ -105,6 +105,9 @@ export function BannerList({
 
   const orderNumberOf = (entry: BannerEntry) => live.findIndex((item) => item.id === entry.id) + 1;
 
+  // 게시 중이 한 개뿐인 구좌(다이얼로그 등)에는 순서라는 개념이 없다.
+  const isOrdered = live.length > 1;
+
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     setActiveId(null);
     if (!over || active.id === over.id) return;
@@ -122,7 +125,7 @@ export function BannerList({
     state,
     placementName: doc.placements[entry.banner.placement]?.name ?? entry.banner.placement,
     variables: doc.variables,
-    orderNumber: state === 'live' ? orderNumberOf(entry) : null,
+    orderNumber: state === 'live' && isOrdered ? orderNumberOf(entry) : null,
     isMoved: state === 'live' && baseLiveIds[index] !== entry.id,
     onOpen: () => onOpen(entry.id),
     onClone: () => onClone(entry.id),
@@ -208,6 +211,10 @@ export function BannerList({
             </Text>
             {live.length === 0 ? (
               <EmptySection message="게시 중인 배너가 없습니다." />
+            ) : !isOrdered ? (
+              <ul className="flex flex-col gap-2">
+                <AnimatePresence initial={false}>{live.map((entry, index) => renderRow(entry, 'live', index))}</AnimatePresence>
+              </ul>
             ) : (
               <DndContext
                 sensors={sensors}
