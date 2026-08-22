@@ -7,26 +7,22 @@ import {
 } from '@aws-sdk/client-s3';
 
 /**
- * S3 접근 헬퍼.
+ * S3 접근 헬퍼. flags·banners 등 route handler 들이 공유한다.
  *
  * 자격증명은 아무 것도 설정하지 않는다.
  * SDK 기본 자격증명 체인이 환경변수를 알아서 집는다 — 현재는 Vault에서
  * external-secrets가 주입한 `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`
- * (IAM 사용자 uoslife-about-client-{prod,dev}, flags 오브젝트에만 Get/Put).
+ * (IAM 사용자 uoslife-about-client-{prod,dev}).
  * 나중에 IRSA로 옮겨도 이 파일은 바뀌지 않는다.
+ *
+ * 키 규칙과 Cache-Control 은 여기서 정하지 않는다. 어느 경로에 무슨 TTL 로
+ * 올릴지는 도메인 지식이라 각 entity 의 config 가 소유하고, 호출부가 넘긴다.
  */
 
-import {
-  CACHE_CONTROL,
-  CONTENT_TYPE,
-  FLAGS_BUCKET,
-  PRIVATE_KEY,
-  PUBLIC_KEY,
-} from '@/entities/flags/config';
-
-export { FLAGS_BUCKET, PUBLIC_KEY, PRIVATE_KEY };
-
 const REGION = 'ap-northeast-2';
+
+/** flags·banners 가 같은 버킷을 쓴다. */
+export const S3_BUCKET = process.env.FLAGS_BUCKET || 'uoslife-v2026--flags';
 
 let client: S3Client | null = null;
 
@@ -67,6 +63,8 @@ const isPreconditionFailed = (error: unknown) => {
   return name === 'PreconditionFailed' || status === 412;
 };
 
+const JSON_CONTENT_TYPE = 'application/json';
+
 export interface ReadResult<T> {
   data: T | null;
   etag: string | null;
@@ -75,9 +73,7 @@ export interface ReadResult<T> {
 
 export const readJson = async <T>(key: string, versionId?: string): Promise<ReadResult<T>> => {
   try {
-    const response = await getS3().send(
-      new GetObjectCommand({ Bucket: FLAGS_BUCKET, Key: key, VersionId: versionId }),
-    );
+    const response = await getS3().send(new GetObjectCommand({ Bucket: S3_BUCKET, Key: key, VersionId: versionId }));
     const body = await response.Body?.transformToString();
     return {
       data: body ? (JSON.parse(body) as T) : null,
@@ -97,13 +93,18 @@ export const readJson = async <T>(key: string, versionId?: string): Promise<Read
  *
  * 412(PreconditionFailed)면 `PreconditionFailedError`를 던진다 → 호출부에서 409로 변환.
  */
-export const writeJsonConditional = async (key: string, value: unknown, etag: string | null): Promise<string | null> => {
+export const writeJsonConditional = async (
+  key: string,
+  value: unknown,
+  etag: string | null,
+  cacheControl: string,
+): Promise<string | null> => {
   const input: PutObjectCommandInput = {
-    Bucket: FLAGS_BUCKET,
+    Bucket: S3_BUCKET,
     Key: key,
     Body: JSON.stringify(value, null, 2),
-    ContentType: CONTENT_TYPE,
-    CacheControl: CACHE_CONTROL,
+    ContentType: JSON_CONTENT_TYPE,
+    CacheControl: cacheControl,
     ...(etag ? { IfMatch: etag } : { IfNoneMatch: '*' }),
   };
 
@@ -119,14 +120,28 @@ export const writeJsonConditional = async (key: string, value: unknown, etag: st
 };
 
 /** 롤백 시에는 이미 조건 검사를 마친 뒤이므로 조건 없이 쓴다. */
-export const writeJson = async (key: string, body: string) => {
+export const writeJson = async (key: string, body: string, cacheControl: string) => {
   const response = await getS3().send(
     new PutObjectCommand({
-      Bucket: FLAGS_BUCKET,
+      Bucket: S3_BUCKET,
       Key: key,
       Body: body,
-      ContentType: CONTENT_TYPE,
-      CacheControl: CACHE_CONTROL,
+      ContentType: JSON_CONTENT_TYPE,
+      CacheControl: cacheControl,
+    }),
+  );
+  return response.ETag ?? null;
+};
+
+/** 이미지 등 바이너리. 콘텐츠 주소 키(내용 해시)라 조건부 쓰기가 필요 없다. */
+export const putBinary = async (key: string, body: Uint8Array, contentType: string, cacheControl: string) => {
+  const response = await getS3().send(
+    new PutObjectCommand({
+      Bucket: S3_BUCKET,
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+      CacheControl: cacheControl,
     }),
   );
   return response.ETag ?? null;
@@ -134,7 +149,7 @@ export const writeJson = async (key: string, body: string) => {
 
 export const listVersions = async (key: string) => {
   const response = await getS3().send(
-    new ListObjectVersionsCommand({ Bucket: FLAGS_BUCKET, Prefix: key, MaxKeys: 50 }),
+    new ListObjectVersionsCommand({ Bucket: S3_BUCKET, Prefix: key, MaxKeys: 50 }),
   );
 
   return (response.Versions ?? [])
@@ -150,9 +165,7 @@ export const listVersions = async (key: string) => {
 /** 원본 텍스트. 다운로드와 요약 생성에 함께 쓴다. */
 export const readRaw = async (key: string, versionId?: string): Promise<string | null> => {
   try {
-    const response = await getS3().send(
-      new GetObjectCommand({ Bucket: FLAGS_BUCKET, Key: key, VersionId: versionId }),
-    );
+    const response = await getS3().send(new GetObjectCommand({ Bucket: S3_BUCKET, Key: key, VersionId: versionId }));
     return (await response.Body?.transformToString()) ?? null;
   } catch (error) {
     if (isNoSuchKey(error)) return null;

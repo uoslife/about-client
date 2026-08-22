@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { authorize, toErrorResponse } from '@/app/api/_lib/authorize';
-import { PRIVATE_KEY, PUBLIC_KEY, readRaw } from '../_lib/s3';
+import { readRaw } from '@/app/api/_lib/s3';
+import { PRIVATE_KEY, PUBLIC_KEY } from '@/entities/flags/config';
 
 export const dynamic = 'force-dynamic';
 
