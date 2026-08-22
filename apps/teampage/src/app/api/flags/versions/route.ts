@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { summarizePrivate, summarizePublic, type FlagVersion, type FlagVersionsResponse } from '@/entities/flags';
 import { authorize, toErrorResponse } from '@/app/api/_lib/authorize';
-import { PRIVATE_KEY, PUBLIC_KEY, listVersions, readRaw } from '../_lib/s3';
+import { listVersions, readRaw } from '@/app/api/_lib/s3';
+import { PRIVATE_KEY, PUBLIC_KEY } from '@/entities/flags/config';
 
 export const dynamic = 'force-dynamic';
 

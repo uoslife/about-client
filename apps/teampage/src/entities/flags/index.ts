@@ -11,7 +11,7 @@
  * - 쓰기(mutation). features/flags 에 있다. 캐시를 무효화하는 코드가 읽기 쪽에
  *   섞이면 무엇이 언제 갱신되는지 추적할 곳이 없어진다.
  * - 화면(widgets/ab-test).
- * - S3 접근(app/api/flags/_lib/s3.ts). 서버 전용이라 이 배럴로 재export 하면
+ * - S3 접근(app/api/_lib/s3.ts). 서버 전용이라 이 배럴로 재export 하면
  *   클라이언트 번들에 AWS SDK 가 딸려온다.
  */
 
