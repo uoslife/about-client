@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   NotionListResponseSchema,
+  NotionListEnvelopeSchema,
   NotionPageSchema,
   OptionalNotionRichTextPropertySchema,
   OptionalNotionFilesPropertySchema,
@@ -15,6 +16,7 @@ import type {
   GenerationType,
   NotionListResponse,
   PositionType,
+  RowFailure,
 } from './NotionType';
 
 export class NotionUtil {
@@ -24,6 +26,43 @@ export class NotionUtil {
 
   public static parseNotionList = (response: unknown): NotionListResponse => {
     return NotionListResponseSchema.parse(response);
+  };
+
+  public static parseNotionListSafe = (response: unknown) => {
+    const envelope = NotionListEnvelopeSchema.parse(response);
+
+    const valid: NotionPage[] = [];
+    const failures: RowFailure[] = [];
+
+    envelope.results.forEach((row, index) => {
+      const result = NotionPageSchema.safeParse(row);
+      if (result.success) {
+        valid.push(result.data);
+      } else {
+        failures.push({
+          index,
+          name: NotionUtil.peekName(row),
+          issues: result.error.issues.map(
+            (i) => `${i.path.join('.')}: ${i.message}`,
+          ),
+        });
+      }
+    });
+
+    return { valid, failures };
+  };
+
+  private static peekName = (row: unknown): string | undefined => {
+    const r = z
+      .object({
+        properties: z.object({
+          name: z.object({
+            title: z.array(z.object({ plain_text: z.string() })).min(1),
+          }),
+        }),
+      })
+      .safeParse(row);
+    return r.success ? r.data.properties.name.title[0].plain_text : undefined;
   };
 
   public static extractName = (
