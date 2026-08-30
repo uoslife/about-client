@@ -2,6 +2,7 @@
 import { useMemo, useRef, useState, type DragEvent } from 'react';
 import { Text } from '@/shared/component/Text';
 import { useToast } from '@/shared/component/toast';
+import { useConfirmModal } from '@/shared/component/confirm-modal';
 import {
   ASSET_MIME_EXTENSIONS,
   BANNER_STATE_LABEL,
@@ -9,6 +10,7 @@ import {
   bannerImageUrl,
   bannerState,
   createDraftBannerKey,
+  formatKstDateTime,
   isoToKstLocal,
   kstLocalToIso,
   nextPosition,
@@ -74,6 +76,7 @@ export function BannerFormDrawer({
   onClone,
 }: BannerFormDrawerProps) {
   const { toast } = useToast();
+  const { open: openConfirmModal } = useConfirmModal();
   const uploadAsset = useUploadBannerAsset();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -104,7 +107,7 @@ export function BannerFormDrawer({
   const selectedPlacement = doc.placements[placement];
   const previewUrl = uploadedUrl || (image ? bannerImageUrl(image.key) : '');
 
-  const startAt = isLive && original ? original.startAt : publishMode === 'now' ? nowIso() : kstLocalToIso(startLocal);
+  const startAt = publishMode === 'now' ? nowIso() : kstLocalToIso(startLocal);
   const scheduledEndAt = kstLocalToIso(endLocal);
 
   const fieldErrors = {
@@ -119,7 +122,7 @@ export function BannerFormDrawer({
       return null;
     })(),
     schedule: (() => {
-      if (publishMode === 'scheduled' && !startLocal && !isLive) return '게시 시작 일시를 입력해주세요.';
+      if (publishMode === 'scheduled' && !startLocal) return '게시 시작 일시를 입력해주세요.';
       if (!endLocal) return '게시 종료 일시를 입력해주세요.';
       if (Date.parse(startAt) >= Date.parse(scheduledEndAt)) return '종료 일시는 시작 일시보다 뒤여야 합니다.';
       return null;
@@ -169,8 +172,9 @@ export function BannerFormDrawer({
     handleUpload(event.dataTransfer.files[0]);
   };
 
-  const handleSave = () => {
-    if (errorCount > 0 || !image) return;
+  const submit = () => {
+    if (!image) return;
+
     onSave(key, {
       name: name.trim(),
       placement,
@@ -188,6 +192,32 @@ export function BannerFormDrawer({
       createdAt: original?.createdAt ?? '',
       updatedBy: original?.updatedBy ?? '',
       updatedAt: original?.updatedAt ?? '',
+    });
+  };
+
+  /**
+   * 노출 중인 배너의 시작 일시를 바꾸는 것은 되돌리기 어려운 변경이다. 미래로 옮기면
+   * 그 시각까지 노출이 끊기고, 과거로 옮기면 집행 기록의 기준일이 달라진다.
+   */
+  const handleSave = () => {
+    if (errorCount > 0 || !image) return;
+
+    const movesLiveStart = isLive && original !== null && startAt !== original.startAt;
+    if (!movesLiveStart) {
+      submit();
+      return;
+    }
+
+    const pausesExposure = Date.parse(startAt) > now.getTime();
+    openConfirmModal({
+      title: '노출 중인 배너의 시작 일시를 바꿉니다',
+      description: pausesExposure
+        ? `${formatKstDateTime(startAt)} 이 될 때까지 앱에서 노출되지 않습니다. 저장 즉시 '게시 예정' 으로 되돌아갑니다.`
+        : `집행 기록의 시작 기준이 ${formatKstDateTime(startAt)} 로 바뀝니다. 노출은 계속됩니다.`,
+      confirmText: '변경',
+      cancelText: '취소',
+      variant: 'danger',
+      onConfirm: submit,
     });
   };
 
