@@ -1,7 +1,8 @@
 import { SingletonRegister, Singletons } from '@shared/utils/SingletonRegistry';
 import { NotionClient } from './NotionClient';
 import { NotionUtil } from './NotionUtil';
-import type { PeopleData, NotionListResponse } from './NotionType';
+import type { PeopleData, RowFailure } from './NotionType';
+import { reportDataFailures } from '@shared/utils/reportDataFailures';
 import fs from 'fs';
 import path from 'path';
 import sharp from 'sharp';
@@ -11,17 +12,14 @@ const TOKEN = 'NOTION_MANAGER' as const;
 export class NotionManager {
   public static TOKEN = TOKEN;
 
-  private getNotionList = async (): Promise<NotionListResponse> => {
+  private fetchRawList = async (): Promise<unknown> => {
     const notion = Singletons[NotionClient.TOKEN].getInstance();
     if (!process.env.NOTION_PEOPLE_DATABASE_ID) {
       throw new Error('NOTION_PEOPLE_DATABASE_ID is not set');
     }
-
-    const response = await notion.databases.query({
+    return notion.databases.query({
       database_id: process.env.NOTION_PEOPLE_DATABASE_ID,
     });
-
-    return NotionUtil.parseNotionList(response);
   };
 
   private downloadAndSaveImage = async (notionImageUrl: string, personName: string): Promise<string> => {
@@ -65,23 +63,34 @@ export class NotionManager {
   };
 
   public getPeopleData = async (): Promise<PeopleData[]> => {
-    try {
-      const list = await this.getNotionList();
-      const peopleData: PeopleData[] = await Promise.all(
-        list.results.map(async (page) => {
-          const data = NotionUtil.convertToPeopleData(page);
-          if (data.image_profile) {
-            data.image_profile = await this.downloadAndSaveImage(data.image_profile, data.name);
-          }
-          return data;
-        }),
-      );
+    const raw = await this.fetchRawList();
+    const { valid, failures } = NotionUtil.parseNotionListSafe(raw);
 
-      return peopleData;
-    } catch (error) {
-      console.error('Failed to get people data from Notion', error);
-      return [];
+    const settled = await Promise.allSettled(
+      valid.map(async (page) => {
+        const data = NotionUtil.convertToPeopleData(page);
+        if (data.image_profile) {
+          data.image_profile = await this.downloadAndSaveImage(
+            data.image_profile,
+            data.name,
+          );
+        }
+        return data;
+      }),
+    );
+
+    const convertFailures: RowFailure[] = settled.flatMap((s, i) =>
+      s.status === 'rejected'
+        ? [{ index: i, issues: [String(s.reason?.message ?? s.reason)] }]
+        : [],
+    );
+
+    const all = [...failures, ...convertFailures];
+    if (all.length > 0) {
+      void reportDataFailures('people', all, settled.length - convertFailures.length);
     }
+
+    return settled.flatMap((s) => (s.status === 'fulfilled' ? [s.value] : []));
   };
 }
 
