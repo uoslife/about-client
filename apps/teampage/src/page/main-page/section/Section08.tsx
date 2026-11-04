@@ -80,7 +80,7 @@ function InterviewCarousel() {
           </TabButton>
         ))}
       </div>
-      <div className="w-[100vw] ml-auto overflow-x-scroll">
+      <div className="w-[100vw] ml-auto overflow-x-scroll no-scrollbar">
         <div
           ref={scrollRef}
           className="flex flex-row gap-9 overflow-x-scroll snap-x snap-mandatory px-[calc(50vw-225px)] no-scrollbar max-md:gap-3 max-md:pl-[18px]"
