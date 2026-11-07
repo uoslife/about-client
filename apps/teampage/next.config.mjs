@@ -7,6 +7,10 @@ const nextConfig = {
     }
     return config;
   },
+  // 학식 편집기가 브라우저에서 apis를 같은 origin으로 부르도록 프록시 (apis CORS가 localhost:3000을 막음)
+  async rewrites() {
+    return [{ source: '/uoslife-apis/:path*', destination: 'https://apis.uoslife.com/:path*' }];
+  },
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
@@ -46,12 +50,13 @@ const nextConfig = {
         hostname: 'd544kp0ugcek4.cloudfront.net',
         port: '',
         pathname: '/**',
-      },{
+      },
+      {
         protocol: 'https',
         hostname: 'velog.velcdn.com',
         port: '',
         pathname: '/**',
-      }
+      },
     ],
   },
 };
