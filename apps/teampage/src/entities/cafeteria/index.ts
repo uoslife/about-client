@@ -11,5 +11,6 @@
  */
 
 export * from './model';
+export * from './lib/origin';
 export * from './api/client';
 export * from './api/queries';
