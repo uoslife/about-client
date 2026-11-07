@@ -52,3 +52,13 @@ export type SaveMenusBody = {
     }[];
   };
 };
+
+/** 저장 단위 `일자 + 끼 + 식당`. `loaded`는 편집을 시작할 때 불러온 서버 값이다. */
+export type SaveCafeteriaVariables = {
+  date: string;
+  mealTime: MealTime;
+  loaded: Cafeteria;
+  next: Cafeteria;
+  /** 그사이 서버 값이 바뀌었어도 덮어쓴다. `CafeteriaConflictError`를 받은 뒤 사용자가 확인했을 때만 켠다. */
+  force?: boolean;
+};
