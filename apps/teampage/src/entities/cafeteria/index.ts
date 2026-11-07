@@ -12,5 +12,7 @@
 
 export * from './model';
 export * from './lib/origin';
+export * from './lib/toSaveMenusBody';
+export * from './lib/validate';
 export * from './api/client';
 export * from './api/queries';

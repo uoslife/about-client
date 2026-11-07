@@ -36,3 +36,19 @@ export type MenuItem = z.infer<typeof menuItemSchema>;
 export type Corner = z.infer<typeof cornerSchema>;
 export type Cafeteria = z.infer<typeof cafeteriaSchema>;
 export type MenusResponse = z.infer<typeof menusResponseSchema>;
+
+/** apis `POST /cafeterias` body. 이름은 웹훅이지만 일반 저장 API다. 변환은 `lib/toSaveMenusBody.ts`. */
+export type SaveMenusBody = {
+  cafeteria_menus: {
+    origin: { id: string; code: string; name: string; target_url: string };
+    menus: {
+      meal_date: string;
+      meal_time: MealTime;
+      corner: string | null;
+      content: {
+        items: { role: string | null; name: string | null; side: string[]; price: number | null }[];
+        extra: string[];
+      };
+    }[];
+  };
+};
