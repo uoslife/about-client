@@ -31,10 +31,10 @@ export function recruitingApplyButtonLabel(): string {
 export const recruitingDates = {
   documentSubmission: {
     open: '11월 9일(월)',
-    due: '11월 17일(화)',
+    due: '11월 19일(목)',
     dueTimeNote: '오후 11시 59분까지',
   },
-  firstRoundResult: '11월 19일(목)',
+  firstRoundResult: '11월 20일(금)',
   secondInterview: {
     start: '11월 23일(월)',
     end: '11월 29일(일)',
