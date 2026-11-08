@@ -67,7 +67,7 @@ export function Section05() {
             </TabButton>
           ))}
         </div>
-        <div className="w-[100vw] ml-auto overflow-x-scroll">
+        <div className="w-[100vw] ml-auto overflow-x-scroll no-scrollbar">
           <div
             ref={scrollRef}
             className="flex flex-row gap-9 overflow-x-scroll snap-x snap-mandatory px-[calc(50vw-270px)] no-scrollbar max-md:pl-[16px]"
