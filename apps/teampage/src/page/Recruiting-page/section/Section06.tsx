@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { forwardRef, Fragment } from 'react';
 
 import { resolveRecruitingSection06Texts } from '@/page/Recruiting-page/config';
 
@@ -20,8 +20,13 @@ export const Section06 = forwardRef<HTMLDivElement, any>((_, ref) => {
             {section06Texts.headlineLine1} <br />
             {section06Texts.headlineLine2}
           </h3>
-          <p className="text-center text-[#54545C] text-[1.125rem] font-medium leading-[160%] max-md:text-sm w-[100%] max-md:w-[80%]">
-            {section06Texts.detail}
+          <p className="text-center text-[#54545C] text-[1.125rem] font-medium leading-[160%] max-md:text-sm w-[100%] max-md:w-[80%] break-keep">
+            {section06Texts.detailLines.map((line, i) => (
+              <Fragment key={line}>
+                {i > 0 && <br />}
+                {line}
+              </Fragment>
+            ))}
           </p>
         </div>
         <Recruitbutton />
