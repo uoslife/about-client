@@ -47,18 +47,18 @@ export function Section03() {
             </div>
             <div className="flex flex-row gap-4 pl-10 sm:pl-0">
               <Image
-                src={'/img/section03_mock_01.webp'}
+                src={'/img/section03_mock_01_v3.webp'}
                 alt={''}
                 width={340}
                 height={740}
-                className="w-[200px] h-[408px] sm:h-[740px] sm:w-[340px] sm:pb-32"
+                className="w-[200px] h-[408px] sm:h-[612px] sm:w-[300px] sm:mb-32"
               />
               <Image
-                src={'/img/section03_mock_02.webp'}
+                src={'/img/section03_mock_02_v2.webp'}
                 alt={''}
                 width={340}
                 height={740}
-                className="w-[200px] h-[408px] sm:h-[740px] sm:w-[340px] sm:pt-32"
+                className="w-[200px] h-[408px] sm:h-[612px] sm:w-[300px] sm:mt-32"
               />
             </div>
           </div>
@@ -73,7 +73,7 @@ export function Section03() {
               >{`대학생활을 더 풍요롭게\n만들어주는 매칭 서비스까지`}</Text>
             </div>
             <Image
-              src={'/img/section03_mock_03.webp'}
+              src={'/img/section03_mock_03_v2.webp'}
               alt={''}
               width={340}
               height={740}
