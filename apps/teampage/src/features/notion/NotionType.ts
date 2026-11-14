@@ -32,3 +32,5 @@ export type PeopleData = {
   link_github?: string;
   link_linkedin?: string;
 };
+
+export type { RowFailure } from '@shared/utils/reportDataFailures';
