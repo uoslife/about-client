@@ -5,47 +5,39 @@ import { useState } from 'react';
 import {
   recruitingFieldDetailLabels,
   recruitingRoles,
+  type RecruitingFieldDetail,
   type RecruitingFieldRole,
   type RecruitingFieldSubRole,
-  type RecruitingFieldWithItem,
 } from '@/page/Recruiting-page/config';
 
 import { RecruitmentFieldButton } from './RecruitmentFieldButton';
 
-function Detail({
-  item,
-}: {
-  item: {
-    readonly do: readonly string[];
-    readonly with: readonly RecruitingFieldWithItem[];
-  };
-}) {
-  const labels = recruitingFieldDetailLabels;
+const detailBlockKeys = ['do', 'with', 'recommend'] as const;
+
+function Detail({ item }: { item: RecruitingFieldDetail }) {
   return (
     <>
-      <div className="flex flex-col items-start gap-4 self-stretch">
-        <h6 className="text-[#222227] text-xl font-bold leading-[160%] max-md:text-sm">{labels.responsibilitiesHeading}</h6>
-        <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] list-disc pl-5 space-y-2 [&>li]:pl-2 max-md:text-sm">
-          {item.do.map((task, taskIndex) => (
-            <li key={taskIndex}>{task}</li>
-          ))}
-        </ul>
-      </div>
-      <div className="flex flex-col items-start gap-4 self-stretch">
-        <h6 className="text-[#222227] text-xl font-bold leading-[160%] max-md:text-sm">{labels.partnerHeading}</h6>
-        <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] list-disc pl-5 space-y-2 [&>li]:pl-2 max-md:text-sm">
-          {item.with.map((requirement, reqIndex) => {
-            if (typeof requirement === 'string') {
-              return <li key={reqIndex}>{requirement}</li>;
-            }
-            return (
-              <li key={reqIndex} className="list-disc">
-                {requirement.text}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {detailBlockKeys.map((key) => {
+        const label = recruitingFieldDetailLabels[key];
+        const block = item[key];
+        return (
+          <div key={key} className="flex flex-col items-start gap-4 self-stretch max-md:gap-3">
+            <div className="flex flex-wrap items-center gap-3 max-md:gap-2">
+              <h6 className="text-blue-600 text-xl font-bold leading-[160%] max-md:text-sm">
+                <span aria-hidden>{label.emoji}</span> {label.heading}
+              </h6>
+              <span className="rounded-full bg-[#1A8CFF] px-3 py-0.5 text-sm font-bold leading-[160%] text-white max-md:px-2.5 max-md:text-xs">
+                {block.tag}
+              </span>
+            </div>
+            <ul className="self-stretch text-[#303037] text-lg font-medium leading-[160%] list-disc pl-5 space-y-2 [&>li]:pl-2 break-keep max-md:text-sm">
+              {block.items.map((text) => (
+                <li key={text}>{text}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      })}
     </>
   );
 }
@@ -73,7 +65,7 @@ export const FnQContent = ({ item, index }: { item: RecruitingFieldRole; index: 
             ) : (
               item.content?.map((subitem: RecruitingFieldSubRole, subIndex: number) => (
                 <div key={subIndex} className="flex flex-col items-start gap-5 self-stretch max-md: gap-2">
-                  <h5 className="text-[#222227] text-2xl font-bold leading-[150%]">{subitem.subrole}</h5>
+                  <h5 className="text-[#222227] text-2xl font-bold leading-[150%] max-md:text-lg">{subitem.subrole}</h5>
                   <Detail item={subitem} />
                 </div>
               ))

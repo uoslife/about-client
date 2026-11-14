@@ -15,7 +15,7 @@ export function Section01() {
 const DesktopView = () => {
   return (
     <div
-      className="hidden md:flex justify-center items-center bg-center bg-no-repeat bg-cover min-h-screen"
+      className="hidden md:flex justify-center items-center bg-center bg-no-repeat bg-contain min-h-screen"
       style={{ backgroundImage: `url('${recruitingAssets.heroLogoBackground}')` }}
     >
       <div className="flex flex-col w-[1280px] gap-8 text-left">
