@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 export const MEAL_TIMES = ['BREAKFAST', 'LUNCH', 'DINNER'] as const;
-export const mealTimeSchema = z.enum(MEAL_TIMES);
+const mealTimeSchema = z.enum(MEAL_TIMES);
 export type MealTime = z.infer<typeof mealTimeSchema>;
 
-export const menuItemSchema = z.object({
+const menuItemSchema = z.object({
   role: z.string().nullish(),
   name: z.string().nullish(),
   side: z.array(z.string()).nullish(),
@@ -12,12 +12,12 @@ export const menuItemSchema = z.object({
   isPopular: z.boolean(),
 });
 
-export const cornerSchema = z.object({
+const cornerSchema = z.object({
   corner: z.string().nullish(),
   items: z.array(menuItemSchema),
 });
 
-export const cafeteriaSchema = z.object({
+const cafeteriaSchema = z.object({
   id: z.string(),
   name: z.string(),
   isPinned: z.boolean(),

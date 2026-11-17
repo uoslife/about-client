@@ -33,8 +33,7 @@ type Params = {
  * 7. `origin`으로 식당 정보(code, name, target_url)를 덮어쓴다. name은 GET 값을, 나머지는
  *    `lib/origin.ts` 상수를 쓴다.
  *
- * 결과적으로 식당 하나의 한 끼를 통째로 맞추는 요청 1건이 되고, 서버에서 트랜잭션 1개로
- * 처리돼 일부만 반영되는 일은 없다.
+ * 결과적으로 식당 하나의 한 끼를 통째로 맞추는 요청 1건이 된다.
  */
 export const toSaveMenusBody = ({ date, mealTime, origin, prev, next }: Params): SaveMenusBody => {
   const extra = next.extra ?? [];

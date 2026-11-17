@@ -2,12 +2,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { SaveCafeteriaVariables } from '@/entities/cafeteria';
 import {
+  cafeteriaApi,
   cafeteriaKeys,
   cafeteriaMenusQueryOptions,
   findCafeteria,
   getCafeteriaOrigin,
   isSameCafeteria,
-  requestCafeteriaApi,
   toSaveMenusBody,
 } from '@/entities/cafeteria';
 
@@ -30,7 +30,7 @@ export const useSaveCafeteria = () => {
       if (!force && !isSameCafeteria(prev, loaded)) throw new CafeteriaConflictError(next.name);
 
       const body = toSaveMenusBody({ date, mealTime, origin: getCafeteriaOrigin(next.id, next.name), prev, next });
-      await requestCafeteriaApi<void>('/cafeterias', { method: 'POST', body: JSON.stringify(body) });
+      await cafeteriaApi.saveMenus({ date, mealTime, prev, next, body });
     },
     onSuccess: (_data, { date }) => queryClient.invalidateQueries({ queryKey: cafeteriaKeys.menus(date) }),
   });

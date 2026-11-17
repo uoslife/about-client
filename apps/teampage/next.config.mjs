@@ -9,7 +9,9 @@ const nextConfig = {
   },
   // 학식 편집기가 브라우저에서 apis를 같은 origin으로 부르도록 프록시 (apis CORS가 localhost:3000을 막음)
   async rewrites() {
-    return [{ source: '/uoslife-apis/:path*', destination: 'https://apis.uoslife.com/:path*' }];
+    // UOSLIFE_APIS_ORIGIN으로 바꿀 수 있다(예: https://apis.dev.uoslife.com).
+    const origin = process.env.UOSLIFE_APIS_ORIGIN ?? 'https://apis.uoslife.com';
+    return [{ source: '/uoslife-apis/:path*', destination: `${origin}/:path*` }];
   },
   images: {
     dangerouslyAllowSVG: true,
