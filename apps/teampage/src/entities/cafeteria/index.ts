@@ -6,7 +6,7 @@
  *
  * 여기 없는 것:
  * - 훅. queryOptions 만 내보내고 useQuery 는 사용처가 부른다.
- * - 쓰기(mutation). features/cafeteria-editor 에 있다.
+ * - 쓰기(mutation)와 수정 폼. features/cafeteria-editor 에 있다.
  * - 화면(widgets/cafeteria-editor).
  * - 개발용 mock 저장소(api/mock.ts). api/client.ts의 cafeteriaApi가 개발 서버에서만 연다.
  */
