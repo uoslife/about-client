@@ -1,5 +1,4 @@
 import type { Cafeteria, MenuItem } from '../model';
-import { getDefaultPrice } from './corners';
 
 /** Kotlin String.compareTo와 같은 UTF-16 코드 단위 비교. localeCompare는 한글 순서가 달라질 수 있다. */
 export const compareCodeUnits = (a: string, b: string) => (a < b ? -1 : a > b ? 1 : 0);
@@ -22,7 +21,7 @@ export const previewSaved = (next: Cafeteria): Cafeteria => {
           role: item.role ?? '',
           name: item.name ?? '',
           side: item.side ?? [],
-          price: item.price ?? (item.role === 'MAIN' ? getDefaultPrice(next.name, menu.corner) : null),
+          price: item.price ?? null,
           isPopular: false,
         }))
         .sort((a, b) => roleRank(a) - roleRank(b) || compareCodeUnits(a.name, b.name)),

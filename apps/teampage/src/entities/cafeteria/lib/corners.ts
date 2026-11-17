@@ -4,7 +4,7 @@ const DEFAULT_PRICES: Record<string, Record<string, number>> = {
   이룸라운지: { '': 7000 },
 };
 
-/** 서버가 MAIN 빈 가격에 넣을 값. 없으면 null(앱에 "6,000원"으로 잘못 보인다). */
+/** apis가 MAIN 빈 가격에 채우는 기본가. 편집기는 가격을 비워 보내지 않고, 가격 칸 placeholder로만 보여 준다. 없으면 null. */
 export const getDefaultPrice = (cafeteriaName: string, corner: string | null | undefined): number | null =>
   DEFAULT_PRICES[cafeteriaName]?.[corner ?? 'DEFAULT'] ?? DEFAULT_PRICES[cafeteriaName]?.[''] ?? null;
 
