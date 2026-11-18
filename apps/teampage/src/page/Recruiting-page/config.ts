@@ -3,18 +3,18 @@
  */
 
 export const recruitingAssets = {
-  heroLogoBackground: '/img/recruit/logo.png',
+  heroLogoBackground: '/img/recruit/hero-7th.png',
   angleBracket: '/img/recruit/anglebracket.svg',
 } as const;
 
 export const recruitingBrand = {
   name: 'UOSLIFE',
   /** 예: 7기 모집 */
-  cohortLabel: '6기 모집',
+  cohortLabel: '7기 모집',
 } as const;
 
 export const recruitingCallToAction = {
-  applyFormUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeBv_mC-gD4WdQAbYZ6RPHDmuiHLey44AaU5XBeDgxLkSqcKQ/viewform',
+  applyFormUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSeYQLw0Qs2fzp59UsB1vtODDOw1k-uEBA2yM9iHDsQrs1dVaw/viewform?usp=dialog',
   notifyFormUrl: 'http://forms.gle/JntWWCzKjzRwZbaJ7',
   notifyLabel: '다음 모집 알림 받기',
 } as const;
@@ -30,21 +30,17 @@ export function recruitingApplyButtonLabel(): string {
  */
 export const recruitingDates = {
   documentSubmission: {
-    open: '5월 4일(월)',
-    due: '5월 10일(일)',
-    dueTimeNote: '오후 11시 59분 까지',
+    open: '11월 9일(월)',
+    due: '11월 19일(목)',
+    dueTimeNote: '오후 11시 59분까지',
   },
-  firstRoundResult: '5월 17일(일)',
+  firstRoundResult: '11월 20일(금)',
   secondInterview: {
-    start: '5월 27일(수)',
-    end: '5월 30일(토)',
+    start: '11월 23일(월)',
+    end: '11월 29일(일)',
   },
-  finalResult: '5월 31일(일)',
-  onboarding: '6월 27일(토)',
-  workshop: {
-    start: '7월 11일(토)',
-    end: '7월 12일(일)',
-  },
+  finalResult: '12월 1일(화)',
+  onboardingWorkshop: '일정 및 장소는 추후 안내 예정',
 } as const;
 
 /**
@@ -81,13 +77,22 @@ function recruitingInstantKST(
  * `recruitingDates.documentSubmission`과 `recruitingApplicationSeasonYear`만 수정하면 버튼 분기가 따라갑니다.
  */
 export function isRecruitingApplicationActive(now: Date = new Date()): boolean {
+  return recruitingApplicationPhase(now) === 'active';
+}
+
+export type RecruitingApplicationPhase = 'upcoming' | 'active' | 'ended';
+
+/** 서류 접수 기준 모집 단계 — 시작 전(upcoming) / 접수 중(active) / 마감 후(ended), KST 기준 */
+export function recruitingApplicationPhase(now: Date = new Date()): RecruitingApplicationPhase {
   const year = recruitingApplicationSeasonYear;
   const { month: openM, day: openD } = parseMonthDayFromRecruitingLabel(recruitingDates.documentSubmission.open);
   const { month: dueM, day: dueD } = parseMonthDayFromRecruitingLabel(recruitingDates.documentSubmission.due);
   const start = recruitingInstantKST(year, openM, openD, 0, 0, 0, 0);
   const end = recruitingInstantKST(year, dueM, dueD, 23, 59, 59, 999);
   const t = now.getTime();
-  return t >= start.getTime() && t <= end.getTime();
+  if (t < start.getTime()) return 'upcoming';
+  if (t <= end.getTime()) return 'active';
+  return 'ended';
 }
 
 /** `11월 24일(월)` → `11월 24일` — 히어로 기간 문구 등에 사용 */
@@ -95,33 +100,28 @@ export function recruitingDateWithoutWeekday(dayLabel: string): string {
   return dayLabel.replace(/\s*\([^)]*\)\s*$/, '').trim();
 }
 
-/** `7월 11일(토)` → `7/11` — FAQ 등 짧은 표기 */
-export function recruitingMonthDaySlashFromLabel(dayLabel: string): string {
-  const plain = recruitingDateWithoutWeekday(dayLabel);
-  const { month, day } = parseMonthDayFromRecruitingLabel(plain);
-  return `${month}/${day}`;
-}
-
-/** KST 기준 월로 방학 프로젝트 안내를 여름/겨울 중 하나로 (`recruitingDates.workshop` 월로 보조 판별) */
+/** KST 기준 월로 다가올 방학을 여름/겨울 중 하나로 — 3~8월이면 여름, 나머지는 겨울 */
 export function recruitingVacationProjectSeasonWord(now: Date = new Date()): '여름' | '겨울' {
   const month = Number(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul', month: 'numeric' }).format(now));
-  if (month >= 7 && month <= 8) return '여름';
-  if (month === 12 || month <= 2) return '겨울';
-  const { month: wsMonth } = parseMonthDayFromRecruitingLabel(
-    recruitingDateWithoutWeekday(recruitingDates.workshop.start),
-  );
-  if (wsMonth >= 6 && wsMonth <= 9) return '여름';
-  return '겨울';
+  return month >= 3 && month <= 8 ? '여름' : '겨울';
 }
 
 /** `5월 10일(일)` → `5/10(일)` — 모집 마감 안내 등 */
 export function recruitingDocumentDueSlashWithWeekday(): string {
-  const due = recruitingDates.documentSubmission.due;
-  const weekMatch = due.match(/\(([^)]+)\)\s*$/);
+  return recruitingSlashWithWeekday(recruitingDates.documentSubmission.due);
+}
+
+/** `11월 9일(월)` → `11/9(월)` */
+function recruitingSlashWithWeekday(dayLabel: string): string {
+  const weekMatch = dayLabel.match(/\(([^)]+)\)\s*$/);
   const weekday = weekMatch ? weekMatch[1] : '';
-  const plain = recruitingDateWithoutWeekday(due);
-  const { month, day } = parseMonthDayFromRecruitingLabel(plain);
+  const { month, day } = parseMonthDayFromRecruitingLabel(recruitingDateWithoutWeekday(dayLabel));
   return `${month}/${day}(${weekday})`;
+}
+
+/** 모집 시작 전 지원 버튼 라벨 — 예: `11/9(월) 지원 시작` */
+export function recruitingUpcomingButtonLabel(): string {
+  return `${recruitingSlashWithWeekday(recruitingDates.documentSubmission.open)} 지원 시작`;
 }
 
 /** 히어로(Section01) — 서류 접수 일정과 동일 소스 */
@@ -133,7 +133,7 @@ export const recruitingPeriod = {
 /** Section04 상단 헤드라인 */
 export const recruitingHeadline = {
   lines: ['IT 기술을 통해', '서울시립대학교 구성원을', '연결하는 프로덕트를'] as const,
-  lastLinePrefix: '만들어갈 인재를 ',
+  lastLinePrefix: '만들어갈 팀원을 ',
   lastLineSuffix: '모집합니다.',
 } as const;
 
@@ -145,7 +145,7 @@ export const recruitingTargetAudience = {
 } as const;
 
 export const recruitingSectionTitles = {
-  fields: { line1: '모집 분야 및', line2: '우대 사항' },
+  fields: '모집 분야',
   schedule: '모집 일정',
 } as const;
 
@@ -156,14 +156,14 @@ export const recruitingSection02 = {
   teamHeading: 'Team UOSLIFE',
   introParagraphs: [
     'UOSLIFE(시대생)는 서울시립대학교 학우들에게 편리하고 즐거운 학교생활을 위한 서비스를 만들어가는 IT 소프트웨어 동아리입니다. 시대생 앱을 운영하며 시간표, 공지사항, 시대팅 등 대학 생활을 위한 다양한 서비스를 제공하고 있습니다.',
-    '2026년에는 대학 생활의 본질적 가치를 확장하는 새로운 기능과 경험을 선보이며, 학우들의 일상 속에 더욱 깊이 스며드는 플랫폼으로 성장할 것입니다. 아울러 구성원들이 자율적으로 협업하고 함께 배우는 문화를 바탕으로, 캠퍼스 내에서 지속 가능한 IT 생태계를 만들어 나가고자 합니다.',
+    '2027년에는 대학 생활의 본질적 가치를 확장하는 새로운 기능과 경험을 선보이며, 학우들의 일상 속에 더욱 깊이 스며드는 플랫폼으로 성장할 것입니다. 아울러 구성원들이 자율적으로 협업하고 함께 배우는 문화를 바탕으로, 캠퍼스 내에서 지속 가능한 IT 생태계를 만들어 나가고자 합니다.',
   ],
   synergizeHeadingLine1: 'Synergize',
   synergizeHeadingLine2: 'with Alumni',
   synergizeParagraphs: [
     '샌프란시스코 실리콘밸리의 성공 배경에는, Pay it forward라 불리는 IT 업계 선후배 사이의 멘토 문화가 핵심으로 자리 잡고 있습니다.',
     '그리고 UOSLIFE는 업계 다방면에서 활동하는 선배들과 직접 소통하며 성장할 수 있는 곳입니다.',
-    "'UOSLIFE'는 5년 전 시작한 시대생 앱을 시작으로 선후배가 함께 어우러져 다양한 IT 서비스를 운영하고 있습니다.",
+    "'UOSLIFE'는 6년 전 시작한 시대생 앱을 시작으로 선후배가 함께 어우러져 다양한 IT 서비스를 운영하고 있습니다.",
   ],
   mentors: [
     { company: '네이버', name: '정인우', role: 'Back-end Engineer', src: '/img/recruit/mentor1.svg' },
@@ -183,67 +183,92 @@ export const recruitingSection03 = {
   description:
     '네이버, 카카오페이, 라인, 리멤버 등 국내 최고의 IT 회사부터 SKT, 현대자동차, NH투자증권, 한국은행 등 유수의 대기업/금융권까지',
   descriptionContinued: '다양한 업계의 구성원이 지속적인 시너지를 주고 받을 수 있는 관계를 만들어갑니다.',
-  logoSvgCount: 11,
+  logoSvgCount: 14,
+  /** loopTiles는 그 줄의 로고 개수와 같아야 이음새 없이 반복됨 (모바일은 앞 6개 / 나머지로 나뉨) */
   carousel: {
-    desktop: { tilePx: 200, gapPx: 20, loopTiles: 9, durationSec: 20 },
-    mobileRow1: { tilePx: 120, gapPx: 12, loopTiles: 5, durationSec: 15 },
-    mobileRow2: { tilePx: 120, gapPx: 12, loopTiles: 4, durationSec: 15 },
+    desktop: { tilePx: 200, gapPx: 20, loopTiles: 14, durationSec: 31 },
+    mobileRow1: { tilePx: 120, gapPx: 12, loopTiles: 6, durationSec: 18 },
+    mobileRow2: { tilePx: 120, gapPx: 12, loopTiles: 8, durationSec: 24 },
   },
 } as const;
 
-/** Section04 모집 분야 상세 블록 라벨 */
+/** Section04 모집 분야 상세 — 세 블록의 이모지·제목 */
 export const recruitingFieldDetailLabels = {
-  responsibilitiesHeading: '하는 일',
-  partnerHeading: '이런 사람과 함께 하고 싶어요',
+  do: { emoji: '💻', heading: '이런 일을 해요' },
+  with: { emoji: '🙌', heading: '이런 분과 함께하고 싶어요' },
+  recommend: { emoji: '💡', heading: '이런 분에게 추천해요' },
 } as const;
 
-export type RecruitingFieldWithItem = string | { readonly kind: 'bullet'; readonly text: string };
+export type RecruitingFieldDetailBlock = { readonly tag: string; readonly items: readonly string[] };
 
-export type RecruitingFieldSubRole = {
-  readonly subrole: string;
-  readonly do: readonly string[];
-  readonly with: readonly RecruitingFieldWithItem[];
+export type RecruitingFieldDetail = {
+  readonly do: RecruitingFieldDetailBlock;
+  readonly with: RecruitingFieldDetailBlock;
+  readonly recommend: RecruitingFieldDetailBlock;
 };
 
+export type RecruitingFieldSubRole = RecruitingFieldDetail & { readonly subrole: string };
+
 export type RecruitingFieldRole =
-  | {
-      readonly role: string;
-      readonly type: 'one';
-      readonly do: readonly string[];
-      readonly with: readonly RecruitingFieldWithItem[];
-    }
-  | {
-      readonly role: string;
-      readonly type: 'two';
-      readonly content: readonly RecruitingFieldSubRole[];
-    };
+  | (RecruitingFieldDetail & { readonly role: string; readonly type: 'one' })
+  | { readonly role: string; readonly type: 'two'; readonly content: readonly RecruitingFieldSubRole[] };
 
 export const recruitingRoles: RecruitingFieldRole[] = [
   {
     role: '기획자',
     type: 'one',
-    do: [
-      '기획 챕터는 프로덕트 출시 관련 계획, 일정 수립 등을 조직 차원에서 고민하고 결정해요.',
-      '우리가 개선해야 할 문제점은 무엇인지, 사용자에게 필요한 것이 무엇인지 고민하고 그에 맞는 해결 방법을 제시해요.',
-    ],
-    with: [
-      '사용자 관점에서 접근하고, 문제를 해결하기 위해 주도적으로 실행한 경험이 있으신 분',
-      '데이터를 수집하고 다각도에서 유저를 분석하는 것에 관심이 있으신 분',
-    ],
+    do: {
+      tag: 'End-to-End 기획',
+      items: [
+        'SQL·Mixpanel 데이터와 VOC로 앱의 개선점을 찾고, 해결할 기능을 기획해요.',
+        '새로운 사업 기회를 찾아 서비스와 비즈니스 모델로 발전시켜요.',
+        'AI로 아이디어를 빠르게 구현하며, 기획부터 출시 후 운영까지 전 과정을 관리해요.',
+      ],
+    },
+    with: {
+      tag: '논리와 실행력',
+      items: [
+        '논리적으로 문제를 발견하고, 원인을 정의해 해결할 수 있는 사람',
+        '근거를 바탕으로 의견을 전하고, 더 나은 결과를 위해 소통하는 사람',
+        'UOSLIFE 활동에 충분한 시간을 쏟고, 맡은 일을 끝까지 완수하는 사람',
+      ],
+    },
+    recommend: {
+      tag: '도전과 성장',
+      items: [
+        '시대생 프로덕트에 관심이 있는 사람',
+        'AI를 적극 활용해 정량적 성과가 담긴 경험을 만들고 싶은 사람',
+        '대학 생활에서 기억에 남을 도전을 하며 문제해결력과 소통 역량을 키우고 싶은 사람',
+      ],
+    },
   },
   {
     role: '디자이너',
     type: 'one',
-    do: [
-      '디자인 챕터는 사용자가 우리 서비스를 재미있고 편하게 이용할 수 있도록 웹/앱을 설계하고, 직관적인 UI 경험을 만들어갑니다.',
-      '기획팀과 협업해 사용자의 불편을 직접 확인하고, 이를 해결할 수 있는 UI 아이디어를 고민하고 빠르게 시도합니다.',
-    ],
-    with: [
-      'Figma 또는 Adobe Illustrator 사용이 가능하신 분',
-      '‘내 취향’이 아닌 사용자가 원하는 것을 탐구하고 실험하시는 분',
-      '왜 이렇게 디자인했는지에 대한 논리와 근거를 바탕으로 작업하는 분',
-      '다양한 웹/앱 사례를 살펴보고 우리 서비스에 가장 적합한 UI를 찾아 적용하시는 분',
-    ],
+    do: {
+      tag: 'UI/UX 경험 설계',
+      items: [
+        '사용자의 니즈와 행동을 분석해 편리하고 직관적인 서비스 경험을 설계해요.',
+        '디자인 시스템과 UI 컴포넌트를 체계화해 일관된 브랜드 경험을 만들어요.',
+        '기획·개발 챕터와 협업해 디자인이 실제 서비스로 완성도 있게 구현되도록 해요.',
+      ],
+    },
+    with: {
+      tag: '사용자 중심',
+      items: [
+        'UI/UX에 관심이 있고, 사용자 중심의 디자인을 고민하는 사람',
+        '새로운 트렌드에 관심이 많고, 다양한 시도를 즐기며 함께 배우고 성장하고 싶은 사람',
+        '기획·마케팅·개발팀과 원활하게 소통하며 아이디어를 구체화할 수 있는 사람',
+      ],
+    },
+    recommend: {
+      tag: '실서비스 디자인',
+      items: [
+        '내 아이디어를 실제 서비스에 반영해 보고 싶은 사람',
+        '사용자 테스트로 문제를 발견하고, UX 개선까지 직접 이끌어 보고 싶은 사람',
+        '실서비스의 디자인 시스템을 처음부터 함께 구축해 보고 싶은 사람',
+      ],
+    },
   },
   {
     role: '개발자',
@@ -251,47 +276,87 @@ export const recruitingRoles: RecruitingFieldRole[] = [
     content: [
       {
         subrole: 'Front-End',
-        do: [
-          '사용자에게 가장 먼저 보이는 화면을 만들고, 더 나은 경험을 설계하는 일을 합니다.',
-          'React, TypeScript, Next.js 등 모던 자바스크립트 프레임워크·라이브러리을 통해 서비스를 구현합니다',
-          '디자인과 사용자 경험(UX)을 고려한 개발을 통해 ‘보이는 기술’을 만드는 팀입니다.',
-        ],
-        with: [
-          '새로운 기술을 배우는 걸 즐기고, 스스로 성장에 열정이 있는 분',
-          '코드뿐 아니라 사용자 경험(UX)에도 관심이 많은 분',
-          '완성도 높은 결과물을 위해 세세한 디테일을 놓치지 않는 분',
-          '아래 기술 스택에 익숙하신 분',
-          { kind: 'bullet', text: 'React (Vite) / Javascript(Typescript)' },
-        ],
+        do: {
+          tag: '개발부터 운영까지',
+          items: [
+            'React와 TypeScript로 시대생 앱의 새 기능을 개발하고 기존 기능을 개선해요.',
+            '기획·디자인·백엔드 챕터와 함께 구현부터 코드 리뷰, QA, 배포·운영까지 진행해요.',
+            '유지보수하기 좋은 코드베이스를 만들고, AI와 자동화 도구로 반복 업무를 줄여요.',
+          ],
+        },
+        with: {
+          tag: '책임감 있는 개발',
+          items: [
+            '동료를 존중하고, 테스트·QA·배포까지 맡은 역할을 책임감 있게 완수하는 사람',
+            '기존 코드의 맥락을 이해하고, 다음 구성원을 위해 좋은 코드를 남기려는 사람',
+            'AI를 활용하되, 생성된 코드의 동작 원리를 이해하고 설명할 수 있는 사람',
+          ],
+        },
+        recommend: {
+          tag: '실전 성장',
+          items: [
+            '일회성 프로젝트를 넘어, 2.1만 다운로드 실서비스를 개발 및 운영해 보고 싶은 사람',
+            '성능 최적화, UX 개선, 서비스 안정성까지 깊이 고민해 보고 싶은 사람',
+            '코드 리뷰로 함께 성장하고, 정량 성과가 담긴 포트폴리오를 만들고 싶은 사람',
+          ],
+        },
       },
       {
         subrole: 'Back-End',
-        do: [
-          '신규 기능을 설계 → 개발 → 배포까지 end-to-end로 경험해요.',
-          '현업 BE 선배들과 코드 리뷰/소통으로 함께 성장해요.',
-          '실제 운영 사례를 포트폴리오로 남길 수 있어요.',
-        ],
-        with: [
-          '비 개발자와도 커뮤니케이션이 원활하신 분',
-          '디자인 패턴, 아키텍처에 대해 고민해 본 경험이 있으면 좋아요.',
-          '아래 기술 스택에 익숙하신 분',
-          { kind: 'bullet', text: 'Kotlin(or Java) / Spring Boot / RDBMS(예: PostgreSQL, MySQL)' },
-        ],
+        do: {
+          tag: '지속 가능한 서버',
+          items: [
+            '신입부터 시대생 서버의 신규 기능 개발에 참여해요.',
+            '기능 구현에 그치지 않고, 유지보수하기 좋은 구조와 방법을 함께 논의해요.',
+            '코드리뷰·문서화 규칙을 바탕으로 프론트·기획·인프라와 협업해요.',
+          ],
+        },
+        with: {
+          tag: '기본기와 몰입',
+          items: [
+            '서버 개발 CS 지식을 갖추고, 자신의 프로젝트를 깊이 있게 설명할 수 있는 사람',
+            'AI를 적극적으로 활용하는 사람 (인프라·AI 경험 우대)',
+            '최소 1년, 주 20시간 이상, 방학 중에도 활동에 몰입할 수 있는 사람',
+          ],
+        },
+        recommend: {
+          tag: '단계적 성장',
+          items: [
+            '실유저가 쓰는 서비스의 서버를 직접 개발하고 운영해 보고 싶은 사람',
+            '작은 수정부터 기능 개발까지, 리드·알럼나이와 함께 성장하고 싶은 사람',
+            '코드리뷰로 유지보수하기 좋은 코드를 배우고 싶은 사람',
+          ],
+        },
       },
     ],
   },
   {
     role: '마케터',
     type: 'one',
-    do: [
-      '마케팅 챕터는 서비스의 가치를 알리고, 서비스의 Growth를 실현하는 역할을 맡고 있어요.',
-      'SNS, 팀 페이지의 콘텐츠 기획 및 운영을 통해 서비스 인지도와 브랜드 이미지를 강화해요.',
-      'CRM 활동(App Push 등)을 통해 유저의 재방문과 유지율을 높여요.',
-    ],
-    with: [
-      '온∙오프라인 마케팅 방안에 대한 다양한 아이디어와 실행 및 제작 능력이 있으신 분',
-      '유저 여정과 지표 분석에 관심이 많거나, 서비스 성장을 고민하고 싶은 분',
-    ],
+    do: {
+      tag: '데이터 기반 그로스',
+      items: [
+        'Mixpanel·Redash·BigQuery로 유입·이탈 지점을 찾고 그로스 전략을 세워요.',
+        '인스타그램, 앱 내 배너·팝업·푸시, 오프라인까지 캠페인을 직접 기획·실행해요.',
+        '세그먼트 타겟팅과 딥링크로 캠페인 전환율을 측정하고, 다음 실행을 개선해요.',
+      ],
+    },
+    with: {
+      tag: '끝까지 실행하는 열정',
+      items: [
+        '규모와 상관없이 직접 기획하고 실행해 본 마케팅 경험이 있는 사람',
+        '감이 아닌 데이터와 근거로 판단하고, 결과의 이유를 끝까지 파고드는 사람',
+        'UOSLIFE 활동에 우선순위를 두고, 최소 1년간 열정을 쏟을 수 있는 사람',
+      ],
+    },
+    recommend: {
+      tag: '정량 성과',
+      items: [
+        '기획서에서 멈추지 않고, 내 아이디어를 실제 캠페인으로 실행해 보고 싶은 사람',
+        '내 캠페인의 유저 반응을 확인하며, 정량 성과를 포트폴리오로 남기고 싶은 사람',
+        '실제 데이터로 콘텐츠·CRM·데이터를 아우르는 그로스 마케팅을 경험하고픈 사람',
+      ],
+    },
   },
 ];
 
@@ -306,10 +371,9 @@ export const recruitingFaqSectionTitle = '자주 묻는 질문';
 
 export type RecruitingFaqItem = { question: string; answer: readonly string[] };
 
-/** 표시 시점(KST 월·워크샵 일정) 기준으로 방학 프로젝트 문구 등 반영 */
+/** 표시 시점(KST 월) 기준으로 방학 프로젝트 문구 반영 */
 export function buildRecruitingFaqItems(now: Date = new Date()): ReadonlyArray<RecruitingFaqItem> {
   const vacationSeason = recruitingVacationProjectSeasonWord(now);
-  const workshopStartSlash = recruitingMonthDaySlashFromLabel(recruitingDates.workshop.start);
 
   return [
     {
@@ -323,8 +387,8 @@ export function buildRecruitingFaqItems(now: Date = new Date()): ReadonlyArray<R
     {
       question: 'Q. 정기 모임은 언제, 어디서 하나요?',
       answer: [
-        'UOSLIFE는 격주 목요일 저녁 7시 30분에 정기 팀 회의를 진행하고 있습니다. 팀 회의는 각 TF의 활동 공유&친목 도모를 위해 진행되며 가벼운 뒤풀이가 있을 수 있습니다.',
-        `매 방학 시즌에는 신규 기능 개발 프로젝트를 진행하며, 이 경우 격주 토요일에 전일(10AM.-10PM.)으로 모여 코어 타임을 갖고 있습니다. 이번 ${vacationSeason}방학 프로젝트는 ${workshopStartSlash} 부터 진행될 예정입니다.`,
+        'UOSLIFE는 격주 목요일 저녁 8시에 정기 팀 회의를 진행하고 있습니다. 팀 회의는 각 TF의 활동 공유&친목 도모를 위해 진행되며 가벼운 뒤풀이가 있을 수 있습니다.',
+        `매 방학 시즌에는 신규 기능 개발 프로젝트를 진행하며, 이 경우 격주 토요일에 전일(10AM.-10PM.)으로 모여 코어 타임을 갖고 있습니다. 이번 ${vacationSeason}방학 프로젝트 일정은 추후 안내될 예정입니다.`,
         '*모든 모임은 오프라인 대면으로 진행되고 있으며 프로젝트 상황에 따라 달라질 수 있습니다.',
       ],
     },
@@ -332,8 +396,8 @@ export function buildRecruitingFaqItems(now: Date = new Date()): ReadonlyArray<R
       question: 'Q. 졸업생도 지원이 가능한가요?',
       answer: [
         '1년간 꾸준히 활동할 수 있고 배우고자 하는 열의가 충분하다면, 누구든 지원이 가능합니다. 현재도 재학생, 휴학생, 졸업생 중 활발히 활동하시는 분들이 계십니다.',
-        '하지만, 매월 둘째 주, 넷째 주에 진행하는 정기 회의 (목요일 7시 30분)와 방학 기간 동안의 *프로젝트 코어 타임은 반드시 참여해야 한다는 점은 꼭 숙지해 주세요!',
-        '*프로젝트 코어 타임: 7월 11일부터 격주 토요일 전일',
+        '하지만, 매월 둘째 주, 넷째 주에 진행하는 정기 회의 (목요일 8시)와 방학 기간 동안의 *프로젝트 코어 타임은 반드시 참여해야 한다는 점은 꼭 숙지해 주세요!',
+        '*프로젝트 코어 타임: 방학 기간 중 격주 토요일 전일',
       ],
     },
     {
@@ -344,7 +408,7 @@ export function buildRecruitingFaqItems(now: Date = new Date()): ReadonlyArray<R
       ],
     },
     {
-      question: 'Q. UOSLIFE Alummi (졸업생 및 동문)도 함께 활동하나요?',
+      question: 'Q. UOSLIFE Alumni (졸업생 및 동문)도 함께 활동하나요?',
       answer: [
         '네, 함께 활동합니다. 학기에 따라 다르지만 UOSLIFE 동아리를 졸업한 Alumni들도 지속적으로 활동하고 있습니다.',
         '방학 프로젝트 및 현직자 특강 등을 통해 재학생들의 성장을 지원하고, 내부 네트워킹 및 현직자 모임을 통해 지속적으로 교류하고 있습니다.',
@@ -360,36 +424,42 @@ export const recruitingSection06Inactive = {
   detail: '다음 모집 알림을 받으면 빠르게 지원할 수 있어요!',
 } as const;
 
-/** Section06 — 모집 진행 중 타이틀(보조 문단은 마감 일정에서 생성) */
+/** Section06 — 모집 진행 중 타이틀·소개 문구 (마감 안내 줄은 마감 일정에서 생성) */
 export const recruitingSection06Active = {
-  headlineLine1: 'UOSLIFE에서',
-  headlineLine2: '여러분을 기다립니다',
+  headlineLine1: '시대생, 모든 시대인을',
+  headlineLine2: '— 연결하다',
+  introLines: ['아이디어를 실행으로, 실행을 성과로.', '기획·개발·디자인·마케팅에서, 열정적인 당신을 기다리고 있습니다.'],
 } as const;
 
 /** 모집 중 Section06 보조 문단 — `documentSubmission.due` · `dueTimeNote` 단일 소스 */
 export function buildRecruitingSection06DeadlineDetail(): string {
   const md = recruitingDocumentDueSlashWithWeekday();
   const timeCore = recruitingDates.documentSubmission.dueTimeNote.replace(/\s*까지\s*$/, '').trim();
-  return `${md} ${timeCore}까지 하단의 링크를 통해 지원서를 제출해 주세요.`;
+  return `${md} ${timeCore}까지 하단의 링크를 통해 지원해 주세요.`;
 }
 
-/** 모집 진행 여부에 따라 Section06 타이틀·보조 문단 결정 */
+/** 모집 단계에 따라 Section06 타이틀·보조 문단 결정 (시작 전에도 모집 소개 문구를 보여줌) */
 export function resolveRecruitingSection06Texts(now?: Date): {
   headlineLine1: string;
   headlineLine2: string;
-  detail: string;
+  detailLines: readonly string[];
 } {
-  if (isRecruitingApplicationActive(now)) {
+  const phase = recruitingApplicationPhase(now);
+  if (phase !== 'ended') {
+    const lastLine =
+      phase === 'active'
+        ? buildRecruitingSection06DeadlineDetail()
+        : `${recruitingSlashWithWeekday(recruitingDates.documentSubmission.open)}부터 지원할 수 있어요.`;
     return {
       headlineLine1: recruitingSection06Active.headlineLine1,
       headlineLine2: recruitingSection06Active.headlineLine2,
-      detail: buildRecruitingSection06DeadlineDetail(),
+      detailLines: [...recruitingSection06Active.introLines, lastLine],
     };
   }
   return {
     headlineLine1: recruitingSection06Inactive.headlineLine1,
     headlineLine2: recruitingSection06Inactive.headlineLine2,
-    detail: recruitingSection06Inactive.detail,
+    detailLines: [recruitingSection06Inactive.detail],
   };
 }
 
@@ -456,14 +526,8 @@ export const recruitingSchedule: RecruitingScheduleEntry[] = [
   },
   {
     kind: 'singleDay',
-    title: '합격자 온보딩',
-    date: recruitingDates.onboarding,
-  },
-  {
-    kind: 'dateRange',
-    title: '합격자 워크샵',
-    startDate: recruitingDates.workshop.start,
-    endDate: recruitingDates.workshop.end,
+    title: '합격자 온보딩 워크샵',
+    date: recruitingDates.onboardingWorkshop,
     footnote: '*1박 2일 참여 필수',
   },
 ];

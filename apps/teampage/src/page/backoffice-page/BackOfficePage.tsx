@@ -23,13 +23,15 @@ import { useConfirmModal } from '@/shared/component/confirm-modal';
 import { useAuth } from '@/entities/auth/useAuth';
 import { AbTestSection } from '@/widgets/ab-test';
 import { BannerSection } from '@/widgets/banner';
+import { CafeteriaEditorSection, type LeaveState } from '@/widgets/cafeteria-editor';
 
-const TABS = ['푸시 알림', 'A/B 테스트', '배너 관리', '상단 공지'] as const;
+const TABS = ['푸시 알림', 'A/B 테스트', '배너 관리', '학식 편집', '상단 공지'] as const;
 const PUSH_TAB_INDEX = 0;
 const AB_TEST_TAB_INDEX = 1;
 const BANNER_TAB_INDEX = 2;
+const CAFETERIA_TAB_INDEX = 3;
 // '상단 공지'는 아직 더미 탭이라 비활성화한다.
-const ENABLED_TABS = new Set<number>([PUSH_TAB_INDEX, AB_TEST_TAB_INDEX, BANNER_TAB_INDEX]);
+const ENABLED_TABS = new Set<number>([PUSH_TAB_INDEX, AB_TEST_TAB_INDEX, BANNER_TAB_INDEX, CAFETERIA_TAB_INDEX]);
 
 type TargetType = 'TARGET' | 'EMAILS' | 'CSV_FILE';
 type Target = ByTargetAllOfTarget;
@@ -80,10 +82,24 @@ export default function BackofficePage() {
   const queryClient = useQueryClient();
   const { session } = useAuth();
 
+  /** 학식 편집 탭을 떠나도 되는지. 탭을 옮기면 편집 화면이 unmount되어 변경과 반영 결과 처리가 사라진다. */
+  const cafeteriaLeaveRef = useRef<LeaveState>('clean');
+
   const handleTabClick = (index: number) => {
-    if (ENABLED_TABS.has(index)) {
-      setSelectedTab(index);
+    if (!ENABLED_TABS.has(index) || index === selectedTab) return;
+    if (selectedTab === CAFETERIA_TAB_INDEX && cafeteriaLeaveRef.current === 'saving') return;
+    if (selectedTab === CAFETERIA_TAB_INDEX && cafeteriaLeaveRef.current === 'dirty') {
+      openConfirmModal({
+        title: '반영하지 않고 이동하시겠습니까?',
+        description: '변경한 내용이 사라집니다.',
+        confirmText: '이동',
+        cancelText: '계속 편집',
+        variant: 'danger',
+        onConfirm: () => setSelectedTab(index),
+      });
+      return;
     }
+    setSelectedTab(index);
   };
 
   const getScheduledAtIso = (data: PushNotificationFormData) => {
@@ -243,13 +259,14 @@ export default function BackofficePage() {
   return (
     <div className="flex flex-col gap-16 mb-8 max-md:mb-40 w-full">
       {/* 탭 네비게이션 */}
-      <div className="flex items-center gap-10 border-b border-gray-200 pb-4">
+      {/* 탭이 다섯 개라 좁은 화면에서는 가로로 스크롤한다. */}
+      <div className="flex items-center gap-10 overflow-x-auto border-b border-gray-200 pb-4">
         {TABS.map((tab, idx) => (
           <TabButton
             key={idx}
             clicked={selectedTab === idx}
             onClick={() => handleTabClick(idx)}
-            className={!ENABLED_TABS.has(idx) ? 'cursor-not-allowed opacity-50 text-[#8E8E93]' : 'text-black'}
+            className={`shrink-0 ${!ENABLED_TABS.has(idx) ? 'cursor-not-allowed opacity-50 text-[#8E8E93]' : 'text-black'}`}
           >
             {tab}
           </TabButton>
@@ -260,6 +277,9 @@ export default function BackofficePage() {
       <div className="w-full">
         {selectedTab === AB_TEST_TAB_INDEX && <AbTestSection />}
         {selectedTab === BANNER_TAB_INDEX && <BannerSection />}
+        {selectedTab === CAFETERIA_TAB_INDEX && (
+          <CafeteriaEditorSection onLeaveStateChange={(state) => (cafeteriaLeaveRef.current = state)} />
+        )}
         {selectedTab === PUSH_TAB_INDEX && (
           <div className="flex flex-col gap-12">
             {/* 메인 콘텐츠 영역: 왼쪽 예시 이미지 + 오른쪽 폼 */}

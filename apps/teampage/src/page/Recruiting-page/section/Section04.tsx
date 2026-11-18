@@ -51,7 +51,7 @@ function ScheduleRow({ entry }: { entry: RecruitingScheduleEntry }) {
       <div className="flex h-[5.125rem] items-start gap-[5.875rem] max-md:flex-col max-md:gap-4">
         <h5 className={titleClass}>{entry.title}</h5>
         {entry.footnote ? (
-          <div className="flex flex-col items-start w-[7.75rem] pt-0.5 gap-4 max-md:w-[4.6875rem] max-md:gap-3">
+          <div className="flex flex-col items-start pt-0.5 gap-4 max-md:gap-3">
             <p className={dateClass}>{entry.date}</p>
             <p className={`${footnoteClass} max-md:text-xs max-md:leading-[150%]`}>{entry.footnote}</p>
           </div>
@@ -121,12 +121,11 @@ export function Section04() {
             </p>
           </div>
         </div>
-        <div className="flex items-start justify-between self-stretch max-md:flex-col max-md:gap-1 max-md:self-stretch">
+        <div className="flex items-start gap-20 self-stretch max-md:flex-col max-md:gap-1 max-md:self-stretch">
           <h4 className="text-[#222227] font-bold text-[2.5rem] leading-[140%] max-md:self-stretch max-md:text-xl max-md:leading-[160%]">
-            {recruitingSectionTitles.fields.line1}
-            <br className="hidden md:block" /> {recruitingSectionTitles.fields.line2}
+            {recruitingSectionTitles.fields}
           </h4>
-          <div className="flex flex-col items-start w-[52.9375rem] gap-5 max-md:gap-3 max-md:self-stretch max-md:w-full">
+          <div className="flex flex-col items-start flex-1 min-w-0 gap-5 max-md:gap-3 max-md:self-stretch max-md:w-full">
             <RecruitmentField />
           </div>
         </div>
