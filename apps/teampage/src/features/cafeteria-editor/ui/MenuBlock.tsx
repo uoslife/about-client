@@ -29,12 +29,21 @@ export function MenuBlock({ item, defaultPrice, errors, dispatch }: MenuBlockPro
           // 입력 중엔 자리를 지키고, 칸을 벗어나면 apis 저장 순서(이름순)로 자리를 옮긴다.
           onBlur={() => dispatch({ type: 'sortSection', itemKey: item.key })}
         />
-        <IconButton
-          icon="delete"
-          label={`${item.name || '새 메뉴'} 삭제`}
-          className="mt-[20px]"
-          onClick={() => dispatch({ type: 'removeItem', itemKey: item.key })}
-        />
+        <div className="mt-[20px] flex">
+          <IconButton
+            icon="keyboardArrowDown"
+            label={`${item.name || '새 메뉴'} 첫 사이드로`}
+            className="!w-[24px] disabled:opacity-30"
+            disabled={item.sides.length === 0}
+            onClick={() => dispatch({ type: 'swapNameWithFirstSide', itemKey: item.key })}
+          />
+          <IconButton
+            icon="delete"
+            label={`${item.name || '새 메뉴'} 삭제`}
+            className="!w-[24px]"
+            onClick={() => dispatch({ type: 'removeItem', itemKey: item.key })}
+          />
+        </div>
       </div>
       <SideList item={item} errors={errors} dispatch={dispatch} />
       <TextField
