@@ -185,6 +185,7 @@ export type FormAction =
   | { type: 'updateSide'; itemKey: string; lineKey: string; value: string }
   | { type: 'removeSide'; itemKey: string; lineKey: string }
   | { type: 'moveSide'; itemKey: string; lineKey: string; offset: -1 | 1 }
+  | { type: 'swapNameWithFirstSide'; itemKey: string }
   | { type: 'addExtra' }
   | { type: 'updateExtra'; lineKey: string; value: string }
   | { type: 'removeExtra'; lineKey: string };
@@ -288,6 +289,15 @@ export const formReducer = (form: FormValues, action: FormAction): FormValues =>
         ...item,
         sides: moveLine(item.sides, action.lineKey, action.offset),
       }));
+    case 'swapNameWithFirstSide': {
+      // 메뉴명 ↓ / 첫 사이드 ↑: 메뉴명과 첫 사이드를 맞바꾸고, 메뉴명이 바뀌었으니 섹션을 다시 이름순으로.
+      const swapped = mapItem(form, action.itemKey, (item) => {
+        const [first, ...rest] = item.sides;
+        if (!first) return item;
+        return { ...item, name: first.value, sides: [{ ...first, value: item.name }, ...rest] };
+      });
+      return formReducer(swapped, { type: 'sortSection', itemKey: action.itemKey });
+    }
     case 'addExtra':
       return { ...form, extra: [...form.extra, emptyLine()] };
     case 'updateExtra':
