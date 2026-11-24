@@ -68,3 +68,8 @@ export const NotionListResponseSchema = z.object({
   object: z.literal('list'),
   results: z.array(NotionPageSchema),
 });
+
+export const NotionListEnvelopeSchema = z.object({
+  object: z.literal('list'),
+  results: z.array(z.unknown()),
+});
