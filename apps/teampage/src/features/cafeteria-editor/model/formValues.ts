@@ -43,6 +43,15 @@ const emptyLine = (): Line => ({ key: newKey('l'), value: '', source: null });
 const updateLine = (lines: Line[], lineKey: string, value: string) =>
   lines.map((line) => (line.key === lineKey ? { ...line, value } : line));
 const removeLine = (lines: Line[], lineKey: string) => lines.filter((line) => line.key !== lineKey);
+/** 줄을 위(-1)·아래(+1)로 한 칸 옮긴다. 끝에서 더 못 가면 그대로. */
+export const moveLine = (lines: Line[], lineKey: string, offset: -1 | 1) => {
+  const from = lines.findIndex((line) => line.key === lineKey);
+  const to = from + offset;
+  if (from < 0 || to < 0 || to >= lines.length) return lines;
+  const next = [...lines];
+  [next[from], next[to]] = [next[to], next[from]];
+  return next;
+};
 
 const toLines = (values: string[] | null | undefined): Line[] =>
   (values ?? []).map((value) => ({ key: newKey('l'), value, source: value }));
@@ -175,6 +184,8 @@ export type FormAction =
   | { type: 'addSide'; itemKey: string }
   | { type: 'updateSide'; itemKey: string; lineKey: string; value: string }
   | { type: 'removeSide'; itemKey: string; lineKey: string }
+  | { type: 'moveSide'; itemKey: string; lineKey: string; offset: -1 | 1 }
+  | { type: 'swapNameWithFirstSide'; itemKey: string }
   | { type: 'addExtra' }
   | { type: 'updateExtra'; lineKey: string; value: string }
   | { type: 'removeExtra'; lineKey: string };
@@ -273,6 +284,20 @@ export const formReducer = (form: FormValues, action: FormAction): FormValues =>
         ...item,
         sides: removeLine(item.sides, action.lineKey),
       }));
+    case 'moveSide':
+      return mapItem(form, action.itemKey, (item) => ({
+        ...item,
+        sides: moveLine(item.sides, action.lineKey, action.offset),
+      }));
+    case 'swapNameWithFirstSide': {
+      // 메뉴명 ↓ / 첫 사이드 ↑: 메뉴명과 첫 사이드를 맞바꾸고, 메뉴명이 바뀌었으니 섹션을 다시 이름순으로.
+      const swapped = mapItem(form, action.itemKey, (item) => {
+        const [first, ...rest] = item.sides;
+        if (!first) return item;
+        return { ...item, name: first.value, sides: [{ ...first, value: item.name }, ...rest] };
+      });
+      return formReducer(swapped, { type: 'sortSection', itemKey: action.itemKey });
+    }
     case 'addExtra':
       return { ...form, extra: [...form.extra, emptyLine()] };
     case 'updateExtra':

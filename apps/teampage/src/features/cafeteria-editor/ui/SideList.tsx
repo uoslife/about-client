@@ -15,6 +15,9 @@ function SideRow({
   index: number;
 }) {
   const error = errors.get(line.key);
+  const name = line.value || '빈 사이드';
+  const move = (offset: -1 | 1) => dispatch({ type: 'moveSide', itemKey: item.key, lineKey: line.key, offset });
+  const first = index === 0;
   return (
     <div className="flex items-start gap-[4px]">
       <TextField
@@ -27,12 +30,27 @@ function SideRow({
           dispatch({ type: 'updateSide', itemKey: item.key, lineKey: line.key, value: event.target.value })
         }
       />
-      <IconButton
-        icon="close"
-        label={`${line.value || '빈 사이드'} 삭제`}
-        className="mt-[4px]"
-        onClick={() => dispatch({ type: 'removeSide', itemKey: item.key, lineKey: line.key })}
-      />
+      <div className="mt-[4px] flex">
+        <IconButton
+          icon="keyboardArrowUp"
+          label={first ? `${name} 메뉴명으로` : `${name} 위로`}
+          className="!w-[24px]"
+          onClick={() => (first ? dispatch({ type: 'swapNameWithFirstSide', itemKey: item.key }) : move(-1))}
+        />
+        <IconButton
+          icon="keyboardArrowDown"
+          label={`${name} 아래로`}
+          className="!w-[24px] disabled:opacity-30"
+          disabled={index === item.sides.length - 1}
+          onClick={() => move(1)}
+        />
+        <IconButton
+          icon="close"
+          label={`${name} 삭제`}
+          className="!w-[24px]"
+          onClick={() => dispatch({ type: 'removeSide', itemKey: item.key, lineKey: line.key })}
+        />
+      </div>
     </div>
   );
 }
