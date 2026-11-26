@@ -21,9 +21,13 @@ export const isTokenExpired = (token: string): boolean => {
 };
 
 export const getAccessTokenByRefreshToken = async (refreshToken: string) => {
-  const clientId = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID;
-  const clientSecret = process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET;
-  const issuer = process.env.NEXT_PUBLIC_KEYCLOAK_ISSUER;
+  // 이 파일은 app/auth.ts(서버)에서만 import 된다. NEXT_PUBLIC_ 접두사가 붙어
+  // 있었는데, 그 접두사는 "브라우저에 노출해도 되는 값"이라는 선언이라 시크릿에
+  // 붙으면 안 된다. 게다가 NEXT_PUBLIC_KEYCLOAK_CLIENT_SECRET 은 어디에서도
+  // 공급되지 않아 이 함수가 항상 throw 하고 있었다.
+  const clientId = process.env.KEYCLOAK_CLIENT_ID;
+  const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET;
+  const issuer = process.env.KEYCLOAK_ISSUER;
 
   if (!clientId || !clientSecret || !issuer) {
     throw new Error('Missing Keycloak configuration');
